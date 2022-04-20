@@ -1,7 +1,6 @@
 package com.a10.mejabelajar.course.model;
 
 import lombok.Data;
-import lombok.Generated;
 import lombok.NoArgsConstructor;
 import org.hibernate.annotations.GenericGenerator;
 

@@ -1,9 +1,33 @@
+buildscript{
+    ext.checkstyleVersion = '8.39'
+    ext.checkstyleConfig = 'google_checks.xml'
+}
+
 plugins {
     id 'org.springframework.boot' version '2.6.6'
     id 'io.spring.dependency-management' version '1.0.11.RELEASE'
     id 'java'
     id 'jacoco'
+    id "org.sonarqube" version "3.3"
 }
+
+apply plugin: 'checkstyle'
+
+checkstyle {
+    toolVersion = checkstyleVersion
+    config = resources.text.fromFile(configDirectory.file("${checkstyleConfig}"))
+    maxWarnings = 0  // Fail the build if there are any warnings
+    sourceSets = []  // Do not run checkstyle on gradle build/check
+}
+
+checkstyleMain {
+    source ='src/main/java'
+}
+
+checkstyleTest {
+    source ='src/test/java'
+}
+
 
 group = 'com.a10'
 version = '0.0.1-SNAPSHOT'

@@ -1,6 +1,5 @@
 package com.a10.mejabelajar.user.model;
 
-import com.a10.mejabelajar.user.model.user.User;
 import lombok.Data;
 import lombok.NoArgsConstructor;
 import org.hibernate.annotations.GenericGenerator;

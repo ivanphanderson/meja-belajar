@@ -1,7 +1,6 @@
 package com.a10.mejabelajar.user.service;
 
-import com.a10.mejabelajar.user.model.user.User;
-import com.a10.mejabelajar.user.model.user.UserDetailsImpl;
+import com.a10.mejabelajar.user.model.User;
 import com.a10.mejabelajar.user.repository.UserRepository;
 import org.springframework.beans.factory.annotation.Autowired;
 import org.springframework.security.core.userdetails.UserDetails;
@@ -18,6 +17,6 @@ public class UserDetailsServiceImpl implements UserDetailsService {
         if(user == null){
             throw new UsernameNotFoundException("User not found");
         }
-        return new UserDetailsImpl(user);
+        return user;
     }
 }

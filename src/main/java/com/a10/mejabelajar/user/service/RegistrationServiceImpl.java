@@ -2,7 +2,7 @@ package com.a10.mejabelajar.user.service;
 
 import com.a10.mejabelajar.user.model.Student;
 import com.a10.mejabelajar.user.model.Teacher;
-import com.a10.mejabelajar.user.model.user.User;
+import com.a10.mejabelajar.user.model.User;
 import com.a10.mejabelajar.user.repository.StudentRepository;
 import com.a10.mejabelajar.user.repository.TeacherRepository;
 import com.a10.mejabelajar.user.repository.UserRepository;
@@ -28,6 +28,7 @@ public class RegistrationServiceImpl implements RegistrationService{
         BCryptPasswordEncoder passwordEncoder = new BCryptPasswordEncoder();
         String encodedPassword = passwordEncoder.encode(user.getPassword());
         user.setPassword(encodedPassword);
+        user.setActivated(false);
         if(role.equals("teacher")){
             return createTeacher(user);
         }

@@ -1,6 +1,6 @@
 package com.a10.mejabelajar.user.controller;
 
-import com.a10.mejabelajar.user.model.user.User;
+import com.a10.mejabelajar.user.model.User;
 import com.a10.mejabelajar.user.service.RegistrationService;
 import org.springframework.beans.factory.annotation.Autowired;
 import org.springframework.http.HttpStatus;

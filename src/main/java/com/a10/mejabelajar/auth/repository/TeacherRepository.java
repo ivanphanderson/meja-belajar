@@ -1,6 +1,6 @@
-package com.a10.mejabelajar.user.repository;
+package com.a10.mejabelajar.auth.repository;
 
-import com.a10.mejabelajar.user.model.Teacher;
+import com.a10.mejabelajar.auth.model.Teacher;
 import org.springframework.data.jpa.repository.JpaRepository;
 import org.springframework.stereotype.Repository;
 

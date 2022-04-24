@@ -1,4 +1,4 @@
-package com.a10.mejabelajar.user.model;
+package com.a10.mejabelajar.auth.model;
 
 public enum Role {
     ADMIN,

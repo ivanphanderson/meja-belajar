@@ -1,4 +1,4 @@
-package com.a10.mejabelajar.user.exception;
+package com.a10.mejabelajar.auth.exception;
 
 public class UsernameOrPasswordAlreadyUsedException extends RuntimeException{
     public UsernameOrPasswordAlreadyUsedException(String e){

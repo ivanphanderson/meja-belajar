@@ -1,7 +1,7 @@
-package com.a10.mejabelajar.user.controller;
+package com.a10.mejabelajar.auth.controller;
 
-import com.a10.mejabelajar.user.model.UserDTO;
-import com.a10.mejabelajar.user.service.RegistrationService;
+import com.a10.mejabelajar.auth.model.UserDTO;
+import com.a10.mejabelajar.auth.service.RegistrationService;
 import org.springframework.beans.factory.annotation.Autowired;
 import org.springframework.stereotype.Controller;
 import org.springframework.ui.Model;

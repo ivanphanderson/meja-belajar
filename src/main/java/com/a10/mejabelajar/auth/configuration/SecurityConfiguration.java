@@ -1,6 +1,6 @@
-package com.a10.mejabelajar.user.configuration;
+package com.a10.mejabelajar.auth.configuration;
 
-import com.a10.mejabelajar.user.service.UserDetailsServiceImpl;
+import com.a10.mejabelajar.auth.service.UserDetailsServiceImpl;
 import org.springframework.context.annotation.Bean;
 import org.springframework.context.annotation.Configuration;
 import org.springframework.security.authentication.dao.DaoAuthenticationProvider;
@@ -45,6 +45,7 @@ public class SecurityConfiguration extends WebSecurityConfigurerAdapter {
                 .antMatchers("/signup").permitAll()
                 .antMatchers("/course/**").hasAnyAuthority("TEACHER")
                 .and().formLogin()
+                .loginPage("/login")
                 .loginProcessingUrl("/login");
         http.csrf().disable();
     }

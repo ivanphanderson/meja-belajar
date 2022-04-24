@@ -1,7 +1,7 @@
-package com.a10.mejabelajar.user.service;
+package com.a10.mejabelajar.auth.service;
 
-import com.a10.mejabelajar.user.model.User;
-import com.a10.mejabelajar.user.repository.UserRepository;
+import com.a10.mejabelajar.auth.model.User;
+import com.a10.mejabelajar.auth.repository.UserRepository;
 import org.springframework.beans.factory.annotation.Autowired;
 import org.springframework.security.core.userdetails.UserDetails;
 import org.springframework.security.core.userdetails.UserDetailsService;

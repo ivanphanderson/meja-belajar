@@ -1,4 +1,4 @@
-package com.a10.mejabelajar.user.model;
+package com.a10.mejabelajar.auth.model;
 
 import lombok.Data;
 import lombok.NoArgsConstructor;

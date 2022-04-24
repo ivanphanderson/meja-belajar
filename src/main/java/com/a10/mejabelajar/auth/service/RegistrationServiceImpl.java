@@ -1,12 +1,12 @@
-package com.a10.mejabelajar.user.service;
+package com.a10.mejabelajar.auth.service;
 
-import com.a10.mejabelajar.user.exception.InvalidRoleException;
-import com.a10.mejabelajar.user.exception.RegistrationFieldEmptyException;
-import com.a10.mejabelajar.user.exception.UsernameOrPasswordAlreadyUsedException;
-import com.a10.mejabelajar.user.model.*;
-import com.a10.mejabelajar.user.repository.StudentRepository;
-import com.a10.mejabelajar.user.repository.TeacherRepository;
-import com.a10.mejabelajar.user.repository.UserRepository;
+import com.a10.mejabelajar.auth.exception.InvalidRoleException;
+import com.a10.mejabelajar.auth.exception.RegistrationFieldEmptyException;
+import com.a10.mejabelajar.auth.exception.UsernameOrPasswordAlreadyUsedException;
+import com.a10.mejabelajar.auth.model.*;
+import com.a10.mejabelajar.auth.repository.StudentRepository;
+import com.a10.mejabelajar.auth.repository.TeacherRepository;
+import com.a10.mejabelajar.auth.repository.UserRepository;
 import org.springframework.beans.factory.annotation.Autowired;
 import org.springframework.security.crypto.bcrypt.BCryptPasswordEncoder;
 import org.springframework.stereotype.Service;

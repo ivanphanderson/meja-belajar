@@ -11,6 +11,9 @@
             <div th:if="${error != null}" class="alert alert-danger" >
                 <p th:text="${error}"></p>
             </div>
+            <div th:if="${success != null}" class="alert alert-success">
+                <p th:text="${success}"></p>
+            </div>
             <form action="#"  th:action="@{signup}" th:object="${userDto}" method="post">
                 <div  class="form-group">
                     <label for="username"><b>Username</b></label><br>

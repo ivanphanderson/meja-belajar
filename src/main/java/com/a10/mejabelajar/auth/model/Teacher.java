@@ -1,4 +1,4 @@
-package com.a10.mejabelajar.user.model;
+package com.a10.mejabelajar.auth.model;
 
 import lombok.Data;
 import lombok.NoArgsConstructor;
@@ -9,8 +9,8 @@ import javax.persistence.*;
 @Data
 @NoArgsConstructor
 @Entity
-@Table(name = "admin")
-public class Admin {
+@Table(name = "teacher")
+public class Teacher {
     @Id
     @GeneratedValue(generator="uuid2")
     @GenericGenerator(name="uuid2", strategy= "org.hibernate.id.UUIDGenerator")

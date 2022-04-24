@@ -20,9 +20,9 @@ public class CourseServiceImpl implements CourseService {
                                String courseDescription,
                                String courseDuration) {
         validateCourseAttribute(courseName, courseType, courseDuration);
-        CourseType courseType1 =  CourseType.valueOf(courseType);
-        double durationInt = Double.parseDouble(courseDuration);
-        Course course = new Course(courseName, courseType1, courseDescription, durationInt);
+        var courseType1 =  CourseType.valueOf(courseType);
+        var durationInt = Double.parseDouble(courseDuration);
+        var course = new Course(courseName, courseType1, courseDescription, durationInt);
         courseRepository.save(course);
         return course;
     }
@@ -34,15 +34,17 @@ public class CourseServiceImpl implements CourseService {
                                String courseDescription,
                                String courseDuration) {
         validateCourseAttribute(courseName, courseType, courseDuration);
-        CourseType courseType1 =  CourseType.valueOf(courseType);
-        double durationInt = Double.parseDouble(courseDuration);
-        Course course = new Course(courseName, courseType1, courseDescription, durationInt);
+        var courseType1 =  CourseType.valueOf(courseType);
+        var durationInt = Double.parseDouble(courseDuration);
+        var course = new Course(courseName, courseType1, courseDescription, durationInt);
         course.setId(id);
         courseRepository.save(course);
         return course;
     }
 
-    private void validateCourseAttribute(String courseName, String courseType, String courseDuration) {
+    private void validateCourseAttribute(String courseName,
+                                         String courseType,
+                                         String courseDuration) {
         if (!validateCourseName(courseName)) {
             throw new CourseInvalidException("Course name should not be empty");
         }
@@ -69,7 +71,7 @@ public class CourseServiceImpl implements CourseService {
 
     private boolean validateCourseDuration(String duration) {
         try {
-            double durationDouble = Double.parseDouble(duration);
+            var durationDouble = Double.parseDouble(duration);
             return durationDouble > 0;
         } catch (NumberFormatException e) {
             return false;
@@ -88,7 +90,7 @@ public class CourseServiceImpl implements CourseService {
 
     @Override
     public void deleteCourseById(int id) {
-        Course course = getCourseById(id);
+        var course = getCourseById(id);
         courseRepository.delete(course);
     }
 }

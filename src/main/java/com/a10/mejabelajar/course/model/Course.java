@@ -1,11 +1,9 @@
 package com.a10.mejabelajar.course.model;
 
+import java.util.List;
 import javax.persistence.*;
-import lombok.AllArgsConstructor;
 import lombok.Data;
 import lombok.NoArgsConstructor;
-
-import java.util.List;
 
 @Entity
 @Table(name = "course")
@@ -33,7 +31,13 @@ public class Course {
     @OneToMany(mappedBy = "course", cascade = CascadeType.ALL)
     private List<CourseInformation> courseInformations;
 
-    public Course(String courseName, CourseType courseType, String courseDescription, double courseDuration) {
+    /**
+     * Constructor to create course.
+     */
+    public Course(String courseName,
+                  CourseType courseType,
+                  String courseDescription,
+                  double courseDuration) {
         this.courseName = courseName;
         this.courseType = courseType;
         this.courseDescription = courseDescription;

@@ -46,7 +46,7 @@ public class SecurityConfiguration extends WebSecurityConfigurerAdapter {
                 .antMatchers("/course/**").hasAnyAuthority("TEACHER")
                 .and().formLogin()
                 .loginPage("/login")
-                .loginProcessingUrl("/login");
+                .failureUrl("/login?error=true");
         http.csrf().disable();
     }
 }

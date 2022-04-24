@@ -13,6 +13,7 @@
             </div>
             <div th:if="${success != null}" class="alert alert-success">
                 <p th:text="${success}"></p>
+                <a href="/login">Login</a>
             </div>
             <form action="#"  th:action="@{signup}" th:object="${userDto}" method="post">
                 <div  class="form-group">

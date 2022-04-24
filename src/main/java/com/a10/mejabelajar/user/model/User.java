@@ -1,10 +1,5 @@
 package com.a10.mejabelajar.user.model;
 
-import com.a10.mejabelajar.user.model.Admin;
-import com.a10.mejabelajar.user.model.Student;
-import com.a10.mejabelajar.user.model.Teacher;
-import com.a10.mejabelajar.user.util.Role;
-import com.fasterxml.jackson.annotation.JsonIgnoreProperties;
 import lombok.Data;
 import lombok.NoArgsConstructor;
 import org.hibernate.annotations.GenericGenerator;
@@ -56,7 +51,7 @@ public class User implements UserDetails {
 
     @Override
     public String getUsername() {
-        return email;
+        return username;
     }
 
     @Override
@@ -79,4 +74,11 @@ public class User implements UserDetails {
         return true;
     }
 
+    public User(String username, String email, String password, Role role){
+        this.username = username;
+        this.email = email;
+        this.password = password;
+        this.role = role;
+        this.isActivated = false;
+    }
 }

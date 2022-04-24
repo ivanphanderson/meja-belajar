@@ -28,6 +28,9 @@ public class CourseInformation {
     @Column(name = "created_at", nullable = false)
     private Date createdAt;
 
+    @Column(name = "updated_at", nullable = false)
+    private Date updatedAt;
+
     @ManyToOne
     @JoinColumn(name = "course", nullable = false)
     private Course course;

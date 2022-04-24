@@ -7,5 +7,11 @@ import java.util.List;
 public interface CourseInformationService {
     List<CourseInformation> getCourseInformationByCourse(Course course);
 
+    CourseInformation getCourseInformationById(int id);
+
     CourseInformation createCourseInformation(CourseInformation courseInformation);
+
+    CourseInformation updateCourseInformation(int id, CourseInformation courseInformation);
+
+    void deleteCourseInformationById(int id);
 }

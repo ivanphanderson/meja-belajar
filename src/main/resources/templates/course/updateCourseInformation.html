@@ -13,11 +13,11 @@
 </head>
 <body>
 <div th:if="${error!=null}" class="alert alert-danger" role="alert">
-<p th:text="${error}"></p>
+  <p th:text="${error}"></p>
 </div>
 
 <div>
-  <form th:object="${courseInformation}" th:action="@{/course/new-information/{id}(id=${courseId})}" class="my-8" method="post">
+  <form th:object="${courseInformation}" th:action="@{/course/information/update/{courseId1}/{courseInformationId1}(courseId1=${courseId}, courseInformationId1=${courseInformationId})}" class="my-8" method="post">
 
     <div class="form-group">
       <label for="nameInput">Title</label>
@@ -28,9 +28,9 @@
 
     <label for="content">Body</label>
     <input th:field="*{courseInformationBody}" type="hidden" id="content" value = "">
-    <div id="editor-container"></div>
+    <div id="editor-container" th:utext="*{courseInformationBody}"></div>
 
-    <button type="submit" class="btn btn-primary">Create</button>
+    <button type="submit" class="btn btn-primary">Update</button>
   </form>
 </div>
 </body>

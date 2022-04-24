@@ -3,8 +3,10 @@ package com.a10.mejabelajar.course.service;
 import com.a10.mejabelajar.course.exception.CourseInvalidException;
 import com.a10.mejabelajar.course.model.Course;
 import com.a10.mejabelajar.course.model.CourseType;
+import com.a10.mejabelajar.course.model.dto.CourseDataTransferObject;
 import com.a10.mejabelajar.course.repository.CourseRepository;
 import java.util.List;
+import org.modelmapper.ModelMapper;
 import org.springframework.beans.factory.annotation.Autowired;
 import org.springframework.stereotype.Service;
 
@@ -14,44 +16,45 @@ public class CourseServiceImpl implements CourseService {
     @Autowired
     private CourseRepository courseRepository;
 
+    private ModelMapper modelMapper = new ModelMapper();
+
     @Override
-    public Course createCourse(String courseName,
-                               String courseType,
-                               String courseDescription,
-                               String courseDuration) {
-        validateCourseAttribute(courseName, courseType, courseDuration);
-        var courseType1 =  CourseType.valueOf(courseType);
-        var durationInt = Double.parseDouble(courseDuration);
-        var course = new Course(courseName, courseType1, courseDescription, durationInt);
+    public Course createCourse(CourseDataTransferObject courseDataTransferObject) {
+        validateCourseAttribute(courseDataTransferObject);
+
+        var course = new Course();
+        modelMapper.map(courseDataTransferObject, course);
+        var courseType1 =  CourseType.valueOf(courseDataTransferObject.getCourseType());
+        var durationInt = Double.parseDouble(courseDataTransferObject.getCourseDuration());
+        course.setCourseType(courseType1);
+        course.setCourseDuration(durationInt);
         courseRepository.save(course);
         return course;
     }
 
     @Override
-    public Course updateCourse(int id,
-                               String courseName,
-                               String courseType,
-                               String courseDescription,
-                               String courseDuration) {
-        validateCourseAttribute(courseName, courseType, courseDuration);
-        var courseType1 =  CourseType.valueOf(courseType);
-        var durationInt = Double.parseDouble(courseDuration);
-        var course = new Course(courseName, courseType1, courseDescription, durationInt);
+    public Course updateCourse(int id, CourseDataTransferObject courseDataTransferObject) {
+        validateCourseAttribute(courseDataTransferObject);
+
+        var course = new Course();
+        modelMapper.map(courseDataTransferObject, course);
+        var courseType1 =  CourseType.valueOf(courseDataTransferObject.getCourseType());
+        var durationInt = Double.parseDouble(courseDataTransferObject.getCourseDuration());
+        course.setCourseType(courseType1);
+        course.setCourseDuration(durationInt);
         course.setId(id);
         courseRepository.save(course);
         return course;
     }
 
-    private void validateCourseAttribute(String courseName,
-                                         String courseType,
-                                         String courseDuration) {
-        if (!validateCourseName(courseName)) {
+    private void validateCourseAttribute(CourseDataTransferObject courseDataTransferObject) {
+        if (!validateCourseName(courseDataTransferObject.getCourseName())) {
             throw new CourseInvalidException("Course name should not be empty");
         }
-        if (!validateCourseType(courseType)) {
+        if (!validateCourseType(courseDataTransferObject.getCourseType())) {
             throw new CourseInvalidException("Choose valid course type!");
         }
-        if (!validateCourseDuration(courseDuration)) {
+        if (!validateCourseDuration(courseDataTransferObject.getCourseDuration())) {
             throw new CourseInvalidException("Duration should be a positive Integer");
         }
     }

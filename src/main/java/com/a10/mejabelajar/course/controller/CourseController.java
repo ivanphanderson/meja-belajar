@@ -163,7 +163,7 @@ public class CourseController {
      * Update a course information specified by course information id in path variable.
      */
     @GetMapping(value = "/information/update/{courseId}/{courseInformationId}")
-    public String updateInformation(
+    public String updateCourseInformation(
             @PathVariable int courseId,
             @PathVariable int courseInformationId,
             Model model) {
@@ -179,7 +179,7 @@ public class CourseController {
      * Create new course information for specific course specified by id in path variable.
      */
     @PostMapping(value = "/information/update/{courseId}/{courseInformationId}")
-    public String updateInformation(
+    public String updateCourseInformation(
             @ModelAttribute CourseInformationDataTransferObject courseInformationDataTransferObject,
             @PathVariable int courseId,
             @PathVariable int courseInformationId,
@@ -203,7 +203,7 @@ public class CourseController {
     }
 
     @GetMapping(value = "/information/delete/{courseId}/{courseInformationId}")
-    public String deleteInformation(
+    public String deleteCourseInformation(
             @PathVariable int courseId,
             @PathVariable int courseInformationId) {
         courseInformationService.deleteCourseInformationById(courseInformationId);

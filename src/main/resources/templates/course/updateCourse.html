@@ -8,15 +8,14 @@
 </head>
 <body>
 
-<h1>Create New Course</h1>
+<h1>Update Course</h1>
 
 <div th:if="${error!=null}" class="alert alert-danger" role="alert">
   <p th:text="${error}"></p>
 </div>
 
-
 <div>
-  <form th:object="${newCourse}" th:action="@{/course/create}" class="my-8" method="post">
+  <form th:object="${course}" th:action="@{/course/update/{id}(id=${courseId})}" class="my-8" method="post">
     <div class="form-group">
       <label for="nameInput">Course Name</label>
       <input th:field="*{courseName}" type="text" class="form-control" id="nameInput" aria-describedby="nameHelp" placeholder="Enter course' name" required>
@@ -38,7 +37,7 @@
       <input th:field="*{courseDuration}" type="number" class="form-control" id="durationInput" aria-describedby="durationHelp" placeholder="Enter course' duration (in month)" value="1" required>
     </div>
 
-    <button type="submit" class="btn btn-primary">Create</button>
+    <button type="submit" class="btn btn-primary">Update</button>
   </form>
 </div>
 </body>

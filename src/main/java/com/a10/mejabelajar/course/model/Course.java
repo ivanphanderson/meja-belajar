@@ -41,7 +41,7 @@ public class Course {
 
     @JsonIgnore
     @OneToMany(mappedBy = "course", cascade = CascadeType.ALL)
-    private List<Rate> newRate;
+    private List<Rate> newRate = new ArrayList<>();
 
     /**
      * Constructor to create course.

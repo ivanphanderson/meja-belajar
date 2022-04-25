@@ -33,4 +33,8 @@ public class MuridServiceImpl implements MuridService{
         muridRepository.save(murid);
         return murid;
     }
+
+    public Murid getMuridById(int id) {
+        return muridRepository.findById(id);
+    }
 }

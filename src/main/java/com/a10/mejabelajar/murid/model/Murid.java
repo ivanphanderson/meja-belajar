@@ -35,6 +35,9 @@ public class Murid {
     )
     private List<Course> newCourse = new ArrayList<>();
 
+    @OneToMany(mappedBy = "murid", cascade = CascadeType.ALL)
+    private List<Rate> muridRate;
+
     /**
      * Constructor to create murid.
      */

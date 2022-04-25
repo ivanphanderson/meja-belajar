@@ -65,6 +65,12 @@ public class CourseController {
             @AuthenticationPrincipal User user,
             @ModelAttribute("courseDto") CourseDataTransferObject courseDataTransferObject,
             Model model) {
+
+        var teacher = teacherService.getTeacherByUser(user);
+        if (teacher.getCourse() != null) {
+            return REDIRECT_COURSE + teacher.getCourse().getId();
+        }
+
         try {
             courseService.createCourse(courseDataTransferObject, user);
             return "redirect:";
@@ -80,8 +86,9 @@ public class CourseController {
      * Show update course page.
      */
     @GetMapping(path = "/update/{id}")
-    public String updateCourse(@AuthenticationPrincipal User user,
-                               @PathVariable int id, Model model) {
+    public String updateCourse(
+            @AuthenticationPrincipal User user,
+            @PathVariable int id, Model model) {
         var course = courseService.getCourseById(id);
         var teacher = teacherService.getTeacherByUser(user);
         if (teacher.getCourse() != course) {
@@ -98,9 +105,21 @@ public class CourseController {
      */
     @PostMapping(path = "/update/{id}")
     public String updateCourse(
+            @AuthenticationPrincipal User user,
             @ModelAttribute CourseDataTransferObject courseDataTransferObject,
             @PathVariable int id,
             Model model) {
+
+        var teacher = teacherService.getTeacherByUser(user);
+        var teacherCourse = teacher.getCourse();
+        if (teacherCourse == null) {
+            return REDIRECT_COURSE + teacher.getCourse().getId();
+        } else {
+            if (teacherCourse.getId() != id) {
+                return REDIRECT_COURSE + teacher.getCourse().getId();
+            }
+        }
+
         try {
             courseService.updateCourse(
                     id,
@@ -130,9 +149,10 @@ public class CourseController {
      * Show course page specified by its id in path variable.
      */
     @GetMapping(value = "/{courseId}")
-    public String readCourseById(@AuthenticationPrincipal User user,
-                                 @PathVariable int courseId,
-                                 Model model) {
+    public String readCourseById(
+            @AuthenticationPrincipal User user,
+            @PathVariable int courseId,
+            Model model) {
         var course = courseService.getCourseById(courseId);
         List<CourseInformation> courseInformations =
                 courseInformationService.getCourseInformationByCourse(course);
@@ -157,7 +177,7 @@ public class CourseController {
         if (teacherCourseId != courseId) {
             return REDIRECT_COURSE + teacherCourseId;
         }
-        courseService.deleteCourseById(courseId);
+        courseService.deleteCourseById(user, courseId);
         return "redirect:/course";
     }
 }

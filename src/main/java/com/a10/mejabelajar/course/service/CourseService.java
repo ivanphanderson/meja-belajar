@@ -16,5 +16,5 @@ public interface CourseService {
 
     Course updateCourse(int id, CourseDataTransferObject courseDataTransferObject);
 
-    void deleteCourseById(int id);
+    void deleteCourseById(User user, int id);
 }

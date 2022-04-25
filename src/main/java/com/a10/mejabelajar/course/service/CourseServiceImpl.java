@@ -71,8 +71,10 @@ public class CourseServiceImpl implements CourseService {
     }
 
     @Override
-    public void deleteCourseById(int id) {
+    public void deleteCourseById(User user, int id) {
         var course = getCourseById(id);
+        var teacher = teacherService.getTeacherByUser(user);
+        teacher.setCourse(null);
         courseRepository.delete(course);
     }
 

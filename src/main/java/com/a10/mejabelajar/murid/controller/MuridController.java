@@ -11,13 +11,6 @@ import org.springframework.web.bind.annotation.*;
 @RequestMapping(path = "/murid")
 public class MuridController {
 
-//    private static final String MURID = "murid";
-//    private static final String MURID_ID = "muridId";
-//    private static final String MURID_TYPES = "muridTypes";
-//    private static final String ERROR = "error";
-//    private static final String REDIRECT_COURSE = "redirect:/course/";
-//    private ModelMapper modelMapper = new ModelMapper();
-
     @Autowired
     MuridService muridService;
 

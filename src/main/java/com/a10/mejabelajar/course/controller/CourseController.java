@@ -8,8 +8,6 @@ import com.a10.mejabelajar.course.model.dto.CourseInformationDataTransferObject;
 import com.a10.mejabelajar.course.service.CourseInformationService;
 import com.a10.mejabelajar.course.service.CourseService;
 import java.util.List;
-
-import com.a10.mejabelajar.murid.model.Murid;
 import org.modelmapper.ModelMapper;
 import org.springframework.beans.factory.annotation.Autowired;
 import org.springframework.http.ResponseEntity;

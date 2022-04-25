@@ -1,11 +1,10 @@
 package com.a10.mejabelajar.course.model;
 
+import com.a10.mejabelajar.murid.model.Murid;
+import com.fasterxml.jackson.annotation.JsonIgnore;
 import java.util.ArrayList;
 import java.util.List;
 import javax.persistence.*;
-
-import com.a10.mejabelajar.murid.model.Murid;
-import com.fasterxml.jackson.annotation.JsonIgnore;
 import lombok.Data;
 import lombok.NoArgsConstructor;
 

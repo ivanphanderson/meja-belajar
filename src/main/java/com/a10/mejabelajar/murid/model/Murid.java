@@ -3,7 +3,6 @@ package com.a10.mejabelajar.murid.model;
 import java.util.ArrayList;
 import java.util.List;
 import javax.persistence.*;
-
 import com.a10.mejabelajar.course.model.Course;
 import lombok.Data;
 import lombok.NoArgsConstructor;

@@ -6,6 +6,8 @@ import com.a10.mejabelajar.course.model.CourseType;
 import com.a10.mejabelajar.course.model.dto.CourseDataTransferObject;
 import com.a10.mejabelajar.course.repository.CourseRepository;
 import java.util.List;
+
+import com.a10.mejabelajar.murid.model.Murid;
 import org.modelmapper.ModelMapper;
 import org.springframework.beans.factory.annotation.Autowired;
 import org.springframework.stereotype.Service;
@@ -17,6 +19,12 @@ public class CourseServiceImpl implements CourseService {
     private CourseRepository courseRepository;
 
     private ModelMapper modelMapper = new ModelMapper();
+
+    @Override
+    public Course createCourse(Course course) {
+        courseRepository.save(course);
+        return course;
+    }
 
     @Override
     public Course createCourse(CourseDataTransferObject courseDataTransferObject) {

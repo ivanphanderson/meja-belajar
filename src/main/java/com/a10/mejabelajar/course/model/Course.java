@@ -1,7 +1,11 @@
 package com.a10.mejabelajar.course.model;
 
+import java.util.ArrayList;
 import java.util.List;
 import javax.persistence.*;
+
+import com.a10.mejabelajar.murid.model.Murid;
+import com.fasterxml.jackson.annotation.JsonIgnore;
 import lombok.Data;
 import lombok.NoArgsConstructor;
 
@@ -30,6 +34,10 @@ public class Course {
 
     @OneToMany(mappedBy = "course", cascade = CascadeType.ALL)
     private List<CourseInformation> courseInformations;
+
+    @JsonIgnore
+    @ManyToMany(mappedBy = "newCourse")
+    private List<Murid> newMurid = new ArrayList<>();
 
     /**
      * Constructor to create course.

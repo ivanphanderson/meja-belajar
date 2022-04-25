@@ -124,6 +124,7 @@ public class RegistrationServiceImpl implements RegistrationService{
         BCryptPasswordEncoder passwordEncoder = new BCryptPasswordEncoder();
         String encodedPassword = passwordEncoder.encode(dto.getPassword());
         User user = new User(dto.getUsername(), dto.getEmail(), encodedPassword, Role.ADMIN);
+        user.setActivated(true);
         userRepository.save(user);
 
         tokenRepository.findByToken(dto.getToken()).setActive(false);

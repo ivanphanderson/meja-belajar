@@ -18,7 +18,7 @@ import org.springframework.security.crypto.bcrypt.BCryptPasswordEncoder;
 import static org.junit.jupiter.api.Assertions.*;
 
 @ExtendWith(MockitoExtension.class)
-public class RegistrationServiceImplTest {
+class RegistrationServiceImplTest {
     @InjectMocks
     private RegistrationServiceImpl registrationService;
 
@@ -48,7 +48,7 @@ public class RegistrationServiceImplTest {
     private User mockUserStudent;
     private User mockUserAdmin;
     private User mockUserTeacher;
-    private Token token;
+    private AdminRegistrationToken token;
     private CreateStudentAndTeacherDTO studentDTO;
     private CreateStudentAndTeacherDTO teacherDTO;
     private CreateAdminDTO adminDTO;
@@ -60,7 +60,7 @@ public class RegistrationServiceImplTest {
         mockUserStudent = new User(MOCK_USERNAME, MOCK_EMAIL, encodedPassword, STUDENT_ROLE);
         mockUserTeacher = new User(MOCK_USERNAME, MOCK_EMAIL, encodedPassword, TEACHER_ROLE);
         mockUserAdmin = new User(MOCK_USERNAME, MOCK_EMAIL, encodedPassword, Role.ADMIN);
-        token = new Token(MOCK_TOKEN);
+        token = new AdminRegistrationToken(MOCK_TOKEN);
 
         studentDTO = new CreateStudentAndTeacherDTO();
         studentDTO.setUsername(MOCK_USERNAME);

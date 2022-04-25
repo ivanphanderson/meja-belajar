@@ -8,8 +8,8 @@ import javax.persistence.*;
 @Data
 @NoArgsConstructor
 @Entity
-@Table(name = "token")
-public class Token {
+@Table(name = "admin_registration_token")
+public class AdminRegistrationToken {
     @Id
     @Column(name = "id", updatable = false)
     @GeneratedValue(strategy = GenerationType.AUTO)
@@ -21,7 +21,7 @@ public class Token {
     @Column(name = "isActive")
     private boolean isActive;
 
-    public Token(String token){
+    public AdminRegistrationToken(String token){
         this.token = token;
         this.isActive = true;
     }

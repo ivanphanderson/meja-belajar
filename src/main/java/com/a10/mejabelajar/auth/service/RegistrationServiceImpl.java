@@ -114,7 +114,7 @@ public class RegistrationServiceImpl implements RegistrationService{
     }
 
     public boolean validateToken(CreateAdminDTO dto){
-        Token token = tokenRepository.findByToken(dto.getToken());
+        AdminRegistrationToken token = tokenRepository.findByToken(dto.getToken());
         return token != null && token.isActive();
     }
 

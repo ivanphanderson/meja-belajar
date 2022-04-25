@@ -15,7 +15,7 @@
                 <p th:text="${success}"></p>
                 <a href="/login">Login</a>
             </div>
-            <form action="#"  th:action="@{signup}" th:object="${userDto}" method="post">
+            <form action="#"  th:action="@{/signup}" th:object="${dto}" method="post">
                 <div  class="form-group">
                     <label for="username"><b>Username</b></label><br>
                     <input th:field="*{username}" class="form-control" type="text" placeholder="Enter Username" name="username" id="username" required>

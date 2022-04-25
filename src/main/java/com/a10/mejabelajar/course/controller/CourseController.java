@@ -1,5 +1,7 @@
 package com.a10.mejabelajar.course.controller;
 
+import com.a10.mejabelajar.auth.model.User;
+import com.a10.mejabelajar.auth.service.TeacherService;
 import com.a10.mejabelajar.course.exception.CourseInvalidException;
 import com.a10.mejabelajar.course.model.*;
 import com.a10.mejabelajar.course.model.dto.CourseDataTransferObject;
@@ -9,6 +11,7 @@ import java.util.List;
 import org.modelmapper.ModelMapper;
 import org.springframework.beans.factory.annotation.Autowired;
 import org.springframework.http.ResponseEntity;
+import org.springframework.security.core.annotation.AuthenticationPrincipal;
 import org.springframework.stereotype.Controller;
 import org.springframework.ui.Model;
 import org.springframework.web.bind.annotation.*;
@@ -24,9 +27,11 @@ public class CourseController {
     @Autowired
     private CourseInformationService courseInformationService;
 
+    @Autowired
+    private TeacherService teacherService;
+
     private static final String COURSE = "course";
     private static final String COURSE_ID = "courseId";
-    private static final String COURSE_INFORMATION = "courseInformation";
     private static final String COURSE_TYPES = "courseTypes";
     private static final String ERROR = "error";
     private static final String REDIRECT_COURSE = "redirect:/course/";
@@ -42,7 +47,11 @@ public class CourseController {
      * Show create course page.
      */
     @GetMapping(path = "/create")
-    public String createCourse(Model model) {
+    public String createCourse(@AuthenticationPrincipal User user, Model model) {
+        var teacher = teacherService.getTeacherByUser(user);
+        if (teacher.getCourse() != null) {
+            return REDIRECT_COURSE + teacher.getCourse().getId();
+        }
         model.addAttribute(COURSE_TYPES, CourseType.values());
         model.addAttribute("newCourse", new Course());
         return "course/createCourse";
@@ -53,10 +62,11 @@ public class CourseController {
      */
     @PostMapping(path = "/create")
     public String createCourse(
+            @AuthenticationPrincipal User user,
             @ModelAttribute("courseDto") CourseDataTransferObject courseDataTransferObject,
             Model model) {
         try {
-            courseService.createCourse(courseDataTransferObject);
+            courseService.createCourse(courseDataTransferObject, user);
             return "redirect:";
         } catch (CourseInvalidException e) {
             model.addAttribute(ERROR, e.getMessage());
@@ -70,8 +80,13 @@ public class CourseController {
      * Show update course page.
      */
     @GetMapping(path = "/update/{id}")
-    public String updateCourse(@PathVariable int id, Model model) {
+    public String updateCourse(@AuthenticationPrincipal User user,
+                               @PathVariable int id, Model model) {
         var course = courseService.getCourseById(id);
+        var teacher = teacherService.getTeacherByUser(user);
+        if (teacher.getCourse() != course) {
+            return REDIRECT_COURSE + teacher.getCourse().getId();
+        }
         model.addAttribute(COURSE_TYPES, CourseType.values());
         model.addAttribute(COURSE, course);
         model.addAttribute(COURSE_ID, id);
@@ -115,17 +130,33 @@ public class CourseController {
      * Show course page specified by its id in path variable.
      */
     @GetMapping(value = "/{courseId}")
-    public String readCourseById(@PathVariable int courseId, Model model) {
+    public String readCourseById(@AuthenticationPrincipal User user,
+                                 @PathVariable int courseId,
+                                 Model model) {
         var course = courseService.getCourseById(courseId);
         List<CourseInformation> courseInformations =
                 courseInformationService.getCourseInformationByCourse(course);
+
+        var teacher = teacherService.getTeacherByUser(user);
+        if (teacher.getCourse() != course) {
+            return REDIRECT_COURSE + teacher.getCourse().getId();
+        }
+
         model.addAttribute(COURSE, course);
         model.addAttribute("courseInformations", courseInformations);
         return "course/readCourseById";
     }
 
+    /**
+     * Delete a course.
+     */
     @GetMapping(value = "/delete/{courseId}")
-    public String deleteCourse(@PathVariable int courseId) {
+    public String deleteCourse(@AuthenticationPrincipal User user, @PathVariable int courseId) {
+        var teacher = teacherService.getTeacherByUser(user);
+        int teacherCourseId = teacher.getCourse().getId();
+        if (teacherCourseId != courseId) {
+            return REDIRECT_COURSE + teacherCourseId;
+        }
         courseService.deleteCourseById(courseId);
         return "redirect:/course";
     }

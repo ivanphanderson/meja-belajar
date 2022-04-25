@@ -39,7 +39,7 @@ public class RegistrationController {
         }
         catch (Exception e){
             model.addAttribute("error", e.getMessage());
-            model.addAttribute("dto", new CreateAdminDTO());
+            model.addAttribute("dto", dto);
             return ADMIN_REGISTRATION_VIEW;
         }
     }
@@ -54,7 +54,7 @@ public class RegistrationController {
         }
         catch (Exception e){
             model.addAttribute("error", e.getMessage());
-            model.addAttribute("dto", new CreateStudentAndTeacherDTO());
+            model.addAttribute("dto", dto);
             return REGISTRATION_VIEW;
         }
     }

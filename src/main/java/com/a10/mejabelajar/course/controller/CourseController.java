@@ -1,11 +1,23 @@
 package com.a10.mejabelajar.course.controller;
 
+<<<<<<< HEAD
 import com.a10.mejabelajar.course.exception.CourseInvalidException;
 import com.a10.mejabelajar.course.model.*;
 import com.a10.mejabelajar.course.model.dto.CourseDataTransferObject;
 import com.a10.mejabelajar.course.service.CourseInformationService;
 import com.a10.mejabelajar.course.service.CourseService;
 import java.util.List;
+=======
+import com.a10.mejabelajar.course.exception.CourseInformationInvalidException;
+import com.a10.mejabelajar.course.exception.CourseInvalidException;
+import com.a10.mejabelajar.course.model.*;
+import com.a10.mejabelajar.course.model.dto.CourseDataTransferObject;
+import com.a10.mejabelajar.course.model.dto.CourseInformationDataTransferObject;
+import com.a10.mejabelajar.course.service.CourseInformationService;
+import com.a10.mejabelajar.course.service.CourseService;
+import java.util.List;
+import org.modelmapper.ModelMapper;
+>>>>>>> 9e21984cddae3701ff239d7e58f5928771440978
 import org.springframework.beans.factory.annotation.Autowired;
 import org.springframework.stereotype.Controller;
 import org.springframework.ui.Model;
@@ -24,9 +36,17 @@ public class CourseController {
 
     private static final String COURSE = "course";
     private static final String COURSE_ID = "courseId";
+<<<<<<< HEAD
     private static final String COURSE_TYPES = "courseTypes";
     private static final String ERROR = "error";
     private static final String REDIRECT_COURSE = "redirect:/course/";
+=======
+    private static final String COURSE_INFORMATION = "courseInformation";
+    private static final String COURSE_TYPES = "courseTypes";
+    private static final String ERROR = "error";
+    private static final String REDIRECT_COURSE = "redirect:/course/";
+    private ModelMapper modelMapper = new ModelMapper();
+>>>>>>> 9e21984cddae3701ff239d7e58f5928771440978
 
     /**
      * Show create course page.
@@ -119,4 +139,92 @@ public class CourseController {
         courseService.deleteCourseById(courseId);
         return "redirect:/course";
     }
+<<<<<<< HEAD
+=======
+
+    /**
+     * Show create course information page for specific course specified by id in path variable.
+     */
+    @GetMapping(value = "/new-information/{courseId}")
+    public String createCourseInformation(@PathVariable int courseId, Model model) {
+        model.addAttribute(COURSE_ID, courseId);
+        model.addAttribute(COURSE_INFORMATION, new CourseInformationDataTransferObject());
+        return "course/createCourseInformation";
+    }
+
+    /**
+     * Create new course information for specific course specified by id in path variable.
+     */
+    @PostMapping(value = "/new-information/{courseId}")
+    public String createCourseInformation(
+            @ModelAttribute CourseInformationDataTransferObject courseInformationDataTransferObject,
+            @PathVariable int courseId,
+            Model model) {
+        try {
+            var courseInformation = new CourseInformation();
+            modelMapper.map(courseInformationDataTransferObject, courseInformation);
+
+            var course = courseService.getCourseById(courseId);
+            courseInformation.setCourse(course);
+            courseInformationService.createCourseInformation(courseInformation);
+            return REDIRECT_COURSE + courseId;
+        } catch (CourseInformationInvalidException e) {
+            model.addAttribute(ERROR, e.getMessage());
+            model.addAttribute(COURSE_ID, courseId);
+            model.addAttribute(COURSE_INFORMATION, courseInformationDataTransferObject);
+            return "course/createCourseInformation";
+        }
+    }
+
+    /**
+     * Update a course information specified by course information id in path variable.
+     */
+    @GetMapping(value = "/information/update/{courseId}/{courseInformationId}")
+    public String updateInformation(
+            @PathVariable int courseId,
+            @PathVariable int courseInformationId,
+            Model model) {
+        var courseInformation =
+                courseInformationService.getCourseInformationById(courseInformationId);
+        model.addAttribute(COURSE_ID, courseId);
+        model.addAttribute(COURSE_INFORMATION, courseInformation);
+        model.addAttribute("courseInformationId", courseInformationId);
+        return "course/updateCourseInformation";
+    }
+
+    /**
+     * Create new course information for specific course specified by id in path variable.
+     */
+    @PostMapping(value = "/information/update/{courseId}/{courseInformationId}")
+    public String updateInformation(
+            @ModelAttribute CourseInformationDataTransferObject courseInformationDataTransferObject,
+            @PathVariable int courseId,
+            @PathVariable int courseInformationId,
+            Model model) {
+        try {
+            var courseInformation = new CourseInformation();
+            modelMapper.map(courseInformationDataTransferObject, courseInformation);
+
+            courseInformationService.updateCourseInformation(
+                    courseInformationId,
+                    courseInformation
+            );
+            return REDIRECT_COURSE + courseId;
+        } catch (CourseInformationInvalidException e) {
+            model.addAttribute(ERROR, e.getMessage());
+            model.addAttribute(COURSE_ID, courseId);
+            model.addAttribute("courseInformationId", courseInformationId);
+            model.addAttribute(COURSE_INFORMATION, courseInformationDataTransferObject);
+            return "course/updateCourseInformation";
+        }
+    }
+
+    @GetMapping(value = "/information/delete/{courseId}/{courseInformationId}")
+    public String deleteInformation(
+            @PathVariable int courseId,
+            @PathVariable int courseInformationId) {
+        courseInformationService.deleteCourseInformationById(courseInformationId);
+        return REDIRECT_COURSE + courseId;
+    }
+>>>>>>> 9e21984cddae3701ff239d7e58f5928771440978
 }

@@ -7,5 +7,4 @@ import com.a10.mejabelajar.auth.model.CreateStudentAndTeacherDTO;
 public interface RegistrationService {
     User createUser(CreateAdminDTO dto);
     User createUser(CreateStudentAndTeacherDTO dto);
-    void validateTeacherAndStudentRegistration(CreateStudentAndTeacherDTO dto);
 }

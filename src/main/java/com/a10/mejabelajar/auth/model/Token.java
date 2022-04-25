@@ -20,4 +20,9 @@ public class Token {
 
     @Column(name = "isActive")
     private boolean isActive;
+
+    public Token(String token){
+        this.token = token;
+        this.isActive = true;
+    }
 }

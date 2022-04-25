@@ -17,7 +17,7 @@
 </div>
 
 <div>
-  <form th:object="${courseInformation}" th:action="@{/course/new-information/{id}(id=${courseId})}" class="my-8" method="post">
+  <form th:object="${courseInformation}" th:action="@{/course/information/create/{id}(id=${courseId})}" class="my-8" method="post">
 
     <div class="form-group">
       <label for="nameInput">Title</label>

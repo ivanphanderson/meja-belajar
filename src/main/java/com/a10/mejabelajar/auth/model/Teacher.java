@@ -1,5 +1,6 @@
 package com.a10.mejabelajar.auth.model;
 
+import com.a10.mejabelajar.course.model.Course;
 import lombok.Data;
 import lombok.NoArgsConstructor;
 import org.hibernate.annotations.GenericGenerator;
@@ -19,4 +20,8 @@ public class Teacher {
     @OneToOne(cascade = CascadeType.ALL)
     @JoinColumn(name = "user_id")
     private User user;
+
+    @OneToOne(cascade = CascadeType.ALL)
+    @JoinColumn(name = "course_id")
+    private Course course;
 }

@@ -36,7 +36,7 @@ public class Course {
     private List<CourseInformation> courseInformations;
 
     @JsonIgnore
-    @ManyToMany(mappedBy = "newCourse")
+    @ManyToMany(mappedBy = "newCourse", cascade = CascadeType.ALL)
     private List<Murid> newMurid = new ArrayList<>();
 
     @JsonIgnore

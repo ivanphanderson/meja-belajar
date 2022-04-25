@@ -10,6 +10,7 @@ import com.a10.mejabelajar.course.service.CourseService;
 import java.util.List;
 import org.modelmapper.ModelMapper;
 import org.springframework.beans.factory.annotation.Autowired;
+import org.springframework.http.ResponseEntity;
 import org.springframework.stereotype.Controller;
 import org.springframework.ui.Model;
 import org.springframework.web.bind.annotation.*;
@@ -33,6 +34,12 @@ public class CourseController {
     private static final String REDIRECT_COURSE = "redirect:/course/";
     private ModelMapper modelMapper = new ModelMapper();
 
+    @PostMapping(produces = {"application/json"})
+    @ResponseBody
+    public ResponseEntity createCourse(@RequestBody Course course) {
+        return ResponseEntity.ok(courseService.createCourse(course));
+    }
+
     /**
      * Show create course page.
      */
@@ -48,7 +55,7 @@ public class CourseController {
      */
     @PostMapping(path = "/create")
     public String createCourse(
-            CourseDataTransferObject courseDataTransferObject,
+            @ModelAttribute CourseDataTransferObject courseDataTransferObject,
             Model model) {
         try {
             courseService.createCourse(courseDataTransferObject);
@@ -83,8 +90,8 @@ public class CourseController {
             Model model) {
         try {
             courseService.updateCourse(
-                id,
-                courseDataTransferObject
+                    id,
+                    courseDataTransferObject
             );
             return REDIRECT_COURSE + id;
         } catch (CourseInvalidException e) {

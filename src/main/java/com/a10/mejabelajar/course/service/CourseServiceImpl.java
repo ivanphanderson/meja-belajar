@@ -19,6 +19,12 @@ public class CourseServiceImpl implements CourseService {
     private ModelMapper modelMapper = new ModelMapper();
 
     @Override
+    public Course createCourse(Course course) {
+        courseRepository.save(course);
+        return course;
+    }
+
+    @Override
     public Course createCourse(CourseDataTransferObject courseDataTransferObject) {
         validateCourseAttribute(courseDataTransferObject);
 

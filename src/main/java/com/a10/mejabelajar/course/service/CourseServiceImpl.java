@@ -47,6 +47,22 @@ public class CourseServiceImpl implements CourseService {
         return course;
     }
 
+    @Override
+    public List<Course> getCourses() {
+        return courseRepository.findAll();
+    }
+
+    @Override
+    public Course getCourseById(int id) {
+        return courseRepository.findById(id);
+    }
+
+    @Override
+    public void deleteCourseById(int id) {
+        var course = getCourseById(id);
+        courseRepository.delete(course);
+    }
+
     private void validateCourseAttribute(CourseDataTransferObject courseDataTransferObject) {
         if (!validateCourseName(courseDataTransferObject.getCourseName())) {
             throw new CourseInvalidException("Course name should not be empty");
@@ -79,21 +95,5 @@ public class CourseServiceImpl implements CourseService {
         } catch (NumberFormatException e) {
             return false;
         }
-    }
-
-    @Override
-    public List<Course> getCourses() {
-        return courseRepository.findAll();
-    }
-
-    @Override
-    public Course getCourseById(int id) {
-        return courseRepository.findById(id);
-    }
-
-    @Override
-    public void deleteCourseById(int id) {
-        var course = getCourseById(id);
-        courseRepository.delete(course);
     }
 }

@@ -65,5 +65,5 @@ deployment:
     name: production
     url: $HEROKU_APP_HOST
   only:
-    - develop
+    - staging
     - master

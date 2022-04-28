@@ -14,7 +14,8 @@
         <div class="row justify-content-md-center">
             <div class="col-md-10">
                 <form th:object="${newLog}" th:action="@{/admin/form-log}" class="my-8" method="post">
-                    <label>Student's name</label><select id="studentId" class="form-select" aria-label="Select Student" th:name="studentId" th:field="*{student}" required>
+                    <label>Student's name</label>
+                    <select id="studentId" class="form-select" aria-label="Select Student" th:name="studentId" required>
                         <option th:each="student : ${students}" th:value="${student.getId()}" th:text="${student.getUser().getUsername()}"></option>
                     </select>
                     <div class="mb-3">

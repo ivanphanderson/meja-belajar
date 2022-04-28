@@ -4,9 +4,7 @@ import com.a10.mejabelajar.admin.model.Log;
 import com.a10.mejabelajar.admin.repository.LogRepository;
 import com.a10.mejabelajar.auth.model.Student;
 import com.a10.mejabelajar.auth.model.Teacher;
-import com.a10.mejabelajar.auth.model.User;
 import org.springframework.beans.factory.annotation.Autowired;
-import org.springframework.security.core.annotation.AuthenticationPrincipal;
 import org.springframework.stereotype.Service;
 
 import java.util.List;

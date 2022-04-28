@@ -1,5 +1,7 @@
 package com.a10.mejabelajar.course.service;
 
+import com.a10.mejabelajar.auth.model.User;
+import com.a10.mejabelajar.auth.service.TeacherService;
 import com.a10.mejabelajar.course.exception.CourseInvalidException;
 import com.a10.mejabelajar.course.model.Course;
 import com.a10.mejabelajar.course.model.CourseType;
@@ -16,6 +18,9 @@ public class CourseServiceImpl implements CourseService {
     @Autowired
     private CourseRepository courseRepository;
 
+    @Autowired
+    private TeacherService teacherService;
+
     private ModelMapper modelMapper = new ModelMapper();
 
     @Override
@@ -25,15 +30,17 @@ public class CourseServiceImpl implements CourseService {
     }
 
     @Override
-    public Course createCourse(CourseDataTransferObject courseDataTransferObject) {
+    public Course createCourse(CourseDataTransferObject courseDataTransferObject, User user) {
         validateCourseAttribute(courseDataTransferObject);
-
         var course = new Course();
         modelMapper.map(courseDataTransferObject, course);
         var courseType1 =  CourseType.valueOf(courseDataTransferObject.getCourseType());
         var durationInt = Double.parseDouble(courseDataTransferObject.getCourseDuration());
         course.setCourseType(courseType1);
         course.setCourseDuration(durationInt);
+
+        var teacher = teacherService.getTeacherByUser(user);
+        teacher.setCourse(course);
         courseRepository.save(course);
         return course;
     }
@@ -51,6 +58,24 @@ public class CourseServiceImpl implements CourseService {
         course.setId(id);
         courseRepository.save(course);
         return course;
+    }
+
+    @Override
+    public List<Course> getCourses() {
+        return courseRepository.findAll();
+    }
+
+    @Override
+    public Course getCourseById(int id) {
+        return courseRepository.findById(id);
+    }
+
+    @Override
+    public void deleteCourseById(User user, int id) {
+        var course = getCourseById(id);
+        var teacher = teacherService.getTeacherByUser(user);
+        teacher.setCourse(null);
+        courseRepository.delete(course);
     }
 
     private void validateCourseAttribute(CourseDataTransferObject courseDataTransferObject) {
@@ -85,21 +110,5 @@ public class CourseServiceImpl implements CourseService {
         } catch (NumberFormatException e) {
             return false;
         }
-    }
-
-    @Override
-    public List<Course> getCourses() {
-        return courseRepository.findAll();
-    }
-
-    @Override
-    public Course getCourseById(int id) {
-        return courseRepository.findById(id);
-    }
-
-    @Override
-    public void deleteCourseById(int id) {
-        var course = getCourseById(id);
-        courseRepository.delete(course);
     }
 }

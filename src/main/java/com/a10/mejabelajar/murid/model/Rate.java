@@ -40,5 +40,3 @@ public class Rate {
         this.idCourse = idCourse;
     }
 }
-
-

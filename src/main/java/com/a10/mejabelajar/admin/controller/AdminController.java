@@ -3,8 +3,6 @@ package com.a10.mejabelajar.admin.controller;
 import com.a10.mejabelajar.admin.model.Log;
 import com.a10.mejabelajar.admin.service.ActivationService;
 import com.a10.mejabelajar.admin.service.LogService;
-import com.a10.mejabelajar.auth.model.Student;
-import com.a10.mejabelajar.auth.model.Teacher;
 import com.a10.mejabelajar.auth.model.User;
 import com.a10.mejabelajar.auth.service.StudentService;
 import com.a10.mejabelajar.auth.service.TeacherService;
@@ -14,8 +12,6 @@ import org.springframework.security.core.annotation.AuthenticationPrincipal;
 import org.springframework.stereotype.Controller;
 import org.springframework.ui.Model;
 import org.springframework.web.bind.annotation.*;
-
-import java.util.List;
 
 @Controller
 @RequestMapping(path = "/admin")
@@ -48,8 +44,8 @@ public class AdminController {
                           @RequestParam double hour,
                           @RequestParam String desc,
                           @RequestParam(value = "studentId") String studentId) {
-        Student student = studentService.getStudentById(studentId);
-        Teacher teacher = teacherService.getTeacherByUser(user);
+        var student = studentService.getStudentById(studentId);
+        var teacher = teacherService.getTeacherByUser(user);
         logService.createLog(hour, desc, student, teacher);
         return "redirect:/admin/logs";
     }
@@ -74,7 +70,7 @@ public class AdminController {
 
     @GetMapping(value = "/{userId}/user-activation")
     public String updateActivation(@PathVariable String userId) {
-        User user = userService.getUserById(userId);
+        var user = userService.getUserById(userId);
         activationService.activateUser(user);
         return "redirect:/admin/user-activation";
     }

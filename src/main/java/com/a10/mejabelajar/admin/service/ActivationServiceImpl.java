@@ -2,7 +2,6 @@ package com.a10.mejabelajar.admin.service;
 
 import com.a10.mejabelajar.auth.model.User;
 import com.a10.mejabelajar.auth.repository.UserRepository;
-import com.a10.mejabelajar.auth.service.TeacherService;
 import com.a10.mejabelajar.auth.service.UserService;
 import org.springframework.beans.factory.annotation.Autowired;
 import org.springframework.stereotype.Service;

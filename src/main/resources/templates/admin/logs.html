@@ -12,27 +12,25 @@
     <div class="container">
         <div class="row justify-content-md-center">
             <div class="col-md-8">
-                <div>
-                    <table class="table table-striped my-2">
-                        <tr>
-                            <th>Guru</th>
-                            <th>Student</th>
-                            <th>Jam Belajar</th>
-                            <th>Deskripsi</th>
-                            <th>Action</th>
-                        </tr>
-                        <tr th:each="log : ${logs}">
-                            <td th:text="${log.teacher}"></td>
-                            <td th:text="${log.student}"></td>
-                            <td th:text="${log.hour}"></td>
-                            <td th:text="${log.desc}"></td>
-                            <td>
-                                <a class="btn btn-danger btn-sm" th:href="@{/admin/log/{id}/delete-log(id=${log.getId()})}">
-                                    Delete</a>
-                            </td>
-                        </tr>
-                    </table>
-                </div>
+                <table class="table table-striped my-2">
+                    <tr>
+                        <th>Guru</th>
+                        <th>Student</th>
+                        <th>Jam Belajar</th>
+                        <th>Deskripsi</th>
+                        <th>Action</th>
+                    </tr>
+                    <tr th:each="log : ${logs}">
+                        <td th:text="${log.teacher.getUser().getUsername()}"></td>
+                        <td th:text="${log.student.getUser().getUsername()}"></td>
+                        <td th:text="${log.hour}"></td>
+                        <td th:text="${log.desc}"></td>
+                        <td>
+                            <a class="btn btn-danger btn-sm" th:href="@{/admin/log/{id}/delete-log(id=${log.getId()})}">
+                                Delete</a>
+                        </td>
+                    </tr>
+                </table>
             </div>
         </div>
     </div>

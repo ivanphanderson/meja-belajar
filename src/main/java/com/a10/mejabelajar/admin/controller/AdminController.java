@@ -46,7 +46,6 @@ public class AdminController {
                           @RequestParam(value = "studentId") String studentId) {
         var student = studentService.getStudentById(studentId);
         var teacher = teacherService.getTeacherByUser(user);
-        System.out.println("asu");
         logService.createLog(hour, desc, student, teacher);
         return "redirect:/admin/logs";
     }

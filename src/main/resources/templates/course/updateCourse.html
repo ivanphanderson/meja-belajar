@@ -1,0 +1,45 @@
+<!DOCTYPE html>
+<html lang="en" xmlns:th="http://www.thymeleaf.org">
+<head>
+  <meta charset="UTF-8">
+  <title>Update Course</title>
+  <link href="https://cdn.jsdelivr.net/npm/bootstrap@5.1.3/dist/css/bootstrap.min.css" rel="stylesheet" integrity="sha384-1BmE4kWBq78iYhFldvKuhfTAU6auU8tT94WrHftjDbrCEXSU1oBoqyl2QvZ6jIW3" crossorigin="anonymous">
+</head>
+<body>
+
+<h1>Update Course</h1>
+
+<div th:if="${error!=null}" class="alert alert-danger" role="alert">
+  <p th:text="${error}"></p>
+</div>
+
+<div>
+  <form th:object="${course}" th:action="@{/course/update/{id}(id=${courseId})}" class="my-8" method="post">
+    <div class="form-group">
+      <label for="nameInput">Course Name</label>
+      <input th:field="*{courseName}" type="text" class="form-control" id="nameInput" aria-describedby="nameHelp" placeholder="Enter course' name" required>
+    </div>
+
+    <label>Course Type</label>
+    <select class="form-select" aria-label="Select course type" th:field="*{courseType}" required>
+      <option value="" selected disabled>Select course type</option>
+      <option th:each="courseType : ${courseTypes}" th:value="${courseType}" th:text="${courseType}"></option>
+    </select>
+
+    <div class="form-group">
+      <label for="descInput">Course Description</label>
+      <input th:field="*{courseDescription}" type="text" class="form-control" id="descInput" aria-describedby="descHelp" placeholder="Enter course' description">
+    </div>
+
+    <div class="form-group">
+      <label for="durationInput">Course Duration (in month)</label>
+      <input th:field="*{courseDuration}" type="number" class="form-control" id="durationInput" aria-describedby="durationHelp" placeholder="Enter course' duration (in month)" value="1" required>
+    </div>
+
+    <button type="submit" class="btn btn-primary">Update</button>
+  </form>
+</div>
+</body>
+
+<script src="https://cdn.jsdelivr.net/npm/bootstrap@5.1.3/dist/js/bootstrap.bundle.min.js" integrity="sha384-ka7Sk0Gln4gmtz2MlQnikT1wXgYsOg+OMhuP+IlRH9sENBO0LRn5q+8nbTov4+1p" crossorigin="anonymous"></script>
+</html>

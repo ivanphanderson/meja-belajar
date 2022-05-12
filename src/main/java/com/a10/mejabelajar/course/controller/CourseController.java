@@ -8,7 +8,6 @@ import com.a10.mejabelajar.course.model.dto.CourseDataTransferObject;
 import com.a10.mejabelajar.course.service.CourseInformationService;
 import com.a10.mejabelajar.course.service.CourseService;
 import java.util.List;
-import org.modelmapper.ModelMapper;
 import org.springframework.beans.factory.annotation.Autowired;
 import org.springframework.http.ResponseEntity;
 import org.springframework.security.core.annotation.AuthenticationPrincipal;
@@ -35,7 +34,6 @@ public class CourseController {
     private static final String COURSE_TYPES = "courseTypes";
     private static final String ERROR = "error";
     private static final String REDIRECT_COURSE = "redirect:/course/";
-    private ModelMapper modelMapper = new ModelMapper();
 
     @PostMapping(produces = {"application/json"})
     @ResponseBody
@@ -92,6 +90,10 @@ public class CourseController {
         var course = courseService.getCourseById(id);
         var teacher = teacherService.getTeacherByUser(user);
         if (teacher.getCourse() != course) {
+            if (teacher.getCourse() == null) {
+                return teacherIllegalAccess(model,
+                        "You are only allowed to update your own course");
+            }
             return REDIRECT_COURSE + teacher.getCourse().getId();
         }
         model.addAttribute(COURSE_TYPES, CourseType.values());
@@ -113,7 +115,8 @@ public class CourseController {
         var teacher = teacherService.getTeacherByUser(user);
         var teacherCourse = teacher.getCourse();
         if (teacherCourse == null) {
-            return REDIRECT_COURSE + teacher.getCourse().getId();
+            return teacherIllegalAccess(model,
+                    "You are only allowed to update your own course");
         } else {
             if (teacherCourse.getId() != id) {
                 return REDIRECT_COURSE + teacher.getCourse().getId();
@@ -133,6 +136,12 @@ public class CourseController {
             model.addAttribute(COURSE_ID, id);
             return "course/updateCourse";
         }
+    }
+
+    @GetMapping(path = "/error")
+    public String teacherIllegalAccess(Model model, String errorMsg) {
+        model.addAttribute("error", errorMsg);
+        return "course/errorPage";
     }
 
     /**
@@ -158,8 +167,13 @@ public class CourseController {
                 courseInformationService.getCourseInformationByCourse(course);
 
         var teacher = teacherService.getTeacherByUser(user);
-        if (teacher.getCourse() != course) {
-            return REDIRECT_COURSE + teacher.getCourse().getId();
+        var teacherCourse = teacher.getCourse();
+        if (teacherCourse != course) {
+            if (teacherCourse == null) {
+                return teacherIllegalAccess(model,
+                        "You are only allowed to read your own course");
+            }
+            return REDIRECT_COURSE + teacherCourse.getId();
         }
 
         model.addAttribute(COURSE, course);
@@ -171,8 +185,15 @@ public class CourseController {
      * Delete a course.
      */
     @GetMapping(value = "/delete/{courseId}")
-    public String deleteCourse(@AuthenticationPrincipal User user, @PathVariable int courseId) {
+    public String deleteCourse(
+            @AuthenticationPrincipal User user,
+            @PathVariable int courseId,
+            Model model) {
         var teacher = teacherService.getTeacherByUser(user);
+        if (teacher.getCourse() == null) {
+            return teacherIllegalAccess(model,
+                    "You are only allowed to delete your own course");
+        }
         int teacherCourseId = teacher.getCourse().getId();
         if (teacherCourseId != courseId) {
             return REDIRECT_COURSE + teacherCourseId;

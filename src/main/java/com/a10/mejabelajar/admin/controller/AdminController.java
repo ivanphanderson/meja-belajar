@@ -51,8 +51,10 @@ public class AdminController {
     }
 
     @GetMapping(value = "/logs")
-    public String getLogs(Model model) {
-        model.addAttribute("logs", logService.getLogs());
+    public String getLogs(@AuthenticationPrincipal User user,
+                            Model model) {
+        model.addAttribute("role", user.getRole());
+        model.addAttribute("logs", logService.getLogs(user));
         return "admin/logs";
     }
 
@@ -74,5 +76,20 @@ public class AdminController {
         activationService.activateUser(user);
         return "redirect:/admin/user-activation";
     }
+
+    @GetMapping(value = "/log/{logId}/bayar")
+    public String bayarLog(@PathVariable String logId) {
+        var log = logService.getLogById(logId);
+        logService.bayarLog(log);
+        return "redirect:/admin/logs";
+    }
+
+    @GetMapping(value = "/log/{logId}/verifikasi")
+    public String verifikasiLog(@PathVariable String logId) {
+        var log = logService.getLogById(logId);
+        logService.verifikasiLog(log);
+        return "redirect:/admin/logs";
+    }
+
 
 }

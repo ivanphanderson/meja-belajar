@@ -30,6 +30,9 @@ public class Log {
     @Column(name = "description")
     private String desc;
 
+    @Column(name = "status")
+    private LogStatus logStatus;
+
     @ManyToOne
     @JoinColumn(name = "teacher_id", nullable = false)
     private Teacher teacher;

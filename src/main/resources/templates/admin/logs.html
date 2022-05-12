@@ -18,6 +18,7 @@
                         <th>Student</th>
                         <th>Jam Belajar</th>
                         <th>Deskripsi</th>
+                        <th>Status</th>
                         <th>Action</th>
                     </tr>
                     <tr th:each="log : ${logs}">
@@ -25,10 +26,22 @@
                         <td th:text="${log.student.getUser().getUsername()}"></td>
                         <td th:text="${log.hour}"></td>
                         <td th:text="${log.desc}"></td>
+                        <td th:text="${log.logStatus}"></td>
                         <td>
+                            <div th:if="${role.toString() == 'STUDENT' and log.logStatus == T(com.a10.mejabelajar.admin.model.LogStatus).BELUM_BAYAR}">
+                                <a  class="btn btn-primary btn-sm" th:href="@{/admin/log/{id}/bayar(id=${log.getId()})}">
+                                    Bayar</a>
+                            </div>
+                            <div th:if="${role.toString() == 'ADMIN' and log.logStatus == T(com.a10.mejabelajar.admin.model.LogStatus).VERIFIKASI}">
+                                <a class="btn btn-success btn-sm" th:href="@{/admin/log/{id}/verifikasi(id=${log.getId()})}">
+                                    Verifikasi</a>
+                            </div>
+                            <div th:if="${role.toString() != 'STUDENT'}">
                             <a class="btn btn-danger btn-sm" th:href="@{/admin/log/{id}/delete-log(id=${log.getId()})}">
                                 Delete</a>
+                            </div>
                         </td>
+
                     </tr>
                 </table>
             </div>

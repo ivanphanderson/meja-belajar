@@ -16,10 +16,16 @@
               <h5 class="text-left lh-lg">User Need to be Activate</h5>
                 <table class="table table-striped my-2">
                     <tbody>
+                    <tr>
+                        <th>Username</th>
+                        <th>Email</th>
+                        <th>Role</th>
+                        <th>Action</th>
+                    </tr>
                     <tr th:each="user : ${users}">
-                        <td>
-                            <a th:text="${user}"></a>
-                        </td>
+                        <td th:text="${user.getUsername()}"></td>
+                        <td th:text="${user.getEmail()}"></td>
+                        <td th:text="${user.getRole()}"></td>
                         <td>
                             <a class="btn btn-danger btn-sm" th:href="@{/admin/{userId}/user-activation(userId=${user.getId()})}">
                                 Activate</a>

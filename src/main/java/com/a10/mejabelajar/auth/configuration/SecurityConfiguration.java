@@ -48,7 +48,10 @@ public class SecurityConfiguration extends WebSecurityConfigurerAdapter {
                         "/course/create",
                         "/course/update/**",
                         "/course/delete/**",
-                        "/course/information/**").hasAnyAuthority("TEACHER")
+                        "/course/information/**",
+                        "/admin/form-log").hasAnyAuthority("TEACHER")
+                .antMatchers("/admin/**/bayar").hasAnyAuthority("STUDENT")
+                .antMatchers("/admin/**/verifikasi").hasAnyAuthority("ADMIN")
                 .and().formLogin()
                 .loginPage("/login")
                 .failureUrl("/login?error=true");

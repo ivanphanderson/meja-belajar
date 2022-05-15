@@ -1,9 +1,11 @@
 package com.a10.mejabelajar.murid.service;
 
 import com.a10.mejabelajar.course.model.Course;
+import com.a10.mejabelajar.course.repository.CourseRepository;
 import com.a10.mejabelajar.course.service.CourseService;
 import com.a10.mejabelajar.murid.model.Murid;
 import com.a10.mejabelajar.murid.model.Rate;
+import com.a10.mejabelajar.murid.repository.MuridRepository;
 import com.a10.mejabelajar.murid.repository.RateRepository;
 import org.springframework.beans.factory.annotation.Autowired;
 import org.springframework.stereotype.Service;
@@ -15,21 +17,18 @@ public class RateServiceImpl implements RateService{
     private RateRepository rateRepository;
 
     @Autowired
-    CourseService courseService;
+    CourseRepository courseRepository;
 
     @Autowired
-    MuridService muridService;
+    MuridRepository muridRepository;
 
     @Override
-    public Rate createRate(int id, int idMurid, Rate rate) {
-        Course newId = courseService.getCourseById(id);
-        Murid newId2 = muridService.getMuridById(idMurid);
-        System.out.println(newId);
-        //System.out.println(newId2);
+    public Murid createRate(int id, Rate rate) {
+        Course newId = courseRepository.findById(rate.getIdCourse());
+        Murid newId2 = muridRepository.findById(id);
         rate.setCourse(newId);
         rate.setMurid(newId2);
         rateRepository.save(rate);
-        return rate;
+        return newId2;
     }
 }
-

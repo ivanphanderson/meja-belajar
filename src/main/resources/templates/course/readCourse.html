@@ -34,6 +34,10 @@
   </style>
 </head>
 <body>
+<div th:if="${error!=null}" class="alert alert-danger" role="alert">
+  <p th:text="${error}"></p>
+</div>
+
 <div class="center">
   <h1>All Courses in MejaBelajar</h1>
 </div>
@@ -48,6 +52,7 @@
     <th>Type</th>
     <th>Duration (in month)</th>
     <th>Description</th>
+    <th>Status</th>
   </tr>
   </thead>
   <tbody>
@@ -56,6 +61,13 @@
     <td th:text="${course.getCourseType()}"></td>
     <td th:text="${course.getCourseDuration()}"></td>
     <td th:text="${course.getCourseDescription()}"></td>
+    <td>
+      <span th:if="${course.isArchived() == true}">Archived</span>
+      <span th:if="${course.isArchived() == false}">Active</span>
+    </td>
+<!--    <th:block th:if="${course.isArchived()}">-->
+<!--      <td>Archived</td>-->
+<!--    </th:block>-->
   </tr>
   </tbody>
 </table>

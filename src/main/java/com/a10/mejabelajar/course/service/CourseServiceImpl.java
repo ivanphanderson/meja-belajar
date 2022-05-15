@@ -1,12 +1,14 @@
 package com.a10.mejabelajar.course.service;
 
+import com.a10.mejabelajar.auth.model.Teacher;
 import com.a10.mejabelajar.auth.model.User;
+import com.a10.mejabelajar.auth.repository.TeacherRepository;
 import com.a10.mejabelajar.auth.service.TeacherService;
-import com.a10.mejabelajar.course.exception.CourseInvalidException;
 import com.a10.mejabelajar.course.model.Course;
 import com.a10.mejabelajar.course.model.CourseType;
 import com.a10.mejabelajar.course.model.dto.CourseDataTransferObject;
 import com.a10.mejabelajar.course.repository.CourseRepository;
+import com.a10.mejabelajar.course.validator.CourseValidator;
 import java.util.List;
 import org.modelmapper.ModelMapper;
 import org.springframework.beans.factory.annotation.Autowired;
@@ -17,6 +19,9 @@ public class CourseServiceImpl implements CourseService {
 
     @Autowired
     private CourseRepository courseRepository;
+
+    @Autowired
+    private TeacherRepository teacherRepository;
 
     @Autowired
     private TeacherService teacherService;
@@ -31,7 +36,7 @@ public class CourseServiceImpl implements CourseService {
 
     @Override
     public Course createCourse(CourseDataTransferObject courseDataTransferObject, User user) {
-        validateCourseAttribute(courseDataTransferObject);
+        CourseValidator.validateCourseAttribute(courseDataTransferObject);
         var course = new Course();
         modelMapper.map(courseDataTransferObject, course);
         var courseType1 =  CourseType.valueOf(courseDataTransferObject.getCourseType());
@@ -40,14 +45,19 @@ public class CourseServiceImpl implements CourseService {
         course.setCourseDuration(durationInt);
 
         var teacher = teacherService.getTeacherByUser(user);
-        teacher.setCourse(course);
+        teacher.setHaveCourse(true);
+        course.setTeacher(teacher);
         courseRepository.save(course);
         return course;
     }
 
     @Override
-    public Course updateCourse(int id, CourseDataTransferObject courseDataTransferObject) {
-        validateCourseAttribute(courseDataTransferObject);
+    public Course updateCourse(
+            int id,
+            Teacher teacher,
+            CourseDataTransferObject courseDataTransferObject) {
+
+        CourseValidator.validateCourseAttribute(courseDataTransferObject);
 
         var course = new Course();
         modelMapper.map(courseDataTransferObject, course);
@@ -56,6 +66,8 @@ public class CourseServiceImpl implements CourseService {
         course.setCourseType(courseType1);
         course.setCourseDuration(durationInt);
         course.setId(id);
+        course.setTeacher(teacher);
+        course.setArchived(false);
         courseRepository.save(course);
         return course;
     }
@@ -71,44 +83,17 @@ public class CourseServiceImpl implements CourseService {
     }
 
     @Override
-    public void deleteCourseById(User user, int id) {
+    public Course getCourseByTeacherAndStatus(Teacher teacher, boolean status) {
+        return courseRepository.findByTeacherAndArchived(teacher, status);
+    }
+
+    @Override
+    public void archiveCourseById(User user, int id) {
         var course = getCourseById(id);
         var teacher = teacherService.getTeacherByUser(user);
-        teacher.setCourse(null);
-        courseRepository.delete(course);
-    }
-
-    private void validateCourseAttribute(CourseDataTransferObject courseDataTransferObject) {
-        if (!validateCourseName(courseDataTransferObject.getCourseName())) {
-            throw new CourseInvalidException("Course name should not be empty");
-        }
-        if (!validateCourseType(courseDataTransferObject.getCourseType())) {
-            throw new CourseInvalidException("Choose valid course type!");
-        }
-        if (!validateCourseDuration(courseDataTransferObject.getCourseDuration())) {
-            throw new CourseInvalidException("Duration should be a positive Integer");
-        }
-    }
-
-    private boolean validateCourseName(String courseName) {
-        return (!courseName.equals(""));
-    }
-
-    private boolean validateCourseType(String userCourseType) {
-        try {
-            CourseType.valueOf(userCourseType);
-            return true;
-        } catch (IllegalArgumentException e) {
-            return false;
-        }
-    }
-
-    private boolean validateCourseDuration(String duration) {
-        try {
-            var durationDouble = Double.parseDouble(duration);
-            return durationDouble > 0;
-        } catch (NumberFormatException e) {
-            return false;
-        }
+        teacher.setHaveCourse(false);
+        course.setArchived(true);
+        courseRepository.save(course);
+        teacherRepository.save(teacher);
     }
 }

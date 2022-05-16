@@ -1,7 +1,7 @@
 package com.a10.mejabelajar.course.model;
 
 import com.a10.mejabelajar.auth.model.Teacher;
-import com.a10.mejabelajar.murid.model.Murid;
+import com.a10.mejabelajar.auth.model.Student;
 import com.a10.mejabelajar.murid.model.Rate;
 import com.fasterxml.jackson.annotation.JsonIgnore;
 import java.util.ArrayList;
@@ -45,7 +45,7 @@ public class Course {
 
     @JsonIgnore
     @ManyToMany(mappedBy = "newCourse", cascade = CascadeType.ALL)
-    private List<Murid> newMurid = new ArrayList<>();
+    private List<Student> newMurid = new ArrayList<>();
 
     @JsonIgnore
     @OneToMany(mappedBy = "course", cascade = CascadeType.ALL)

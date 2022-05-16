@@ -1,5 +1,7 @@
 package com.a10.mejabelajar.murid.service;
 
+import com.a10.mejabelajar.auth.model.Student;
+import com.a10.mejabelajar.auth.repository.StudentRepository;
 import com.a10.mejabelajar.course.model.Course;
 import com.a10.mejabelajar.course.repository.CourseRepository;
 import com.a10.mejabelajar.course.service.CourseService;
@@ -22,12 +24,15 @@ public class RateServiceImpl implements RateService{
     @Autowired
     MuridRepository muridRepository;
 
+    @Autowired
+    StudentRepository studentRepository;
+
     @Override
-    public Murid createRate(int id, Rate rate) {
+    public Student createRate(String id, Rate rate) {
         Course newId = courseRepository.findById(rate.getIdCourse());
-        Murid newId2 = muridRepository.findById(id);
+        Student newId2 = studentRepository.findById(id);
         rate.setCourse(newId);
-        rate.setMurid(newId2);
+        rate.setStudent(newId2);
         rateRepository.save(rate);
         return newId2;
     }

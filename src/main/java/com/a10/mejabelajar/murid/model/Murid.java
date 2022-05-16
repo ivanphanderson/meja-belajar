@@ -4,6 +4,8 @@ import java.util.ArrayList;
 import java.util.List;
 import javax.persistence.*;
 import com.a10.mejabelajar.course.model.Course;
+import com.fasterxml.jackson.annotation.JsonIgnore;
+import com.fasterxml.jackson.annotation.JsonProperty;
 import lombok.Data;
 import lombok.NoArgsConstructor;
 
@@ -18,39 +20,5 @@ public class Murid {
     @GeneratedValue(strategy = GenerationType.AUTO)
     private int id;
 
-    @Column(name = "murid_name")
-    private String muridName;
 
-    @Column(name = "murid_type")
-    private MuridType muridType;
-
-    @Column(name = "id_course")
-    public int idCourse;
-
-    @ManyToMany(cascade = CascadeType.ALL)
-    @JoinTable(
-            name = "course_taken",
-            joinColumns = @JoinColumn(name = "murid_id"),
-            inverseJoinColumns = @JoinColumn(name = "course_id")
-    )
-    private List<Course> newCourse = new ArrayList<>();
-
-    @OneToMany(mappedBy = "murid", cascade = CascadeType.ALL)
-    private List<Rate> muridRate = new ArrayList<>();
-
-    /**
-     * Constructor to create murid.
-     */
-    public Murid(String muridName,
-                 MuridType muridType) {
-        this.muridName = muridName;
-        this.muridType = muridType;
-    }
-    public Murid(int idCourse) {
-        this.idCourse = idCourse;
-    }
-
-    public void setCourse(Course course) {
-        newCourse.add(course);
-    }
 }

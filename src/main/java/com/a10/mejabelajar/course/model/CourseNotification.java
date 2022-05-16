@@ -23,8 +23,8 @@ public class CourseNotification {
     @Column(name = "created_at")
     private Date createdAt;
 
-    @OneToOne(cascade = CascadeType.MERGE)
-    @JoinColumn(name = "teacher_id")
+    @ManyToOne(cascade = CascadeType.MERGE)
+    @JoinColumn(name = "course_id")
     private CourseInformation courseInformation;
 
     @ManyToOne(cascade = CascadeType.MERGE)

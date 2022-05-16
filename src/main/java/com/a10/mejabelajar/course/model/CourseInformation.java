@@ -1,6 +1,7 @@
 package com.a10.mejabelajar.course.model;
 
 import java.util.Date;
+import java.util.List;
 import javax.persistence.*;
 import lombok.Data;
 import lombok.NoArgsConstructor;
@@ -32,4 +33,7 @@ public class CourseInformation {
     @ManyToOne
     @JoinColumn(name = "course", nullable = false)
     private Course course;
+
+    @OneToMany(mappedBy = "courseInformation", cascade = CascadeType.ALL)
+    private List<CourseNotification> courseNotifications;
 }

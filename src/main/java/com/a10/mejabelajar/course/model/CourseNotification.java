@@ -1,6 +1,7 @@
 package com.a10.mejabelajar.course.model;
 
 import com.a10.mejabelajar.auth.model.Student;
+import java.util.Date;
 import javax.persistence.*;
 import lombok.Data;
 import lombok.NoArgsConstructor;
@@ -16,11 +17,17 @@ public class CourseNotification {
     @GeneratedValue(strategy = GenerationType.AUTO)
     private int id;
 
-    @OneToOne(cascade = CascadeType.ALL)
+    @Column(name = "type")
+    private NotificationType notificationType;
+
+    @Column(name = "created_at")
+    private Date createdAt;
+
+    @OneToOne(cascade = CascadeType.MERGE)
     @JoinColumn(name = "teacher_id")
     private CourseInformation courseInformation;
 
-    @ManyToOne
+    @ManyToOne(cascade = CascadeType.MERGE)
     @JoinColumn(name = "course", nullable = false)
     private Student student;
 }

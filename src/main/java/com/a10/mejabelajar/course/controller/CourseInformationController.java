@@ -8,6 +8,7 @@ import com.a10.mejabelajar.course.model.Course;
 import com.a10.mejabelajar.course.model.CourseInformation;
 import com.a10.mejabelajar.course.model.dto.CourseInformationDataTransferObject;
 import com.a10.mejabelajar.course.service.CourseInformationService;
+import com.a10.mejabelajar.course.service.CourseNotificationService;
 import com.a10.mejabelajar.course.service.CourseService;
 import org.modelmapper.ModelMapper;
 import org.springframework.beans.factory.annotation.Autowired;
@@ -24,6 +25,9 @@ public class CourseInformationController {
 
     @Autowired
     private CourseInformationService courseInformationService;
+
+    @Autowired
+    private CourseNotificationService courseNotificationService;
 
     @Autowired
     private TeacherService teacherService;
@@ -76,7 +80,9 @@ public class CourseInformationController {
             modelMapper.map(courseInformationDataTransferObject, courseInformation);
 
             courseInformation.setCourse(course);
-            courseInformationService.createCourseInformation(courseInformation);
+            CourseInformation courseInformation1 =
+                    courseInformationService.createCourseInformation(courseInformation);
+            courseNotificationService.handleCreateInformation(courseInformation1);
             return REDIRECT_COURSE + courseId;
         } catch (CourseInformationInvalidException e) {
             model.addAttribute(ERROR, e.getMessage());
@@ -132,10 +138,11 @@ public class CourseInformationController {
             var courseInformation = new CourseInformation();
             modelMapper.map(courseInformationDataTransferObject, courseInformation);
 
-            courseInformationService.updateCourseInformation(
+            CourseInformation courseInformation1 = courseInformationService.updateCourseInformation(
                     courseInformationId,
                     courseInformation
             );
+            courseNotificationService.handleUpdateInformation(courseInformation);
             return REDIRECT_COURSE + courseId;
         } catch (CourseInformationInvalidException e) {
             model.addAttribute(ERROR, e.getMessage());

@@ -4,7 +4,6 @@ import java.util.Date;
 import javax.persistence.*;
 import lombok.Data;
 import lombok.NoArgsConstructor;
-import org.hibernate.annotations.CreationTimestamp;
 
 
 @Entity
@@ -24,7 +23,6 @@ public class CourseInformation {
     @Column(name = "courseInformationBody", columnDefinition = "TEXT")
     private String courseInformationBody;
 
-    @CreationTimestamp
     @Column(name = "createdAt", nullable = false)
     private Date createdAt;
 

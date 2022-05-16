@@ -84,7 +84,7 @@ public class CourseServiceImpl implements CourseService {
     }
 
     @Override
-    public List<Course> getCourseByStudent(Student student) {
+    public List<Course> getCoursesByStudent(Student student) {
         return courseRepository.findAllByNewMurid(student);
     }
 

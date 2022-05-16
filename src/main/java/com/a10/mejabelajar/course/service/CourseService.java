@@ -18,7 +18,7 @@ public interface CourseService {
 
     Course getCourseByTeacherAndStatus(Teacher teacher, boolean status);
 
-    List<Course> getCourseByStudent(Student student);
+    List<Course> getCoursesByStudent(Student student);
 
     Course updateCourse(int id, Teacher teacher, CourseDataTransferObject courseDataTransferObject);
 

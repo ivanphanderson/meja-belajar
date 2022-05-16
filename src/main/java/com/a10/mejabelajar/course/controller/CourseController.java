@@ -142,12 +142,6 @@ public class CourseController {
         }
     }
 
-    @GetMapping(path = "/error")
-    public String teacherIllegalAccess(Model model, String errorMsg) {
-        model.addAttribute("error", errorMsg);
-        return "course/errorPage";
-    }
-
     /**
      * Show all course.
      */

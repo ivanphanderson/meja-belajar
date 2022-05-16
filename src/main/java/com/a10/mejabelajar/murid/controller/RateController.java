@@ -16,7 +16,7 @@ public class RateController {
 
     @PostMapping(path = "/{id}", produces = {"application/json"})
     @ResponseBody
-    public ResponseEntity createRate(@PathVariable(value = "id") int id, @RequestBody Rate rate) {
+    public ResponseEntity createRate(@PathVariable(value = "id") String id, @RequestBody Rate rate) {
         return ResponseEntity.ok(rateService.createRate(id, rate));
     }
 }

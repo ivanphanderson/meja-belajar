@@ -1,8 +1,9 @@
 package com.a10.mejabelajar.murid.service;
 
+import com.a10.mejabelajar.auth.model.Student;
+import com.a10.mejabelajar.auth.repository.StudentRepository;
+import com.a10.mejabelajar.course.model.Course;
 import com.a10.mejabelajar.course.repository.CourseRepository;
-import com.a10.mejabelajar.murid.model.Murid;
-import com.a10.mejabelajar.murid.repository.MuridRepository;
 import org.springframework.beans.factory.annotation.Autowired;
 import org.springframework.stereotype.Service;
 
@@ -10,31 +11,33 @@ import org.springframework.stereotype.Service;
 public class MuridServiceImpl implements MuridService{
 
     @Autowired
-    private MuridRepository muridRepository;
+    private StudentRepository studentRepository;
 
     @Autowired
     CourseRepository courseRepository;
 
     @Override
-    public Murid regisMurid(Murid murid) {
-        muridRepository.save(murid);
-        return murid;
+    public Student regisMurid(Student student) {
+        studentRepository.save(student);
+        return student;
     }
 
     /**
      * Tambahin murid ke course.
      */
     @Override
-    public Murid updateMurid(int id, Murid murid) {
-        murid.setId(id);
-        murid.setMuridName(muridRepository.findById(id).getMuridName());
-        murid.setMuridType(muridRepository.findById(id).getMuridType());
-        murid.setCourse(courseRepository.findById(murid.idCourse));
-        muridRepository.save(murid);
-        return murid;
+    public Student updateMurid(int id, Student student) {
+        //Student newMurid = studentRepository.findById(id);
+        //student.setIdCourse(id);
+        Course newCourse = courseRepository.findById(id);
+        student.getNewCourse().add(newCourse);
+        newCourse.getNewMurid().add(student);
+        //newCourse.set
+        studentRepository.save(student);
+        return student;
     }
 
-    public Murid getMuridById(int id) {
-        return muridRepository.findById(id);
-    }
+//    public Murid getMuridById(int id) {
+//        return studentRepository.findById(id);
+//    }
 }

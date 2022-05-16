@@ -1,6 +1,8 @@
 package com.a10.mejabelajar.murid.model;
 
 import javax.persistence.*;
+
+import com.a10.mejabelajar.auth.model.Student;
 import com.a10.mejabelajar.course.model.Course;
 import com.fasterxml.jackson.annotation.JsonIgnore;
 import lombok.Data;
@@ -22,7 +24,7 @@ public class Rate {
     @JsonIgnore
     @ManyToOne
     @JoinColumn(name = "rateMurid", nullable = false)
-    private Murid murid;
+    private Student student;
 
     @ManyToOne
     @JoinColumn(name = "rateCourse", nullable = false)
@@ -35,8 +37,8 @@ public class Rate {
         this.nilaiRating = rating;
     }
 
-    public void setMurid(Murid murid, int idCourse) {
-        this.murid = murid;
+    public void setMurid(Student student, int idCourse) {
+        this.student = student;
         this.idCourse = idCourse;
     }
 }

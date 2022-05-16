@@ -3,6 +3,7 @@ package com.a10.mejabelajar.course.controller;
 import com.a10.mejabelajar.auth.model.Role;
 import com.a10.mejabelajar.auth.model.Teacher;
 import com.a10.mejabelajar.auth.model.User;
+import com.a10.mejabelajar.auth.service.StudentService;
 import com.a10.mejabelajar.auth.service.TeacherService;
 import com.a10.mejabelajar.course.exception.CourseInvalidException;
 import com.a10.mejabelajar.course.model.*;
@@ -30,6 +31,9 @@ public class CourseController {
 
     @Autowired
     private TeacherService teacherService;
+
+    @Autowired
+    private StudentService studentService;
 
     private static final String COURSE = "course";
     private static final String COURSE_ID = "courseId";
@@ -177,6 +181,13 @@ public class CourseController {
         var course = courseService.getCourseById(courseId);
 
         // Add if student
+        if (user.getRole() == Role.STUDENT) {
+            var student = studentService.getStudentByUser(user);
+            List<Course> courses = courseService.getCourseByStudent(student);
+            if (!courses.contains(course)) {
+                return REDIRECT_COURSE + "?error=You are not enrolled to this course";
+            }
+        }
         if (user.getRole() == Role.TEACHER) {
             var teacher = teacherService.getTeacherByUser(user);
             String isValid = validateTeacherAccess(teacher, course, "Read The Course");

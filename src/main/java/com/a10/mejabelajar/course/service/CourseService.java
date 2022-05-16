@@ -1,5 +1,6 @@
 package com.a10.mejabelajar.course.service;
 
+import com.a10.mejabelajar.auth.model.Student;
 import com.a10.mejabelajar.auth.model.Teacher;
 import com.a10.mejabelajar.auth.model.User;
 import com.a10.mejabelajar.course.model.Course;
@@ -16,6 +17,8 @@ public interface CourseService {
     Course getCourseById(int id);
 
     Course getCourseByTeacherAndStatus(Teacher teacher, boolean status);
+
+    List<Course> getCourseByStudent(Student student);
 
     Course updateCourse(int id, Teacher teacher, CourseDataTransferObject courseDataTransferObject);
 

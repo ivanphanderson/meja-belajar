@@ -1,5 +1,6 @@
 package com.a10.mejabelajar.course.service;
 
+import com.a10.mejabelajar.auth.model.Student;
 import com.a10.mejabelajar.auth.model.Teacher;
 import com.a10.mejabelajar.auth.model.User;
 import com.a10.mejabelajar.auth.repository.TeacherRepository;
@@ -80,6 +81,11 @@ public class CourseServiceImpl implements CourseService {
     @Override
     public Course getCourseById(int id) {
         return courseRepository.findById(id);
+    }
+
+    @Override
+    public List<Course> getCourseByStudent(Student student) {
+        return courseRepository.findAllByNewMurid(student);
     }
 
     @Override

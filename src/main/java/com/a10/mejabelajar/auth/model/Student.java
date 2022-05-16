@@ -36,10 +36,6 @@ public class Student {
     @Column(name = "murid_type")
     private MuridType muridType;
 
-    @JsonProperty(access = JsonProperty.Access.WRITE_ONLY)
-    @Column(name = "id_course")
-    public int idCourse;
-
     @ManyToMany(cascade = CascadeType.ALL)
     @JoinTable(
             name = "course_taken",
@@ -51,7 +47,4 @@ public class Student {
     @OneToMany(mappedBy = "student", cascade = CascadeType.ALL)
     private List<Rate> muridRate = new ArrayList<>();
 
-    public void setCourse(Course course) {
-        newCourse.add(course);
-    }
 }

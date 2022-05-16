@@ -35,7 +35,7 @@ public class MuridController {
     @PostMapping(produces = {"application/json"})
     @ResponseBody
     public ResponseEntity registrationMurid(@RequestBody Murid murid, @AuthenticationPrincipal User user) {
-        Student student = studentService.getStudentByUserId(user.getId());
+        Student student = studentService.getStudentByUser(user);
         return ResponseEntity.ok(muridService.regisMurid(student));
     }
 
@@ -43,7 +43,7 @@ public class MuridController {
     @ResponseBody
     public ResponseEntity updateMurid(@PathVariable(value = "id") int id, @AuthenticationPrincipal User user) {
         System.out.println(user.getId());
-        Student student = studentService.getStudentByUserId(user.getId());
+        Student student = studentService.getStudentByUser(user);
         return ResponseEntity.ok(muridService.updateMurid(id, student));
     }
 

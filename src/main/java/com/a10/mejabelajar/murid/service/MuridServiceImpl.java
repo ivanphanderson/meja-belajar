@@ -30,8 +30,9 @@ public class MuridServiceImpl implements MuridService{
     public Student updateMurid(int id, Student student) {
         //Student newMurid = studentRepository.findById(id);
         //student.setIdCourse(id);
-        student.setCourse(courseRepository.findById(id));
         Course newCourse = courseRepository.findById(id);
+        student.getNewCourse().add(newCourse);
+        newCourse.getNewMurid().add(student);
         //newCourse.set
         studentRepository.save(student);
         return student;

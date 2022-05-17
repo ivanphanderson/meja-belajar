@@ -9,6 +9,12 @@
 </head>
 
 <body>
+<h1> Create New Log</h1>
+
+<div th:if="${error!=null}" class="alert alert-danger" role="alert">
+    <p th:text="${error}"></p>
+</div>
+
 <div class="my-8">
     <div class="container">
         <div class="row justify-content-md-center">
@@ -19,8 +25,12 @@
                         <option th:each="student : ${students}" th:value="${student.getId()}" th:text="${student.getUser().getUsername()}"></option>
                     </select>
                     <div class="mb-3">
-                        <label for="hour" class="form-label">Hour</label>
-                        <input type="text" class="form-control" id="hour" th:field="*{hour}" required>
+                        <label for="start" class="form-label">From</label>
+                        <input type=datetime-local step=900 class="form-control" id="start" th:field="*{start}" required>
+                    </div>
+                    <div class="mb-3">
+                        <label for="end" class="form-label">to</label>
+                        <input type=datetime-local step=900 class="form-control" id="end" th:field="*{end}" required>
                     </div>
                     <div class="mb-3">
                         <label for="desc" class="form-label">Description</label>

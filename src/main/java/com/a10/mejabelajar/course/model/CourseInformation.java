@@ -1,37 +1,39 @@
 package com.a10.mejabelajar.course.model;
 
 import java.util.Date;
+import java.util.List;
 import javax.persistence.*;
 import lombok.Data;
 import lombok.NoArgsConstructor;
-import org.hibernate.annotations.CreationTimestamp;
 
 
 @Entity
-@Table(name = "course_information")
+@Table(name = "courseInformation")
 @Data
 @NoArgsConstructor
 public class CourseInformation {
 
     @Id
-    @Column(name = "course_information_id", updatable = false)
+    @Column(name = "courseInformationId", updatable = false)
     @GeneratedValue(strategy = GenerationType.AUTO)
     private int id;
 
-    @Column(name = "course_information_title")
+    @Column(name = "courseInformationTitle")
     private String courseInformationTitle;
 
-    @Column(name = "course_information_body", columnDefinition = "TEXT")
+    @Column(name = "courseInformationBody", columnDefinition = "TEXT")
     private String courseInformationBody;
 
-    @CreationTimestamp
-    @Column(name = "created_at", nullable = false)
+    @Column(name = "createdAt", nullable = false)
     private Date createdAt;
 
-    @Column(name = "updated_at", nullable = false)
+    @Column(name = "updatedAt", nullable = false)
     private Date updatedAt;
 
     @ManyToOne
     @JoinColumn(name = "course", nullable = false)
     private Course course;
+
+    @OneToMany(mappedBy = "courseInformation", cascade = CascadeType.ALL)
+    private List<CourseNotification> courseNotifications;
 }

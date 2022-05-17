@@ -34,20 +34,31 @@
   </style>
 </head>
 <body>
+<div th:if="${error!=null}" class="alert alert-danger" role="alert">
+  <p th:text="${error}"></p>
+</div>
+
 <div class="center">
   <h1>All Courses in MejaBelajar</h1>
 </div>
 <div class="center">
-  <a href="/course/create" class="btn btn-primary">Create New Course</a>
+  <div th:if="${teacher!=null}">
+    <a href="/course/create" class="btn btn-primary">Create New Course</a>
+  </div>
+  <div th:if="${student!=null}" id="notifBtn">
+    <a href="/course/notification" class="btn">Notification</a>
+  </div>
 </div>
 
-<table class="table table-striped my-2">
+<button id="hideArchiveBtn" class="btn btn-secondary"onclick="hideArchivedRow()">Hide archived course</button>
+<table id="coursesTable" class="table table-striped my-2">
   <thead>
   <tr>
     <th>Name</th>
     <th>Type</th>
     <th>Duration (in month)</th>
     <th>Description</th>
+    <th>Status</th>
   </tr>
   </thead>
   <tbody>
@@ -56,14 +67,44 @@
     <td th:text="${course.getCourseType()}"></td>
     <td th:text="${course.getCourseDuration()}"></td>
     <td th:text="${course.getCourseDescription()}"></td>
+    <td>
+      <span th:if="${course.isArchived() == true}">Archived</span>
+      <span th:if="${course.isArchived() == false}">Active</span>
+    </td>
   </tr>
   </tbody>
 </table>
 </body>
 
+<script src='https://code.jquery.com/jquery-3.2.1.min.js'></script>
 <script>
     function rowClicked(value) {
         location.href = "/course/" + value;
     }
+
+    var hidden = false;
+
+    function hideArchivedRow() {
+        var tableRef = document.getElementById("coursesTable").getElementsByTagName("tbody")[0];
+        var myText = "<span>Archived</span>";
+
+        for (var i = 0; i < tableRef.rows.length; ++i) {
+            if (hidden === false) {
+                if (tableRef.rows[i].cells[4].innerHTML.trim() == myText) {
+                    $(tableRef.rows[i]).hide();
+                }
+            } else {
+                $(tableRef.rows[i]).show();
+            }
+        }
+        if (hidden === false) {
+            hidden = true;
+            document.getElementById("hideArchiveBtn").innerHTML = "Show archived courses";
+        } else {
+            hidden = false;
+            document.getElementById("hideArchiveBtn").innerHTML = "Hide archived courses";
+        }
+    }
+
 </script>
 </html>

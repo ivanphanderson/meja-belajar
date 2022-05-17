@@ -1,9 +1,10 @@
 package com.a10.mejabelajar.course.service;
 
-import com.a10.mejabelajar.course.exception.CourseInformationInvalidException;
 import com.a10.mejabelajar.course.model.Course;
 import com.a10.mejabelajar.course.model.CourseInformation;
 import com.a10.mejabelajar.course.repository.CourseInformationRepository;
+import com.a10.mejabelajar.course.validator.CourseInformationValidator;
+import java.time.Instant;
 import java.util.Date;
 import java.util.List;
 import org.springframework.beans.factory.annotation.Autowired;
@@ -12,6 +13,8 @@ import org.springframework.stereotype.Service;
 
 @Service
 public class CourseInformationServiceImpl implements CourseInformationService {
+
+    public static final long HOUR = 3600 * 1000; // in milli-seconds.
 
     @Autowired
     CourseInformationRepository courseInformationRepository;
@@ -28,19 +31,27 @@ public class CourseInformationServiceImpl implements CourseInformationService {
 
     @Override
     public CourseInformation createCourseInformation(CourseInformation courseInformation) {
-        validateCourseInformation(courseInformation);
-        courseInformation.setUpdatedAt(new Date());
+        CourseInformationValidator.validateCourseInformation(courseInformation);
+        Instant instant = Instant.now();
+        Date date = Date.from(instant);
+        Date newDate = new Date(date.getTime() + 7 * HOUR);
+        courseInformation.setCreatedAt(newDate);
+        courseInformation.setUpdatedAt(newDate);
         courseInformationRepository.save(courseInformation);
         return courseInformation;
     }
 
     @Override
     public CourseInformation updateCourseInformation(int id, CourseInformation courseInformation) {
-        validateCourseInformation(courseInformation);
+        CourseInformationValidator.validateCourseInformation(courseInformation);
         var oldCourseInformation = getCourseInformationById(id);
         courseInformation.setId(id);
         courseInformation.setCreatedAt(oldCourseInformation.getCreatedAt());
-        courseInformation.setUpdatedAt(new Date());
+
+        Instant instant = Instant.now();
+        Date date = Date.from(instant);
+        Date newDate = new Date(date.getTime() + 7 * HOUR);
+        courseInformation.setUpdatedAt(newDate);
         courseInformation.setCourse(oldCourseInformation.getCourse());
         courseInformationRepository.save(courseInformation);
         return  courseInformation;
@@ -50,11 +61,5 @@ public class CourseInformationServiceImpl implements CourseInformationService {
     public void deleteCourseInformationById(int id) {
         var courseInformation = getCourseInformationById(id);
         courseInformationRepository.delete(courseInformation);
-    }
-
-    private void validateCourseInformation(CourseInformation courseInformation) {
-        if (courseInformation.getCourseInformationTitle().equals("")) {
-            throw new CourseInformationInvalidException("Required Title");
-        }
     }
 }

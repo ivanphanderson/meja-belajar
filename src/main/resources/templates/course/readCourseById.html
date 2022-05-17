@@ -4,44 +4,164 @@
   <meta charset="UTF-8">
   <title th:text="${course.getCourseName()}"></title>
   <link href="https://cdn.jsdelivr.net/npm/bootstrap@5.1.3/dist/css/bootstrap.min.css" rel="stylesheet" integrity="sha384-1BmE4kWBq78iYhFldvKuhfTAU6auU8tT94WrHftjDbrCEXSU1oBoqyl2QvZ6jIW3" crossorigin="anonymous">
+  <style>
+      #body{
+          max-width: 80vw;
+          background-color: white;
+          border-radius: 15px;
+          padding-left: 30px;
+          padding-right: 54px;
+          margin: auto
+      }
+
+      #courseTitle{
+          display: flex;
+          align-items: center;
+          justify-content: center;
+      }
+
+      #courseActionBtn{
+          text-align: end;
+      }
+
+      .informationThings{
+          background-color: #C4C4C4;
+          border-radius: 15px;
+          /*margin-right: 20%;*/
+          /*margin-left: 20%;*/
+      }
+
+      #addInfoBtn{
+          text-align: end;
+          /*margin-right: 20%;*/
+          /*margin-left: 20%;*/
+      }
+
+      #dataTask{
+          padding-top: 15px;
+          padding-left: 10px;
+          padding-right: 10px;
+          padding-bottom: 8px;
+          margin-bottom: 25px;
+          word-wrap: break-word;
+      }
+
+      #judulTask{
+          font-weight: bold;
+      }
+
+      #infoActionBtn{
+          text-align: end;
+          margin-top: auto;
+      }
+
+  </style>
 </head>
 <body>
-<h1 th:text="|Course Name: ${course.getCourseName()}|"></h1>
-<h3 th:text="|Course Description: ${course.getCourseDescription()}|"></h3>
-<h6 th:text="|Course Type: ${course.getCourseType()}|"></h6>
-<small th:text="|Course Duration: ${course.getCourseDuration()}|"></small>
+<div id="body">
+  <div th:if="${error!=null}" class="alert alert-danger" role="alert">
+    <p th:text="${error}"></p>
+  </div>
 
-<br>
-<a th:href="@{/course/update/{id}(id=${course.getId()})}" class="btn btn-primary"> Update Course</a>
-<a th:href="@{/course/delete/{id}(id=${course.getId()})}" class="btn btn-danger"> Delete Course</a>
-<br>
-<a th:href="@{/course/information/create/{id}(id=${course.getId})}" class="btn btn-dark">Add New Information</a>
+  <div th:if="${student!=null}" id="notifBtn">
+    <a href="/course/notification" class="btn">Notification</a>
+  </div>
 
-<table class="table table-striped my-2">
-  <thead>
-  <tr>
-    <th>Title</th>
-    <th>Information</th>
-    <th>Created Date</th>
-    <th>Updated Date</th>
-    <th>Action</th>
-  </tr>
-  </thead>
-  <tbody>
-  <tr th:each="courseInformation : ${courseInformations}">
-    <td th:text="${courseInformation.getCourseInformationTitle()}"></td>
-    <td th:utext="${courseInformation.getCourseInformationBody()}"></td>
-    <td th:text="${courseInformation.getCreatedAt()}"></td>
-    <td th:text="${courseInformation.getUpdatedAt()}"></td>
-    <td>
-      <a th:href="@{/course/information/update/{courseId}/{courseInformationId}(courseId=${course.getId}, courseInformationId=${courseInformation.getId()})}" class="btn btn-info">Update Information</a>
-      <a th:href="@{/course/information/delete/{courseId}/{courseInformationId}(courseId=${course.getId}, courseInformationId=${courseInformation.getId()})}" class="btn btn-danger">Delete Information</a>
-    </td>
-    <td></td>
-  </tr>
-  </tbody>
-</table>
+  <div id="courseTitle">
+    <h1 th:text="|${course.getCourseName()}|"></h1>
+  </div>
 
-<p>Semoga sukses</p>
+  <div id="courseActionBtn" th:if="${course.isArchived() == false} and ${teacher != null}">
+    <a th:href="@{/course/update/{id}(id=${course.getId()})}" class="btn btn-primary"> Update Course</a>
+
+    <form th:action="@{/course/archive/{id}(id=${course.getId()})}" class="my-8" method="post"
+      style="display: inline-block">
+      <button type="submit" class="btn btn-secondary">Archive Course</button>
+    </form>
+  </div>
+
+  <h6 th:text="|Type: ${course.getCourseType()}|"></h6>
+  <h6 th:text="|Duration: ${course.getCourseDuration()} month(s)|"></h6>
+  <p th:text="|${course.getCourseDescription()}|"><p>
+
+  <br>
+  <div th:if="${course.isArchived() == false} and ${teacher != null}">
+    <div id="addInfoBtn">
+      <a th:href="@{/course/information/create/{id}(id=${course.getId})}" class="btn btn-dark">Add New Information</a>
+    </div>
+  </div>
+
+  <div th:each="courseInformation : ${courseInformations}" th:id="${courseInformation.getId()}">
+    <div id="kumpulanTask" class="container informationThings">
+      <div id="dataTask">
+
+        <h5 id="judulTask" th:text="${courseInformation.getCourseInformationTitle()}"></h5>
+        <h6 th:class="${courseInformation.getId()}" th:text="${courseInformation.getCreatedAt()}"></h6>
+        <p th:utext="${courseInformation.getCourseInformationBody()}"></p>
+        <h6 th:class="${courseInformation.getId()}" th:text="${'Last updated: ' + courseInformation.getUpdatedAt()}"></h6>
+        <div id="infoActionBtn" th:if="${course.isArchived() == false} and ${teacher != null}">
+          <a th:href="@{/course/information/update/{courseId}/{courseInformationId}(courseId=${course.getId}, courseInformationId=${courseInformation.getId()})}" class="btn btn-info">Update</a>
+          <form th:action="@{/course/information/delete/{courseId}/{courseInformationId}(courseId=${course.getId}, courseInformationId=${courseInformation.getId()})}" class="my-8" method="post"
+            style="display: inline-block">
+            <button type="submit" class="btn btn-danger">Delete</button>
+          </form>
+        </div>
+
+  <!--      <div id="targetSelesaiTask">-->
+  <!--        Target selesai:-->
+  <!--      </div>-->
+  <!--      <div id="tempatWaktu">-->
+  <!--        <div class="span2mid">-->
+  <!--          <i class="far fa-calendar-alt task-icon"></i>-->
+  <!--        </div>-->
+  <!--        <div class="span2mid">-->
+  <!--          {% if task.tanggalSelesai %}-->
+  <!--          <script>-->
+  <!--              var month = new Array();-->
+  <!--              month[0] = "Januari";-->
+  <!--              month[1] = "Februari";-->
+  <!--              month[2] = "Maret";-->
+  <!--              month[3] = "April";-->
+  <!--              month[4] = "Mei";-->
+  <!--              month[5] = "Juni";-->
+  <!--              month[6] = "Juli";-->
+  <!--              month[7] = "Agustus";-->
+  <!--              month[8] = "September";-->
+  <!--              month[9] = "Oktober";-->
+  <!--              month[10] = "November";-->
+  <!--              month[11] = "Desember";-->
+  <!--              var date = "{{task.tanggalSelesai.day}}"-->
+  <!--              if (parseInt(date) < 10){-->
+  <!--                  date = "0"+date;-->
+  <!--              }-->
+  <!--              document.write(date + " " + month[{{task.tanggalSelesai.month}}-1] + " {{task.tanggalSelesai.year}}")-->
+  <!--          </script>-->
+  <!--          {% else %}-->
+  <!--          &#45;&#45;-->
+  <!--          {% endif %}-->
+  <!--        </div>-->
+
+  <!--        <div class="span2mid">-->
+  <!--          <i class="far fa-clock task-icon"></i>-->
+  <!--        </div>-->
+  <!--        <div class="span2mid">-->
+  <!--          {% if task.jamSelesai %}-->
+  <!--          &lt;!&ndash; Target selesai:  &ndash;&gt;-->
+  <!--          {{task.jamSelesai}}-->
+  <!--          {% else %}-->
+  <!--          &#45;&#45;-->
+  <!--          {% endif %}-->
+  <!--        </div>-->
+  <!--        <div id="klikDetail">-->
+  <!--          <small>klik untuk lihat detailnya</small>-->
+  <!--        </div>-->
+  <!--      </div>-->
+      </div>
+    </div>
+  </div>
+
+
+  <p>Semoga sukses</p>
+</div>
 </body>
 </html>

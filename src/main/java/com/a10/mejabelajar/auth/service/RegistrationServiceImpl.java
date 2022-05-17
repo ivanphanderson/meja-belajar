@@ -1,14 +1,13 @@
 package com.a10.mejabelajar.auth.service;
 
-import com.a10.mejabelajar.auth.exception.InvalidRoleException;
-import com.a10.mejabelajar.auth.exception.InvalidTokenException;
-import com.a10.mejabelajar.auth.exception.RegistrationFieldEmptyException;
-import com.a10.mejabelajar.auth.exception.UsernameOrEmailAlreadyUsedException;
+import com.a10.mejabelajar.auth.exception.*;
 import com.a10.mejabelajar.auth.model.*;
 import com.a10.mejabelajar.auth.repository.*;
 import org.springframework.beans.factory.annotation.Autowired;
 import org.springframework.security.crypto.bcrypt.BCryptPasswordEncoder;
 import org.springframework.stereotype.Service;
+
+import java.util.regex.Pattern;
 
 @Service
 public class RegistrationServiceImpl implements RegistrationService{
@@ -27,16 +26,37 @@ public class RegistrationServiceImpl implements RegistrationService{
     @Autowired
     private TokenRepository tokenRepository;
 
+    public void validateEmailAndUsername(String email, String username){
+        if(!validateUsernameNotAlreadyUsed(username)){
+            throw new UsernameOrEmailAlreadyUsedException("Username already used");
+        }
+        if(!validateEmailPattern(email)){
+            throw new InvalidEmailException("Invalid Email");
+        }
+        if(!validateEmailNotAlreadyUsed(email)){
+            throw new UsernameOrEmailAlreadyUsedException("Email already used");
+        }
+    }
+
+    public void validateAdminRegistration(CreateAdminDTO dto){
+        if(!validateNoFieldEmpty(dto)){
+            throw new RegistrationFieldEmptyException("All field must not be empty");
+        }
+
+        validateEmailAndUsername(dto.getEmail(), dto.getUsername());
+
+        if(!validateToken(dto)){
+            throw new InvalidTokenException("Invalid token");
+        }
+    }
+
     public void validateTeacherAndStudentRegistration(CreateStudentAndTeacherDTO dto) {
         if(!validateNoFieldEmpty(dto)){
             throw new RegistrationFieldEmptyException("All field must not be empty");
         }
-        if(!validateUsernameNotAlreadyUsed(dto.getUsername())){
-            throw new UsernameOrEmailAlreadyUsedException("Username already used");
-        }
-        if(!validateEmailNotAlreadyUsed(dto.getEmail())){
-            throw new UsernameOrEmailAlreadyUsedException("Email already used");
-        }
+
+        validateEmailAndUsername(dto.getEmail(), dto.getUsername());
+
         if(!validateRole(dto.getRole())){
             throw new InvalidRoleException("Choose a valid role");
         }
@@ -48,6 +68,12 @@ public class RegistrationServiceImpl implements RegistrationService{
 
     public boolean validateEmailNotAlreadyUsed(String email){
         return userRepository.findByEmail(email) == null;
+    }
+
+    public boolean validateEmailPattern(String email){
+        // Pattern taken from https://www.baeldung.com/java-email-validation-regex
+        Pattern p = Pattern.compile("^(?=.{1,64}@)[A-Za-z0-9_-]+(\\.[A-Za-z0-9_-]+)*@[^-][A-Za-z0-9-]+(\\.[A-Za-z0-9-]+)*(\\.[A-Za-z]{2,})$");
+        return p.matcher(email).matches();
     }
 
     public boolean validateNoFieldEmpty(CreateStudentAndTeacherDTO dto){
@@ -80,6 +106,11 @@ public class RegistrationServiceImpl implements RegistrationService{
         return role.equals("student") || role.equals("teacher");
     }
 
+    public boolean validateToken(CreateAdminDTO dto){
+        AdminRegistrationToken token = tokenRepository.findByToken(dto.getToken());
+        return token != null && token.isActive();
+    }
+
     @Override
     public User createUser(CreateStudentAndTeacherDTO dto){
         validateTeacherAndStudentRegistration(dto);
@@ -96,26 +127,6 @@ public class RegistrationServiceImpl implements RegistrationService{
         }
 
         return user;
-    }
-
-    public void validateAdminRegistration(CreateAdminDTO dto){
-        if(!validateNoFieldEmpty(dto)){
-            throw new RegistrationFieldEmptyException("All field must not be empty");
-        }
-        if(!validateUsernameNotAlreadyUsed(dto.getUsername())){
-            throw new UsernameOrEmailAlreadyUsedException("Username already used");
-        }
-        if(!validateEmailNotAlreadyUsed(dto.getEmail())){
-            throw new UsernameOrEmailAlreadyUsedException("Email already used");
-        }
-        if(!validateToken(dto)){
-            throw new InvalidTokenException("Invalid token");
-        }
-    }
-
-    public boolean validateToken(CreateAdminDTO dto){
-        AdminRegistrationToken token = tokenRepository.findByToken(dto.getToken());
-        return token != null && token.isActive();
     }
 
     @Override

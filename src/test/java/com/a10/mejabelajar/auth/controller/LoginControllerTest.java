@@ -59,7 +59,7 @@ class LoginControllerTest {
                         .param("username", MOCK_USERNAME)
                         .param("password", MOCK_PASSWORD))
                 .andExpect(status().is3xxRedirection())
-                .andExpect(redirectedUrl("/"));
+                .andExpect(redirectedUrl("/dashboard/student"));
     }
 
     @Test

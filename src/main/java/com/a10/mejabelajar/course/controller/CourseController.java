@@ -1,14 +1,19 @@
 package com.a10.mejabelajar.course.controller;
 
+import com.a10.mejabelajar.auth.model.Role;
+import com.a10.mejabelajar.auth.model.Teacher;
 import com.a10.mejabelajar.auth.model.User;
+import com.a10.mejabelajar.auth.service.StudentService;
 import com.a10.mejabelajar.auth.service.TeacherService;
 import com.a10.mejabelajar.course.exception.CourseInvalidException;
 import com.a10.mejabelajar.course.model.*;
 import com.a10.mejabelajar.course.model.dto.CourseDataTransferObject;
 import com.a10.mejabelajar.course.service.CourseInformationService;
+import com.a10.mejabelajar.course.service.CourseNotificationService;
 import com.a10.mejabelajar.course.service.CourseService;
+import java.time.Instant;
+import java.util.Date;
 import java.util.List;
-import org.modelmapper.ModelMapper;
 import org.springframework.beans.factory.annotation.Autowired;
 import org.springframework.http.ResponseEntity;
 import org.springframework.security.core.annotation.AuthenticationPrincipal;
@@ -30,12 +35,18 @@ public class CourseController {
     @Autowired
     private TeacherService teacherService;
 
+    @Autowired
+    private StudentService studentService;
+
+    @Autowired
+    private CourseNotificationService courseNotificationService;
+
     private static final String COURSE = "course";
     private static final String COURSE_ID = "courseId";
     private static final String COURSE_TYPES = "courseTypes";
     private static final String ERROR = "error";
     private static final String REDIRECT_COURSE = "redirect:/course/";
-    private ModelMapper modelMapper = new ModelMapper();
+    public static final long HOUR = 3600 * 1000; // in milli-seconds.
 
     @PostMapping(produces = {"application/json"})
     @ResponseBody
@@ -49,9 +60,14 @@ public class CourseController {
     @GetMapping(path = "/create")
     public String createCourse(@AuthenticationPrincipal User user, Model model) {
         var teacher = teacherService.getTeacherByUser(user);
-        if (teacher.getCourse() != null) {
-            return REDIRECT_COURSE + teacher.getCourse().getId();
+
+        if (teacher.isHaveCourse()) {
+            return REDIRECT_COURSE
+                    + courseService.getCourseByTeacherAndStatus(teacher, false).getId()
+                    + "?error=You already have this course, archive this course in order "
+                    + "to create a new one";
         }
+
         model.addAttribute(COURSE_TYPES, CourseType.values());
         model.addAttribute("newCourse", new Course());
         return "course/createCourse";
@@ -67,8 +83,11 @@ public class CourseController {
             Model model) {
 
         var teacher = teacherService.getTeacherByUser(user);
-        if (teacher.getCourse() != null) {
-            return REDIRECT_COURSE + teacher.getCourse().getId();
+        if (teacher.isHaveCourse()) {
+            return REDIRECT_COURSE
+                    + courseService.getCourseByTeacherAndStatus(teacher, false).getId()
+                    + "?error=You already have this course, archive this course in order "
+                    + "to create a new one";
         }
 
         try {
@@ -91,8 +110,9 @@ public class CourseController {
             @PathVariable int id, Model model) {
         var course = courseService.getCourseById(id);
         var teacher = teacherService.getTeacherByUser(user);
-        if (teacher.getCourse() != course) {
-            return REDIRECT_COURSE + teacher.getCourse().getId();
+        String isValid = validateTeacherAccess(teacher, course, "Update The Course");
+        if (!isValid.equals("")) {
+            return isValid;
         }
         model.addAttribute(COURSE_TYPES, CourseType.values());
         model.addAttribute(COURSE, course);
@@ -111,20 +131,19 @@ public class CourseController {
             Model model) {
 
         var teacher = teacherService.getTeacherByUser(user);
-        var teacherCourse = teacher.getCourse();
-        if (teacherCourse == null) {
-            return REDIRECT_COURSE + teacher.getCourse().getId();
-        } else {
-            if (teacherCourse.getId() != id) {
-                return REDIRECT_COURSE + teacher.getCourse().getId();
-            }
+        var course = courseService.getCourseById(id);
+        String isValid = validateTeacherAccess(teacher, course, "Update the Course");
+        if (!isValid.equals("")) {
+            return isValid;
         }
 
         try {
             courseService.updateCourse(
                     id,
+                    teacher,
                     courseDataTransferObject
             );
+
             return REDIRECT_COURSE + id;
         } catch (CourseInvalidException e) {
             model.addAttribute(ERROR, e.getMessage());
@@ -139,8 +158,22 @@ public class CourseController {
      * Show all course.
      */
     @GetMapping(value = "")
-    public String readCourse(Model model) {
-        List<Course> courses = courseService.getCourses();
+    public String readCourse(
+            @AuthenticationPrincipal User user,
+            @RequestParam(name = "error", required = false) String error,
+            Model model) {
+        if (user == null) {
+            return "redirect:/login";
+        }
+        List<Course> courses = courseService.   getCourses();
+        if (error != null) {
+            model.addAttribute("error", error);
+        }
+        if (user.getRole() == Role.STUDENT) {
+            model.addAttribute("student", "student");
+        } else if (user.getRole() == Role.TEACHER) {
+            model.addAttribute("teacher", "teacher");
+        }
         model.addAttribute("courses", courses);
         return "course/readCourse";
     }
@@ -152,32 +185,119 @@ public class CourseController {
     public String readCourseById(
             @AuthenticationPrincipal User user,
             @PathVariable int courseId,
+            @RequestParam(name = "error", required = false) String error,
             Model model) {
+        if (user == null) {
+            return "redirect:/login";
+        }
+
         var course = courseService.getCourseById(courseId);
+
+        // Add if student
+        if (user.getRole() == Role.STUDENT) {
+            var student = studentService.getStudentByUser(user);
+            List<Course> courses = courseService.getCoursesByStudent(student);
+            if (!courses.contains(course)) {
+                return REDIRECT_COURSE + "?error=You are not enrolled to this course";
+            }
+            model.addAttribute("student", student);
+        }
+        if (user.getRole() == Role.TEACHER) {
+            var teacher = teacherService.getTeacherByUser(user);
+            String isValid = validateTeacherAccess(teacher, course, "Read The Course");
+            if (!isValid.equals("")) {
+                return isValid;
+            }
+            model.addAttribute("teacher", teacher);
+        }
+
+
         List<CourseInformation> courseInformations =
                 courseInformationService.getCourseInformationByCourse(course);
 
-        var teacher = teacherService.getTeacherByUser(user);
-        if (teacher.getCourse() != course) {
-            return REDIRECT_COURSE + teacher.getCourse().getId();
+        if (error != null) {
+            model.addAttribute("error", error);
         }
-
         model.addAttribute(COURSE, course);
         model.addAttribute("courseInformations", courseInformations);
         return "course/readCourseById";
     }
 
     /**
-     * Delete a course.
+     * Archive a course.
      */
-    @GetMapping(value = "/delete/{courseId}")
-    public String deleteCourse(@AuthenticationPrincipal User user, @PathVariable int courseId) {
+    @PostMapping(value = "/archive/{courseId}")
+    public String archiveCourse(
+            @AuthenticationPrincipal User user,
+            @PathVariable int courseId,
+            Model model) {
         var teacher = teacherService.getTeacherByUser(user);
-        int teacherCourseId = teacher.getCourse().getId();
-        if (teacherCourseId != courseId) {
-            return REDIRECT_COURSE + teacherCourseId;
+        var course = courseService.getCourseById(courseId);
+        String isValid = validateTeacherAccess(teacher, course, "Archive the Course");
+        if (!isValid.equals("")) {
+            return isValid;
         }
-        courseService.deleteCourseById(user, courseId);
-        return "redirect:/course";
+        courseService.archiveCourseById(user, courseId);
+        return REDIRECT_COURSE;
     }
+
+    /**
+     * Show Notification.
+     */
+    @GetMapping(value = "/notification")
+    public String courseNotification(
+            @AuthenticationPrincipal User user,
+            Model model
+    ) {
+        if (user.getRole() == Role.STUDENT) {
+            var student = studentService.getStudentByUser(user);
+
+            Instant instant = Instant.now();
+            Date date = Date.from(instant);
+            Date newDate = new Date(date.getTime() + 7 * HOUR);
+            List<CourseNotification> courseNotifications =
+                courseNotificationService
+                        .getCourseNotificationByStudentAndCreatedAtIsGreaterThanEqual(
+                                student,
+                                student.getLastNotifBtnClick()
+                        );
+
+            List<CourseNotification> courseNotifications1 =
+                courseNotificationService
+                        .getCourseNotificationByStudentAndCreatedAtIsLessThan(
+                                student,
+                                student.getLastNotifBtnClick()
+                        );
+
+            studentService.setStudentLastNotifBtnClick(student, newDate);
+            model.addAttribute("courseNotifications", courseNotifications);
+            model.addAttribute("courseNotifications1", courseNotifications1);
+            return "course/courseNotification";
+        } else {
+            return REDIRECT_COURSE + "?error=The feature is only for student";
+        }
+    }
+
+    /**
+     * Validate teacher access to a course.
+     */
+    public String validateTeacherAccess(Teacher teacher, Course course, String action) {
+        if (course.isArchived()) {
+            if (!action.equals("Read The Course")) {
+                if (course.getTeacher() == teacher) {
+                    return REDIRECT_COURSE + course.getId() + "?error=This course is archived";
+                }
+            }
+        }
+        if (course.getTeacher() != teacher) {
+            if (!teacher.isHaveCourse()) {
+                return REDIRECT_COURSE + "?error=You don't have access to " + action;
+            }
+            return REDIRECT_COURSE
+                    + courseService.getCourseByTeacherAndStatus(teacher, false).getId()
+                    + "?error=You don't have access to " + action;
+        }
+        return "";
+    }
+
 }

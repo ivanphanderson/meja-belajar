@@ -45,6 +45,7 @@ public class SecurityConfiguration extends WebSecurityConfigurerAdapter {
     @Override
     protected void configure(HttpSecurity http) throws Exception {
         http.httpBasic().and().authorizeRequests()
+                .antMatchers("/admin/logs").authenticated()
                 .antMatchers("/dashboard/admin/**").hasAnyAuthority("ADMIN")
                 .antMatchers("/dashboard/student/**").hasAnyAuthority("STUDENT")
                 .antMatchers("/dashboard/teacher/**").hasAnyAuthority("TEACHER")
@@ -56,7 +57,8 @@ public class SecurityConfiguration extends WebSecurityConfigurerAdapter {
                         "/course/information/**",
                         "/admin/form-log").hasAnyAuthority("TEACHER")
                 .antMatchers("/admin/**/bayar").hasAnyAuthority("STUDENT")
-                .antMatchers("/admin/**/verifikasi").hasAnyAuthority("ADMIN")
+                .antMatchers("/admin/**/verifikasi",
+                        "/admin/user-activation").hasAnyAuthority("ADMIN")
                 .and().formLogin()
                 .loginPage("/login")
                 .successHandler(loginSuccessHandler)

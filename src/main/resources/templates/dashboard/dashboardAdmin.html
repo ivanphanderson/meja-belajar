@@ -21,7 +21,7 @@
                 <div th:if="${users.size()<=0}">
                     <h5 class="text-center">No user Need to be Activate</h5>
                 </div>
-                <div th:if="${users.size()>7}">
+                <div th:if="${users.size()>5}">
                     <a th:href="@{/admin/user-activation}">See more</a>
                 </div>
                 <table th:if="${users.size()>0}" class="table table-striped my-2">
@@ -32,7 +32,7 @@
                         <th>Role</th>
                         <th>Action</th>
                     </tr>
-                    <tr th:each="user, i : ${users}" th:if="${i.index < 7}">
+                    <tr th:each="user, i : ${users}" th:if="${i.index < 5}">
                         <td th:text="${user.getUsername()}"></td>
                         <td th:text="${user.getEmail()}"></td>
                         <td th:text="${user.getRole()}"></td>
@@ -51,22 +51,24 @@
                 <div th:if="${logs.size()<=0}">
                     <h5 class="text-center">No logs</h5>
                 </div>
-                <div th:if="${logs.size()>7}">
+                <div th:if="${logs.size()>5}">
                     <a th:href="@{/admin/logs}">See more</a>
                 </div>
                 <table th:if="${logs.size()>0}" class="table table-striped my-2">
                     <tr>
                         <th>Guru</th>
-                        <th>Student</th>
-                        <th>Jam Belajar</th>
+                        <th>Murid</th>
+                        <th>Waktu</th>
+                        <th>Durasi</th>
                         <th>Deskripsi</th>
                         <th>Status</th>
                         <th>Action</th>
                     </tr>
-                    <tr th:each="log, i : ${logs}" th:if="${i.index < 7}">
+                    <tr th:each="log, i : ${logs}" th:if="${i.index < 5}">
                         <td th:text="${log.teacher.getUser().getUsername()}"></td>
                         <td th:text="${log.student.getUser().getUsername()}"></td>
-                        <td th:text="${log.hour}"></td>
+                        <td th:text="${log.getJam()}"></td>
+                        <td th:text="${log.duration}"></td>
                         <td th:text="${log.desc}"></td>
                         <td th:text="${log.logStatus}"></td>
                         <td>

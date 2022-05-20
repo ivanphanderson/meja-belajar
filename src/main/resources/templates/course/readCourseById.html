@@ -62,6 +62,11 @@
   <div th:if="${error!=null}" class="alert alert-danger" role="alert">
     <p th:text="${error}"></p>
   </div>
+
+  <div th:if="${student!=null}" id="notifBtn">
+    <a href="/course/notification" class="btn">Notification</a>
+  </div>
+
   <div id="courseTitle">
     <h1 th:text="|${course.getCourseName()}|"></h1>
   </div>

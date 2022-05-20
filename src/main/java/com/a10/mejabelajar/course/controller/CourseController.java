@@ -10,7 +10,10 @@ import com.a10.mejabelajar.course.exception.CourseInvalidException;
 import com.a10.mejabelajar.course.model.*;
 import com.a10.mejabelajar.course.model.dto.CourseDataTransferObject;
 import com.a10.mejabelajar.course.service.CourseInformationService;
+import com.a10.mejabelajar.course.service.CourseNotificationService;
 import com.a10.mejabelajar.course.service.CourseService;
+import java.time.Instant;
+import java.util.Date;
 import java.util.List;
 
 import com.a10.mejabelajar.murid.model.Rate;
@@ -41,13 +44,18 @@ public class CourseController {
     private StudentService studentService;
 
     @Autowired
+<<<<<<< HEAD
     private RateService rateService;
+=======
+    private CourseNotificationService courseNotificationService;
+>>>>>>> 993a8805ceb35920c5eb0a9b413ea072779c9744
 
     private static final String COURSE = "course";
     private static final String COURSE_ID = "courseId";
     private static final String COURSE_TYPES = "courseTypes";
     private static final String ERROR = "error";
     private static final String REDIRECT_COURSE = "redirect:/course/";
+    public static final long HOUR = 3600 * 1000; // in milli-seconds.
 
     @PostMapping(produces = {"application/json"})
     @ResponseBody
@@ -144,6 +152,7 @@ public class CourseController {
                     teacher,
                     courseDataTransferObject
             );
+
             return REDIRECT_COURSE + id;
         } catch (CourseInvalidException e) {
             model.addAttribute(ERROR, e.getMessage());
@@ -169,6 +178,11 @@ public class CourseController {
         if (error != null) {
             model.addAttribute("error", error);
         }
+        if (user.getRole() == Role.STUDENT) {
+            model.addAttribute("student", "student");
+        } else if (user.getRole() == Role.TEACHER) {
+            model.addAttribute("teacher", "teacher");
+        }
         model.addAttribute("courses", courses);
         return "course/readCourse";
     }
@@ -191,10 +205,11 @@ public class CourseController {
         // Add if student
         if (user.getRole() == Role.STUDENT) {
             var student = studentService.getStudentByUser(user);
-            List<Course> courses = courseService.getCourseByStudent(student);
+            List<Course> courses = courseService.getCoursesByStudent(student);
             if (!courses.contains(course)) {
                 return REDIRECT_COURSE + "?error=You are not enrolled to this course";
             }
+            model.addAttribute("student", student);
         }
         if (user.getRole() == Role.TEACHER) {
             var teacher = teacherService.getTeacherByUser(user);
@@ -252,6 +267,43 @@ public class CourseController {
         }
         courseService.archiveCourseById(user, courseId);
         return REDIRECT_COURSE;
+    }
+
+    /**
+     * Show Notification.
+     */
+    @GetMapping(value = "/notification")
+    public String courseNotification(
+            @AuthenticationPrincipal User user,
+            Model model
+    ) {
+        if (user.getRole() == Role.STUDENT) {
+            var student = studentService.getStudentByUser(user);
+
+            Instant instant = Instant.now();
+            Date date = Date.from(instant);
+            Date newDate = new Date(date.getTime() + 7 * HOUR);
+            List<CourseNotification> courseNotifications =
+                courseNotificationService
+                        .getCourseNotificationByStudentAndCreatedAtIsGreaterThanEqual(
+                                student,
+                                student.getLastNotifBtnClick()
+                        );
+
+            List<CourseNotification> courseNotifications1 =
+                courseNotificationService
+                        .getCourseNotificationByStudentAndCreatedAtIsLessThan(
+                                student,
+                                student.getLastNotifBtnClick()
+                        );
+
+            studentService.setStudentLastNotifBtnClick(student, newDate);
+            model.addAttribute("courseNotifications", courseNotifications);
+            model.addAttribute("courseNotifications1", courseNotifications1);
+            return "course/courseNotification";
+        } else {
+            return REDIRECT_COURSE + "?error=The feature is only for student";
+        }
     }
 
     /**

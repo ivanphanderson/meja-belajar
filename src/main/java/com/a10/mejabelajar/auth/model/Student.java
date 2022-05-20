@@ -4,7 +4,6 @@ import com.a10.mejabelajar.admin.model.Log;
 import com.a10.mejabelajar.course.model.Course;
 import com.a10.mejabelajar.course.model.CourseNotification;
 import com.a10.mejabelajar.murid.model.MuridType;
-import com.a10.mejabelajar.murid.model.Rate;
 import java.util.ArrayList;
 import java.util.Date;
 import java.util.List;
@@ -49,7 +48,4 @@ public class Student {
             inverseJoinColumns = @JoinColumn(name = "course_id")
     )
     private List<Course> newCourse = new ArrayList<>();
-
-    @OneToMany(mappedBy = "student", cascade = CascadeType.ALL)
-    private List<Rate> muridRate = new ArrayList<>();
 }

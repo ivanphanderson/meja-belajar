@@ -74,6 +74,10 @@ public class User implements UserDetails {
         return true;
     }
 
+    public String getId() {
+        return id;
+    }
+
     public User(String username, String email, String password, Role role){
         this.username = username;
         this.email = email;

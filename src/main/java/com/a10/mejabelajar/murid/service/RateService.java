@@ -1,8 +1,10 @@
 package com.a10.mejabelajar.murid.service;
 
-import com.a10.mejabelajar.auth.model.Student;
 import com.a10.mejabelajar.murid.model.Rate;
 
+import java.util.List;
+
 public interface RateService {
-    Student createRate(String id, Rate rate);
+    Rate createRate(String id, Integer courseId, Integer rate);
+    List<Rate> getListRate();
 }

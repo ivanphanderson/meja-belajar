@@ -4,6 +4,7 @@ import com.a10.mejabelajar.auth.model.Student;
 import com.a10.mejabelajar.auth.model.User;
 import com.a10.mejabelajar.auth.service.StudentService;
 import com.a10.mejabelajar.course.model.Course;
+import com.a10.mejabelajar.course.repository.CourseRepository;
 import com.a10.mejabelajar.course.service.CourseService;
 import com.a10.mejabelajar.murid.service.MuridService;
 import org.springframework.beans.factory.annotation.Autowired;
@@ -28,6 +29,9 @@ public class MuridController {
     @Autowired
     CourseService courseService;
 
+    @Autowired
+    CourseRepository courseRepository;
+
     @PostMapping(produces = {"application/json"})
     @ResponseBody
     public ResponseEntity registrationMurid(@RequestBody Student student, @AuthenticationPrincipal User user) {
@@ -37,7 +41,6 @@ public class MuridController {
 
     @PostMapping(path = "/{id}", produces = {"application/json"})
     public String updateMurid(@PathVariable(value = "id") int id, @AuthenticationPrincipal User user) {
-        System.out.println(user.getId());
         Student student = studentService.getStudentByUser(user);
         muridService.updateMurid(id, student);
         return "redirect:/course/" + id;
@@ -50,7 +53,6 @@ public class MuridController {
     public String readCourse(@AuthenticationPrincipal User user, Model model) {
         List<Course> courses = courseService.getCourses();
         model.addAttribute("courses", courses);
-        System.out.println(user.getId());
         return "murid/enrollCourse";
     }
 }

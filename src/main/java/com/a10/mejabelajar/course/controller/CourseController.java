@@ -44,11 +44,10 @@ public class CourseController {
     private StudentService studentService;
 
     @Autowired
-<<<<<<< HEAD
     private RateService rateService;
-=======
+
+    @Autowired
     private CourseNotificationService courseNotificationService;
->>>>>>> 993a8805ceb35920c5eb0a9b413ea072779c9744
 
     private static final String COURSE = "course";
     private static final String COURSE_ID = "courseId";

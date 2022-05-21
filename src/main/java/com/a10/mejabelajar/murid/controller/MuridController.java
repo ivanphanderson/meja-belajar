@@ -35,15 +35,15 @@ public class MuridController {
 
     @PostMapping(produces = {"application/json"})
     @ResponseBody
-    public ResponseEntity registrationMurid(@RequestBody Student student, @AuthenticationPrincipal User user) {
-        Student newStudent = studentService.getStudentByUser(user);
-        return ResponseEntity.ok(muridService.regisMurid(newStudent));
+    public ResponseEntity<Student> registrationMurid(@RequestBody Student student, @AuthenticationPrincipal User user) {
+        Student var = studentService.getStudentByUser(user);
+        return ResponseEntity.ok(muridService.regisMurid(var));
     }
 
     @PostMapping(path = "/{id}", produces = {"application/json"})
     public String updateMurid(@PathVariable(value = "id") int id, @AuthenticationPrincipal User user) {
-        Student student = studentService.getStudentByUser(user);
-        muridService.updateMurid(id, student);
+        Student var = studentService.getStudentByUser(user);
+        muridService.updateMurid(id, var);
         return "redirect:/course/" + id;
     }
 
@@ -54,8 +54,8 @@ public class MuridController {
     public String readCourse(@AuthenticationPrincipal User user, Model model) {
         List<Course> courses = courseService.getCourseByArchived(false);
 
-        Student student = studentService.getStudentByUser(user);
-        List<Course> courseTaken = student.getNewCourse();
+        Student var = studentService.getStudentByUser(user);
+        List<Course> courseTaken = var.getNewCourse();
         List<Course> differences = new ArrayList<>(courses);
         differences.removeAll(courseTaken);
         model.addAttribute("courses", differences);

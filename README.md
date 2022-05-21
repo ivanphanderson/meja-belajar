@@ -23,25 +23,44 @@ Aplikasi ini dirancang untuk kegiatan belajar dan mengajar secara online serta d
 
 ## Sprint 1
 1. Registration and Login
+- Registrasi dan Login sudah diimplementasi untuk setiap role.
+- Backend sudah terintegrasi dengan frontend.
 2. Dashboard
-3. Create Course
-4. Read Course
-5. Update Course
-6. Delete Course
-7. Course Registration
-8. Rate a course
-9. Validate new user accounts (teachers, students)
-10. Make a form that can be filled out by the teacher (teacher's log)
+- Dashboard belum diimplementasi.
+3. CRUD Course
+- Pada fitur ini, guru dapat membuat course dengan constraint 1 guru hanya dapat memiliki 1 course. Hanya guru pemilik course dan murid yang meng-enroll course tersebut yang dapat mengakses course tersebut. Guru memiliki akses tambahan untuk mengupdate ataupun menghapus course. Pada sprint 1, fitur ini sudah terimplementasi pada bagian backend dan sudah terhubung dengan frontend. Akan tetapi, fitur ini belum terintegrasi dengan murid sehingga murid belum dapat mengakses halaman course. Error handling pada sprint ini juga belum terimplementasi dengan baik.
+- Tests pada fitur ini akan dikerjakan pada sprint 3 setelah terintegrasi dengan fitur-fitur lain.
+4. Course Registration
+- Fitur ini memungkinkan murid agar dapat melakukan registrasi course. Pada sprint 1, fitur ini masih diterapkan dalam bentuk backend.
+- Tests pada fitur ini akan dikerjakan pada sprint 3 setelah terintegrasi dengan fitur-fitur lain.
+5. Rate a course
+- Fitur ini memungkinkan murid agar dapat memberi rate untuk course. Pada sprint 1, fitur ini masih diterapkan dalam bentuk backend.
+- Tests pada fitur ini akan dikerjakan pada sprint 3 setelah terintegrasi dengan fitur-fitur lain.
+6. Validate new user accounts (teachers, students)
+7. Make a form that can be filled out by the teacher (teacher's log)
 
 ## Sprint 2
 1. Registration and Login
+- Penambahan validasi pattern email saat registrasi.
+- Admin akan di-redirect ke dashboardnya saat berhasil login. Untuk guru dan murid dashboard belum tersedia.
+- Admin dapat men-generate token yang bisa dipakai untuk registrasi admin.
+- Perbaikan pada url setelah berhasil logout (sebelumnya /login?logout menjadi /login).
 2. Dashboard
-3. Create Course
-4. Read Course
-5. Update Course
-6. Archive Course
-7. Course Registration
-8. Course Notification
-9. Rate a course
-10. Validate new user accounts (teachers, students)
-11. Make a form that can be filled out by the teacher (teacher's log)
+-  Dashboard untuk admin sudah ada.
+3. CRU Course
+- Pada fitur ini, guru dapat membuat course dengan constraint 1 guru hanya dapat memiliki 1 course. Hanya guru pemilik course dan murid yang meng-enroll course tersebut yang dapat mengakses course tersebut. Guru memiliki akses tambahan untuk mengupdate course. Pada sprint 2, fitur delete course ditiadakan dengan pertimbangan untuk mencegah murid yang sudah meng-enroll course, tetapi coursenya tiba-tiba dihapus. Fitur ini juga sudah terintegrasi dengan role murid. Error handling juga sudah diperbaiki sehingga memberikan feedback yang lebih baik kepada pengguna.
+- Tests pada fitur ini akan dikerjakan pada sprint 3 setelah terintegrasi dengan fitur-fitur lain.
+4. Archive Course
+- Fitur ini ditambahkan pada sprint 2 sebagai pengganti fitur delete course. Hanya guru pemilik course.yang dapat mengakses fitur ini. Ketika guru meng-archive course miliknya, maka course tersebut tidak dapat lagi di update oleh guru yang bersangkutan. Selain itu, murid juga sudah tidak dapat meng-enroll course ini lagi. Error handling terkait fitur ini sudah diimplementasikan sehingga memberi feedback yang baik kepada pengguna
+- Tests pada fitur ini akan dikerjakan pada sprint 3 setelah terintegrasi dengan fitur-fitur lain.
+5. Course Notification
+- Murid akan diberikan notifikasi ketika ada informasi baru ataupun informasi yang baru diupdate oleh guru. Fitur ini baru ditambahkan pada sprint 2 dengan tujuan murid tidak ketinggalan terhadap perkembangan course yang di-enroll. Implementasi fitur ini sudah menerapkan observer pattern sehingga setiap ada create atau update pada course information, murid yang sudah ter-enroll akan dinotifikasi.
+- Tests pada fitur ini akan dikerjakan pada sprint 3 setelah terintegrasi dengan fitur-fitur lain.
+6. Course Registration
+- Fitur ini sudah terhubung dengan frontend, murid dapat mengambil banyak course. Murid tidak dapat melakukan enroll course lebih dari 1 kali.
+- Tests pada fitur ini akan dikerjakan pada sprint 3 setelah terintegrasi dengan fitur-fitur lain.
+7. Rate a course
+- Fitur ini sudah terhubung dengan frontend, murid dapat memberi 1 rating untuk 1 course dan rate ditampilkan pada halaman course.
+- Tests pada fitur ini akan dikerjakan pada sprint 3 setelah terintegrasi dengan fitur-fitur lain.
+8. Validate new user accounts (teachers, students)
+9. Make a form that can be filled out by the teacher (teacher's log)

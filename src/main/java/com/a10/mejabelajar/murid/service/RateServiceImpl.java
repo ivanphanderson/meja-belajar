@@ -1,14 +1,13 @@
 package com.a10.mejabelajar.murid.service;
 
-import com.a10.mejabelajar.course.model.Course;
+import com.a10.mejabelajar.auth.repository.StudentRepository;
 import com.a10.mejabelajar.course.repository.CourseRepository;
-import com.a10.mejabelajar.course.service.CourseService;
-import com.a10.mejabelajar.murid.model.Murid;
 import com.a10.mejabelajar.murid.model.Rate;
-import com.a10.mejabelajar.murid.repository.MuridRepository;
 import com.a10.mejabelajar.murid.repository.RateRepository;
 import org.springframework.beans.factory.annotation.Autowired;
 import org.springframework.stereotype.Service;
+
+import java.util.List;
 
 @Service
 public class RateServiceImpl implements RateService{
@@ -20,15 +19,21 @@ public class RateServiceImpl implements RateService{
     CourseRepository courseRepository;
 
     @Autowired
-    MuridRepository muridRepository;
+    StudentRepository studentRepository;
 
     @Override
-    public Murid createRate(int id, Rate rate) {
-        Course newId = courseRepository.findById(rate.getIdCourse());
-        Murid newId2 = muridRepository.findById(id);
-        rate.setCourse(newId);
-        rate.setMurid(newId2);
-        rateRepository.save(rate);
-        return newId2;
+    public Rate createRate(String id, Integer courseId, Integer rate) {
+        Rate newRate = Rate.builder().idStudent(id).idCourse(courseId).nilaiRating(rate).build();
+        return rateRepository.save(newRate);
+    }
+
+    @Override
+    public List<Rate> getListRate() {
+        return rateRepository.findAll();
+    }
+
+    @Override
+    public Rate getByIdStudentAndIdCourse(String idStudent, int idCourse) {
+        return rateRepository.findByIdStudentAndIdCourse(idStudent, idCourse);
     }
 }

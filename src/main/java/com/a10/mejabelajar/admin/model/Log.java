@@ -7,8 +7,13 @@ import lombok.Builder;
 import lombok.Data;
 import lombok.NoArgsConstructor;
 import org.hibernate.annotations.GenericGenerator;
+import org.springframework.format.annotation.DateTimeFormat;
 
 import javax.persistence.*;
+import java.time.LocalDateTime;
+import java.time.format.DateTimeFormatter;
+import java.util.Date;
+import java.util.Locale;
 
 @Data
 @Builder
@@ -19,16 +24,27 @@ import javax.persistence.*;
 public class Log {
 
     @Id
-    @Column(name="log_id")
-    @GeneratedValue(generator="uuid2")
-    @GenericGenerator(name="uuid2", strategy= "org.hibernate.id.UUIDGenerator")
+    @Column(name = "log_id")
+    @GeneratedValue(generator = "uuid2")
+    @GenericGenerator(name = "uuid2", strategy = "org.hibernate.id.UUIDGenerator")
     private String id;
 
-    @Column(name = "hours")
-    private double hour;
+    @DateTimeFormat(pattern = "yyyy-MM-dd'T'HH:mm")
+    @Column(name = "starts")
+    private LocalDateTime start;
+
+    @DateTimeFormat(pattern = "yyyy-MM-dd'T'HH:mm")
+    @Column(name = "ends")
+    private LocalDateTime end;
+
+    @Column(name = "duration")
+    private String duration;
 
     @Column(name = "description")
     private String desc;
+
+    @Column(name = "status")
+    private LogStatus logStatus;
 
     @ManyToOne
     @JoinColumn(name = "teacher_id", nullable = false)
@@ -37,4 +53,10 @@ public class Log {
     @ManyToOne
     @JoinColumn(name = "student_id", nullable = false)
     private Student student;
+
+    public String getJam() {
+        DateTimeFormatter formatterStart = DateTimeFormatter.ofPattern("EEEE, d MMMM yyyy H:mm", new Locale("id"));
+        DateTimeFormatter formatterEnd = DateTimeFormatter.ofPattern("H:mm");
+        return start.format(formatterStart) + " - " + end.format(formatterEnd);
+    }
 }

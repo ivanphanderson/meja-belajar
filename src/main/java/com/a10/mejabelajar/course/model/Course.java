@@ -1,9 +1,7 @@
 package com.a10.mejabelajar.course.model;
 
-import com.a10.mejabelajar.murid.model.Murid;
-import com.a10.mejabelajar.murid.model.Rate;
-import com.fasterxml.jackson.annotation.JsonIgnore;
-import java.util.ArrayList;
+import com.a10.mejabelajar.auth.model.Student;
+import com.a10.mejabelajar.auth.model.Teacher;
 import java.util.List;
 import javax.persistence.*;
 import lombok.Data;
@@ -16,32 +14,34 @@ import lombok.NoArgsConstructor;
 public class Course {
 
     @Id
-    @Column(name = "course_id", updatable = false)
+    @Column(name = "courseId", updatable = false)
     @GeneratedValue(strategy = GenerationType.AUTO)
     private int id;
 
-    @Column(name = "course_name")
+    @Column(name = "courseName")
     private String courseName;
 
-    @Column(name = "course_type")
+    @Column(name = "courseType")
     private CourseType courseType;
 
-    @Column(name = "course_description")
+    @Column(name = "courseDescription")
     private String courseDescription;
 
-    @Column(name = "course_duration")
+    @Column(name = "courseDuration")
     private double courseDuration;
+
+    @Column(name = "archived")
+    private boolean archived = false;
+
+    @OneToOne(cascade = CascadeType.ALL)
+    @JoinColumn(name = "teacher_id")
+    private Teacher teacher;
 
     @OneToMany(mappedBy = "course", cascade = CascadeType.ALL)
     private List<CourseInformation> courseInformations;
 
-    @JsonIgnore
     @ManyToMany(mappedBy = "newCourse", cascade = CascadeType.ALL)
-    private List<Murid> newMurid = new ArrayList<>();
-
-    @JsonIgnore
-    @OneToMany(mappedBy = "course", cascade = CascadeType.ALL)
-    private List<Rate> newRate = new ArrayList<>();
+    private List<Student> newMurid;
 
     /**
      * Constructor to create course.

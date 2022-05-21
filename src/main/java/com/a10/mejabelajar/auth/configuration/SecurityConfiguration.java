@@ -1,5 +1,6 @@
 package com.a10.mejabelajar.auth.configuration;
 
+import com.a10.mejabelajar.auth.handler.LoginSuccessHandler;
 import com.a10.mejabelajar.auth.service.UserDetailsServiceImpl;
 import org.springframework.context.annotation.Bean;
 import org.springframework.context.annotation.Configuration;
@@ -14,6 +15,8 @@ import org.springframework.security.crypto.bcrypt.BCryptPasswordEncoder;
 @Configuration
 @EnableWebSecurity
 public class SecurityConfiguration extends WebSecurityConfigurerAdapter {
+    private final LoginSuccessHandler loginSuccessHandler = new LoginSuccessHandler();
+
     @Override
     @Bean
     public UserDetailsService userDetailsService() {
@@ -42,16 +45,26 @@ public class SecurityConfiguration extends WebSecurityConfigurerAdapter {
     @Override
     protected void configure(HttpSecurity http) throws Exception {
         http.httpBasic().and().authorizeRequests()
-                .antMatchers("/dashboard/**").authenticated()
+                .antMatchers("/admin/logs").authenticated()
+                .antMatchers("/dashboard/admin/**").hasAnyAuthority("ADMIN")
+                .antMatchers("/dashboard/student/**").hasAnyAuthority("STUDENT")
+                .antMatchers("/dashboard/teacher/**").hasAnyAuthority("TEACHER")
                 .antMatchers("/signup").permitAll()
                 .antMatchers(
                         "/course/create",
                         "/course/update/**",
                         "/course/delete/**",
-                        "/course/information/**").hasAnyAuthority("TEACHER")
+                        "/course/information/**",
+                        "/admin/form-log").hasAnyAuthority("TEACHER")
+                .antMatchers("/admin/**/bayar").hasAnyAuthority("STUDENT")
+                .antMatchers("/admin/**/verifikasi",
+                        "/admin/user-activation").hasAnyAuthority("ADMIN")
                 .and().formLogin()
                 .loginPage("/login")
-                .failureUrl("/login?error=true");
+                .successHandler(loginSuccessHandler)
+                .failureUrl("/login?error=true")
+                .and().logout()
+                .logoutSuccessUrl("/login").permitAll();
         http.csrf().disable();
     }
 }

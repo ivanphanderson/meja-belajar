@@ -1,11 +1,8 @@
 package com.a10.mejabelajar.murid.service;
 
-import com.a10.mejabelajar.murid.model.Murid;
+import com.a10.mejabelajar.auth.model.Student;
 
 public interface MuridService {
-    Murid regisMurid(Murid murid);
-    Murid updateMurid(int id, Murid murid);
-    Murid getMuridById(int id);
+    Student regisMurid(Student student);
+    Student updateMurid(int id, Student student);
 }
-
-

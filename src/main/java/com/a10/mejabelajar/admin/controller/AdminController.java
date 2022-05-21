@@ -1,5 +1,6 @@
 package com.a10.mejabelajar.admin.controller;
 
+import com.a10.mejabelajar.admin.exception.LogInvalidException;
 import com.a10.mejabelajar.admin.model.Log;
 import com.a10.mejabelajar.admin.service.ActivationService;
 import com.a10.mejabelajar.admin.service.LogService;
@@ -12,6 +13,9 @@ import org.springframework.security.core.annotation.AuthenticationPrincipal;
 import org.springframework.stereotype.Controller;
 import org.springframework.ui.Model;
 import org.springframework.web.bind.annotation.*;
+
+import java.time.LocalDateTime;
+import java.util.concurrent.CompletableFuture;
 
 @Controller
 @RequestMapping(path = "/admin")
@@ -41,19 +45,45 @@ public class AdminController {
 
     @PostMapping(value = "/form-log")
     public String formLog(@AuthenticationPrincipal User user,
-                          @RequestParam double hour,
+                          @RequestParam String start,
+                          @RequestParam String end,
                           @RequestParam String desc,
-                          @RequestParam(value = "studentId") String studentId) {
-        var student = studentService.getStudentById(studentId);
-        var teacher = teacherService.getTeacherByUser(user);
-        logService.createLog(hour, desc, student, teacher);
+                          @RequestParam(value = "studentId") String studentId,
+                          Model model) {
+
+        var student = CompletableFuture.supplyAsync(() -> studentService.getStudentById(studentId));
+        var teacher = CompletableFuture.supplyAsync(() -> teacherService.getTeacherByUser(user));
+        var students = CompletableFuture.supplyAsync(() -> studentService.getStudents());
+
+        try{
+            String duration = logService.countDuration(start, end);
+            logService.createLog(start, end, duration, desc, student.join(), teacher.join());
+        } catch (LogInvalidException e) {
+            model.addAttribute("error", e.getMessage());
+            model.addAttribute("students", students.join());
+            model.addAttribute("newLog", new Log());
+            return "admin/formLog";
+        } catch (Exception e) {
+            model.addAttribute("error", e);
+            return "admin/errorPage";
+        }
         return "redirect:/admin/logs";
     }
 
     @GetMapping(value = "/logs")
-    public String getLogs(Model model) {
-        model.addAttribute("logs", logService.getLogs());
-        return "admin/logs";
+    public String getLogs(@AuthenticationPrincipal User user,
+                            Model model) {
+        try{
+            var logs = logService.getLogs(user);
+            model.addAttribute("role", user.getRole());
+            model.addAttribute("logs", logs);
+            model.addAttribute("username", user.getUsername());
+            return "admin/logs";
+        } catch (Exception e) {
+            model.addAttribute("error", e);
+            return "admin/errorPage";
+        }
+
     }
 
     @GetMapping(value = "/log/{logId}/delete-log")
@@ -74,5 +104,20 @@ public class AdminController {
         activationService.activateUser(user);
         return "redirect:/admin/user-activation";
     }
+
+    @GetMapping(value = "/log/{logId}/bayar")
+    public String bayarLog(@PathVariable String logId) {
+        var log = logService.getLogById(logId);
+        logService.bayarLog(log);
+        return "redirect:/admin/logs";
+    }
+
+    @GetMapping(value = "/log/{logId}/verifikasi")
+    public String verifikasiLog(@PathVariable String logId) {
+        var log = logService.getLogById(logId);
+        logService.verifikasiLog(log);
+        return "redirect:/admin/logs";
+    }
+
 
 }

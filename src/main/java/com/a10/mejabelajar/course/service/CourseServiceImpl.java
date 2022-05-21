@@ -69,8 +69,7 @@ public class CourseServiceImpl implements CourseService {
         course.setId(id);
         course.setTeacher(teacher);
         course.setArchived(false);
-        courseRepository.save(course);
-        return course;
+        return courseRepository.save(course);
     }
 
     @Override

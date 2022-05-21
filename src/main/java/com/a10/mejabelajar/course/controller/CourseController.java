@@ -325,12 +325,7 @@ public class CourseController {
             }
         }
         if (course.getTeacher() != teacher) {
-            if (!teacher.isHaveCourse()) {
-                return REDIRECT_COURSE + "?error=You don't have access to " + action;
-            }
-            return REDIRECT_COURSE
-                    + courseService.getCourseByTeacherAndStatus(teacher, false).getId()
-                    + "?error=You don't have access to " + action;
+            return REDIRECT_COURSE + "?error=You don't have access to " + action;
         }
         return "";
     }

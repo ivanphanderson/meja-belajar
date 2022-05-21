@@ -23,8 +23,8 @@ public class RateServiceImpl implements RateService{
 
     @Override
     public Rate createRate(String id, Integer courseId, Integer rate) {
-        Rate newRate = Rate.builder().idStudent(id).idCourse(courseId).nilaiRating(rate).build();
-        return rateRepository.save(newRate);
+        Rate var = Rate.builder().idStudent(id).idCourse(courseId).nilaiRating(rate).build();
+        return rateRepository.save(var);
     }
 
     @Override

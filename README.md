@@ -69,6 +69,6 @@ Aplikasi ini dirancang untuk kegiatan belajar dan mengajar secara online serta d
 9. Make a form that can be filled out by the teacher (teacher's log)
    - Fitur ini sudah terhubung dengan frontend, dan hanya guru saja yang dapat mengakses fitur ini untuk melakukan create log. Ada perubahan attribute Log dari sprint 1 yaitu jam menjadi waktu mulai dan waktu selesai. error handling sudah diimplementasi
 10. RUD Log
-   - terdapat tampilan untuk menampilkan daftar log yang dimiliki guru dan murid. Untuk admin dapat melihat semua log. guru dan admin dapat melakukan delete, admin dan murid dapat melakukan update (berupa status).
-   - memperbaiki tampilan tabel daftar log untuk masing-masing role.
+      - terdapat tampilan untuk menampilkan daftar log yang dimiliki guru dan murid. Untuk admin dapat melihat semua log. guru dan admin dapat melakukan delete, admin dan murid dapat melakukan update (berupa status).
+      - memperbaiki tampilan tabel daftar log untuk masing-masing role.
 

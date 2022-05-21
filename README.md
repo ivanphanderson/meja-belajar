@@ -37,7 +37,9 @@ Aplikasi ini dirancang untuk kegiatan belajar dan mengajar secara online serta d
    - Fitur ini memungkinkan murid agar dapat memberi rate untuk course. Pada sprint 1, fitur ini masih diterapkan dalam bentuk backend.
    - Tests pada fitur ini akan dikerjakan pada sprint 3 setelah terintegrasi dengan fitur-fitur lain.
 6. Validate new user accounts (teachers, students)
+   - Fungsionalitas backend untuk user activation sudah selesai.
 7. Make a form that can be filled out by the teacher (teacher's log)
+   - Model Log sudah dibuat dan guru sudah bisa create log. delete dapat dilakukan oleh guru dan admin.
 
 ## Sprint 2
 1. Registration and Login
@@ -63,4 +65,10 @@ Aplikasi ini dirancang untuk kegiatan belajar dan mengajar secara online serta d
    - Fitur ini sudah terhubung dengan frontend, murid dapat memberi 1 rating untuk 1 course dan rate ditampilkan pada halaman course.
    - Tests pada fitur ini akan dikerjakan pada sprint 3 setelah terintegrasi dengan fitur-fitur lain.
 8. Validate new user accounts (teachers, students)
+   - Fitur ini sudah terhubung dengan frontend, dan hanya admin saja yang dapat mengakses fitur ini untuk melakukan aktivasi akun user.
 9. Make a form that can be filled out by the teacher (teacher's log)
+   - Fitur ini sudah terhubung dengan frontend, dan hanya guru saja yang dapat mengakses fitur ini untuk melakukan create log. Ada perubahan attribute Log dari sprint 1 yaitu jam menjadi waktu mulai dan waktu selesai. error handling sudah diimplementasi
+10. RUD Log
+   - terdapat tampilan untuk menampilkan daftar log yang dimiliki guru dan murid. Untuk admin dapat melihat semua log. guru dan admin dapat melakukan delete, admin dan murid dapat melakukan update (berupa status).
+   - memperbaiki tampilan tabel daftar log untuk masing-masing role.
+

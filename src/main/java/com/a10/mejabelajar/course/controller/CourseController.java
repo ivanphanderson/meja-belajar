@@ -1,7 +1,6 @@
 package com.a10.mejabelajar.course.controller;
 
 import com.a10.mejabelajar.auth.model.Role;
-import com.a10.mejabelajar.auth.model.Student;
 import com.a10.mejabelajar.auth.model.Teacher;
 import com.a10.mejabelajar.auth.model.User;
 import com.a10.mejabelajar.auth.service.StudentService;
@@ -243,15 +242,14 @@ public class CourseController {
     public String rateCourse(@RequestParam Integer rate, @RequestParam Integer idCourse, @AuthenticationPrincipal User user) {
         Object principal = SecurityContextHolder.getContext().getAuthentication().getPrincipal();
         String studentId = ((User)principal).getId();
-        Student student = studentService.getStudentByUser(user);
 
-        Rate newRate = rateService.getByIdStudentAndIdCourse(studentId, idCourse);
+        var newRate = rateService.getByIdStudentAndIdCourse(studentId, idCourse);
         if (newRate==null) {
             rateService.createRate(studentId, idCourse, rate);
             return "redirect:/murid";
         }
         else {
-            return "redirect:/course/"+idCourse+"?error=Anda sudah memberikan rate";
+            return REDIRECT_COURSE+idCourse+"?error=Anda sudah memberikan rate";
         }
 
     }
@@ -286,9 +284,9 @@ public class CourseController {
         if (user.getRole() == Role.STUDENT) {
             var student = studentService.getStudentByUser(user);
 
-            Instant instant = Instant.now();
-            Date date = Date.from(instant);
-            Date newDate = new Date(date.getTime() + 7 * HOUR);
+            var instant = Instant.now();
+            var date = Date.from(instant);
+            var newDate = new Date(date.getTime() + 7 * HOUR);
 
             List<CourseNotification> courseNotifications =
                 courseNotificationService

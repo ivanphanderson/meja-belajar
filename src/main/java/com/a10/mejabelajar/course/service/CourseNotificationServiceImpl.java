@@ -26,11 +26,11 @@ public class CourseNotificationServiceImpl implements CourseNotificationService 
     @Override
     public void handleCreateInformation(CourseInformation courseInformation) {
         List<Student> students = studentService.getStudentsByCourse(courseInformation.getCourse());
-        Instant instant = Instant.now();
-        Date date = Date.from(instant);
-        Date newDate = new Date(date.getTime() + 7 * HOUR);
+        var instant = Instant.now();
+        var date = Date.from(instant);
+        var newDate = new Date(date.getTime() + 7 * HOUR);
         for (Student student: students) {
-            CourseNotification courseNotification = new CourseNotification();
+            var courseNotification = new CourseNotification();
             courseNotification.setNotificationType(NotificationType.CREATE);
             courseNotification.setCourseInformation(courseInformation);
             courseNotification.setStudent(student);
@@ -42,11 +42,11 @@ public class CourseNotificationServiceImpl implements CourseNotificationService 
     @Override
     public void handleUpdateInformation(CourseInformation courseInformation) {
         List<Student> students = studentService.getStudentsByCourse(courseInformation.getCourse());
-        Instant instant = Instant.now();
-        Date date = Date.from(instant);
-        Date newDate = new Date(date.getTime() + 7 * HOUR);
+        var instant = Instant.now();
+        var date = Date.from(instant);
+        var newDate = new Date(date.getTime() + 7 * HOUR);
         for (Student student: students) {
-            CourseNotification courseNotification = new CourseNotification();
+            var courseNotification = new CourseNotification();
             courseNotification.setNotificationType(NotificationType.UPDATE);
             courseNotification.setCourseInformation(courseInformation);
             courseNotification.setStudent(student);

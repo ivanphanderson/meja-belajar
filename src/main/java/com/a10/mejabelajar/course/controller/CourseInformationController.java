@@ -80,7 +80,7 @@ public class CourseInformationController {
             modelMapper.map(courseInformationDataTransferObject, courseInformation);
 
             courseInformation.setCourse(course);
-            CourseInformation courseInformation1 =
+            var courseInformation1 =
                     courseInformationService.createCourseInformation(courseInformation);
             courseNotificationService.handleCreateInformation(courseInformation1);
             return REDIRECT_COURSE + courseId;
@@ -138,7 +138,7 @@ public class CourseInformationController {
             var courseInformation = new CourseInformation();
             modelMapper.map(courseInformationDataTransferObject, courseInformation);
 
-            CourseInformation courseInformation1 = courseInformationService.updateCourseInformation(
+            var courseInformation1 = courseInformationService.updateCourseInformation(
                     courseInformationId,
                     courseInformation
             );

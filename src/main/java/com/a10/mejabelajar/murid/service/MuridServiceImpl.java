@@ -31,9 +31,9 @@ public class MuridServiceImpl implements MuridService{
      */
     @Override
     public Student updateMurid(int id, Student student) {
-        Course var = courseRepository.findById(id);
-        student.getNewCourse().add(var);
-        var.getNewMurid().add(student);
+        var newCourse = courseRepository.findById(id);
+        student.getNewCourse().add(newCourse);
+        newCourse.getNewMurid().add(student);
         studentRepository.save(student);
         return student;
     }

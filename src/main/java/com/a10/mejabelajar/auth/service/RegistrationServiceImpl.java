@@ -72,7 +72,7 @@ public class RegistrationServiceImpl implements RegistrationService{
 
     public boolean validateEmailPattern(String email){
         // Pattern taken from https://www.baeldung.com/java-email-validation-regex
-        Pattern p = Pattern.compile("^(?=.{1,64}@)[A-Za-z0-9_-]+(\\.[A-Za-z0-9_-]+)*@[^-][A-Za-z0-9-]+(\\.[A-Za-z0-9-]+)*(\\.[A-Za-z]{2,})$");
+        var p = Pattern.compile("^(?=.{1,64}@)[A-Za-z0-9_-]+(\\.[A-Za-z0-9_-]+)*@[^-][A-Za-z0-9-]+(\\.[A-Za-z0-9-]+)*(\\.[A-Za-z]{2,})$");
         return p.matcher(email).matches();
     }
 
@@ -114,9 +114,9 @@ public class RegistrationServiceImpl implements RegistrationService{
     @Override
     public User createUser(CreateStudentAndTeacherDTO dto){
         validateTeacherAndStudentRegistration(dto);
-        BCryptPasswordEncoder passwordEncoder = new BCryptPasswordEncoder();
+        var passwordEncoder = new BCryptPasswordEncoder();
         String encodedPassword = passwordEncoder.encode(dto.getPassword());
-        User user = new User(dto.getUsername(), dto.getEmail(), encodedPassword, Role.valueOf(dto.getRole().toUpperCase()));
+        var user = new User(dto.getUsername(), dto.getEmail(), encodedPassword, Role.valueOf(dto.getRole().toUpperCase()));
         userRepository.save(user);
 
         if(dto.getRole().equals("student")){
@@ -132,9 +132,9 @@ public class RegistrationServiceImpl implements RegistrationService{
     @Override
     public User createUser(CreateAdminDTO dto) {
         validateAdminRegistration(dto);
-        BCryptPasswordEncoder passwordEncoder = new BCryptPasswordEncoder();
+        var passwordEncoder = new BCryptPasswordEncoder();
         String encodedPassword = passwordEncoder.encode(dto.getPassword());
-        User user = new User(dto.getUsername(), dto.getEmail(), encodedPassword, Role.ADMIN);
+        var user = new User(dto.getUsername(), dto.getEmail(), encodedPassword, Role.ADMIN);
         user.setActivated(true);
         userRepository.save(user);
 
@@ -146,7 +146,7 @@ public class RegistrationServiceImpl implements RegistrationService{
     }
 
     public void createAdmin(User user){
-        Admin admin = new Admin();
+        var admin = new Admin();
         admin.setUser(user);
         adminRepository.save(admin);
     }

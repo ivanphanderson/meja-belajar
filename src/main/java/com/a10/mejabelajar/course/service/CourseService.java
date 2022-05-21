@@ -23,4 +23,6 @@ public interface CourseService {
     Course updateCourse(int id, Teacher teacher, CourseDataTransferObject courseDataTransferObject);
 
     void archiveCourseById(User user, int id);
+
+    List<Course> getCourseByArchived(boolean archived);
 }

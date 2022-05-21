@@ -2,7 +2,6 @@ package com.a10.mejabelajar.murid.model;
 
 import javax.persistence.*;
 
-import com.a10.mejabelajar.auth.model.Student;
 import lombok.AllArgsConstructor;
 import lombok.Builder;
 import lombok.Data;

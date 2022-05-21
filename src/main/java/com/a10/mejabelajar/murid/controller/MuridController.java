@@ -14,6 +14,7 @@ import org.springframework.stereotype.Controller;
 import org.springframework.ui.Model;
 import org.springframework.web.bind.annotation.*;
 
+import java.util.ArrayList;
 import java.util.List;
 
 @Controller
@@ -51,8 +52,13 @@ public class MuridController {
      */
     @GetMapping(value = "")
     public String readCourse(@AuthenticationPrincipal User user, Model model) {
-        List<Course> courses = courseService.getCourses();
-        model.addAttribute("courses", courses);
+        List<Course> courses = courseService.getCourseByArchived(false);
+
+        Student student = studentService.getStudentByUser(user);
+        List<Course> courseTaken = student.getNewCourse();
+        List<Course> differences = new ArrayList<>(courses);
+        differences.removeAll(courseTaken);
+        model.addAttribute("courses", differences);
         return "murid/enrollCourse";
     }
 }

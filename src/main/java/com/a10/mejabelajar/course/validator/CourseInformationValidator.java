@@ -5,6 +5,10 @@ import com.a10.mejabelajar.course.model.CourseInformation;
 
 public class CourseInformationValidator {
 
+    private CourseInformationValidator() {
+        throw new IllegalStateException("Utility class");
+    }
+
     /**
      * Validate course information title.
      */

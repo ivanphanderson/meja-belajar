@@ -12,7 +12,7 @@ import com.a10.mejabelajar.course.service.CourseNotificationService;
 import com.a10.mejabelajar.course.service.CourseService;
 import org.modelmapper.ModelMapper;
 import org.springframework.beans.factory.annotation.Autowired;
-import org.springframework.security.core.annotation.AuthenticationPrincipal;
+import org.springframework.security.core.context.SecurityContextHolder;
 import org.springframework.stereotype.Controller;
 import org.springframework.ui.Model;
 import org.springframework.web.bind.annotation.*;
@@ -36,6 +36,7 @@ public class CourseInformationController {
     private static final String COURSE_INFORMATION = "courseInformation";
     private static final String ERROR = "error";
     private static final String REDIRECT_COURSE = "redirect:/course/";
+    private static final String REDIRECT_LOGIN = "redirect:/login";
     private ModelMapper modelMapper = new ModelMapper();
 
     /**
@@ -43,9 +44,14 @@ public class CourseInformationController {
      */
     @GetMapping(value = "/create/{courseId}")
     public String createCourseInformation(
-            @AuthenticationPrincipal User user,
             @PathVariable int courseId,
             Model model) {
+        var principal = SecurityContextHolder.getContext().getAuthentication().getPrincipal();
+        if (principal instanceof String) {
+            return REDIRECT_LOGIN;
+        }
+        var user = (User) principal;
+
         var teacher = teacherService.getTeacherByUser(user);
         var course = courseService.getCourseById(courseId);
         String isValid = validateTeacherAccess(teacher, course, "Create Course Information");
@@ -63,10 +69,15 @@ public class CourseInformationController {
      */
     @PostMapping(value = "/create/{courseId}")
     public String createCourseInformation(
-            @AuthenticationPrincipal User user,
             @ModelAttribute CourseInformationDataTransferObject courseInformationDataTransferObject,
             @PathVariable int courseId,
             Model model) {
+
+        var principal = SecurityContextHolder.getContext().getAuthentication().getPrincipal();
+        if (principal instanceof String) {
+            return REDIRECT_LOGIN;
+        }
+        var user = (User) principal;
 
         var teacher = teacherService.getTeacherByUser(user);
         var course = courseService.getCourseById(courseId);
@@ -97,13 +108,11 @@ public class CourseInformationController {
      */
     @GetMapping(value = "/update/{courseId}/{courseInformationId}")
     public String updateCourseInformation(
-            @AuthenticationPrincipal User user,
             @PathVariable int courseId,
             @PathVariable int courseInformationId,
             Model model) {
-        var teacher = teacherService.getTeacherByUser(user);
-        var course = courseService.getCourseById(courseId);
-        String isValid = validateTeacherAccess(teacher, course, "Update Course Information");
+        var principal = SecurityContextHolder.getContext().getAuthentication().getPrincipal();
+        String isValid = validator(principal, courseId);
         if (!isValid.equals("")) {
             return isValid;
         }
@@ -121,15 +130,12 @@ public class CourseInformationController {
      */
     @PostMapping(value = "/update/{courseId}/{courseInformationId}")
     public String updateCourseInformation(
-            @AuthenticationPrincipal User user,
             @ModelAttribute CourseInformationDataTransferObject courseInformationDataTransferObject,
             @PathVariable int courseId,
             @PathVariable int courseInformationId,
             Model model) {
-
-        var teacher = teacherService.getTeacherByUser(user);
-        var course = courseService.getCourseById(courseId);
-        String isValid = validateTeacherAccess(teacher, course, "Update Course Information");
+        var principal = SecurityContextHolder.getContext().getAuthentication().getPrincipal();
+        String isValid = validator(principal, courseId);
         if (!isValid.equals("")) {
             return isValid;
         }
@@ -138,7 +144,7 @@ public class CourseInformationController {
             var courseInformation = new CourseInformation();
             modelMapper.map(courseInformationDataTransferObject, courseInformation);
 
-            var courseInformation1 = courseInformationService.updateCourseInformation(
+            courseInformationService.updateCourseInformation(
                     courseInformationId,
                     courseInformation
             );
@@ -158,12 +164,10 @@ public class CourseInformationController {
      */
     @PostMapping(value = "/delete/{courseId}/{courseInformationId}")
     public String deleteCourseInformation(
-            @AuthenticationPrincipal User user,
             @PathVariable int courseId,
             @PathVariable int courseInformationId) {
-        var teacher = teacherService.getTeacherByUser(user);
-        var course = courseService.getCourseById(courseId);
-        String isValid = validateTeacherAccess(teacher, course, "Delete Course Information");
+        var principal = SecurityContextHolder.getContext().getAuthentication().getPrincipal();
+        String isValid = validator(principal, courseId);
         if (!isValid.equals("")) {
             return isValid;
         }
@@ -172,13 +176,29 @@ public class CourseInformationController {
     }
 
     /**
+     * Validate user authentication and authorization.
+     */
+    public String validator(Object principal, int courseId) {
+        if (principal instanceof String) {
+            return REDIRECT_LOGIN;
+        }
+        var user = (User) principal;
+
+        var teacher = teacherService.getTeacherByUser(user);
+        var course = courseService.getCourseById(courseId);
+        String isValid = validateTeacherAccess(teacher, course, "Update Course Information");
+        if (!isValid.equals("")) {
+            return isValid;
+        }
+        return "";
+    }
+
+    /**
      * Validate teacher access to a course information.
      */
     public String validateTeacherAccess(Teacher teacher, Course course, String action) {
-        if (course.isArchived()) {
-            if (course.getTeacher() == teacher) {
-                return REDIRECT_COURSE + course.getId() + "?error=This course is archived";
-            }
+        if (course.isArchived() && course.getTeacher() == teacher) {
+            return REDIRECT_COURSE + course.getId() + "?error=This course is archived";
         }
         if (course.getTeacher() != teacher) {
             if (!teacher.isHaveCourse()) {

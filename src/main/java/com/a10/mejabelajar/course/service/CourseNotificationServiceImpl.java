@@ -15,7 +15,7 @@ import org.springframework.stereotype.Service;
 @Service
 public class CourseNotificationServiceImpl implements CourseNotificationService {
 
-    public static final long HOUR = 3600 * 1000; // in milli-seconds.
+    public static final long HOUR = 3600L * 1000; // in milli-seconds.
 
     @Autowired
     StudentService studentService;

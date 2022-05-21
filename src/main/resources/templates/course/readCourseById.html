@@ -96,9 +96,9 @@
       <div id="dataTask">
 
         <h5 id="judulTask" th:text="${courseInformation.getCourseInformationTitle()}"></h5>
-        <h6 th:class="${courseInformation.getId()}" th:text="${courseInformation.getCreatedAt()}"></h6>
+        <h6 th:class="${courseInformation.getId()}" th:text="${#dates.format(courseInformation.getCreatedAt(), 'E dd-MM-yyyy HH:mm')}">Thu 30-12-2021 23:59</h6>
         <p th:utext="${courseInformation.getCourseInformationBody()}"></p>
-        <h6 th:class="${courseInformation.getId()}" th:text="${'Last updated: ' + courseInformation.getUpdatedAt()}"></h6>
+        <h6 th:class="${courseInformation.getId()}" th:text="${'Last updated: ' + #dates.format(courseInformation.getUpdatedAt(), 'E dd-MM-yyyy HH:mm')}">Thu 30-12-2021 23:59</h6>
         <div id="infoActionBtn" th:if="${course.isArchived() == false} and ${teacher != null}">
           <a th:href="@{/course/information/update/{courseId}/{courseInformationId}(courseId=${course.getId}, courseInformationId=${courseInformation.getId()})}" class="btn btn-info">Update</a>
           <form th:action="@{/course/information/delete/{courseId}/{courseInformationId}(courseId=${course.getId}, courseInformationId=${courseInformation.getId()})}" class="my-8" method="post"
@@ -106,56 +106,6 @@
             <button type="submit" class="btn btn-danger">Delete</button>
           </form>
         </div>
-
-  <!--      <div id="targetSelesaiTask">-->
-  <!--        Target selesai:-->
-  <!--      </div>-->
-  <!--      <div id="tempatWaktu">-->
-  <!--        <div class="span2mid">-->
-  <!--          <i class="far fa-calendar-alt task-icon"></i>-->
-  <!--        </div>-->
-  <!--        <div class="span2mid">-->
-  <!--          {% if task.tanggalSelesai %}-->
-  <!--          <script>-->
-  <!--              var month = new Array();-->
-  <!--              month[0] = "Januari";-->
-  <!--              month[1] = "Februari";-->
-  <!--              month[2] = "Maret";-->
-  <!--              month[3] = "April";-->
-  <!--              month[4] = "Mei";-->
-  <!--              month[5] = "Juni";-->
-  <!--              month[6] = "Juli";-->
-  <!--              month[7] = "Agustus";-->
-  <!--              month[8] = "September";-->
-  <!--              month[9] = "Oktober";-->
-  <!--              month[10] = "November";-->
-  <!--              month[11] = "Desember";-->
-  <!--              var date = "{{task.tanggalSelesai.day}}"-->
-  <!--              if (parseInt(date) < 10){-->
-  <!--                  date = "0"+date;-->
-  <!--              }-->
-  <!--              document.write(date + " " + month[{{task.tanggalSelesai.month}}-1] + " {{task.tanggalSelesai.year}}")-->
-  <!--          </script>-->
-  <!--          {% else %}-->
-  <!--          &#45;&#45;-->
-  <!--          {% endif %}-->
-  <!--        </div>-->
-
-  <!--        <div class="span2mid">-->
-  <!--          <i class="far fa-clock task-icon"></i>-->
-  <!--        </div>-->
-  <!--        <div class="span2mid">-->
-  <!--          {% if task.jamSelesai %}-->
-  <!--          &lt;!&ndash; Target selesai:  &ndash;&gt;-->
-  <!--          {{task.jamSelesai}}-->
-  <!--          {% else %}-->
-  <!--          &#45;&#45;-->
-  <!--          {% endif %}-->
-  <!--        </div>-->
-  <!--        <div id="klikDetail">-->
-  <!--          <small>klik untuk lihat detailnya</small>-->
-  <!--        </div>-->
-  <!--      </div>-->
       </div>
     </div>
   </div>

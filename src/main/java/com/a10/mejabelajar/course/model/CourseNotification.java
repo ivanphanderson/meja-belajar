@@ -20,14 +20,14 @@ public class CourseNotification {
     @Column(name = "type")
     private NotificationType notificationType;
 
-    @Column(name = "created_at")
+    @Column(name = "createdAt")
     private Date createdAt;
 
     @ManyToOne(cascade = CascadeType.MERGE)
-    @JoinColumn(name = "course_id")
+    @JoinColumn(name = "courseInformationId")
     private CourseInformation courseInformation;
 
-    @ManyToOne(cascade = CascadeType.MERGE)
-    @JoinColumn(name = "course", nullable = false)
+    @ManyToOne(cascade = CascadeType.ALL)
+    @JoinColumn(name = "studentId", nullable = false)
     private Student student;
 }

@@ -212,8 +212,7 @@ public class CourseController {
         }
 
 
-        List<CourseInformation> courseInformations =
-                courseInformationService.getCourseInformationByCourse(course);
+        List<CourseInformation> courseInformations = course.getCourseInformations();
 
         if (error != null) {
             model.addAttribute("error", error);
@@ -255,6 +254,7 @@ public class CourseController {
             Instant instant = Instant.now();
             Date date = Date.from(instant);
             Date newDate = new Date(date.getTime() + 7 * HOUR);
+
             List<CourseNotification> courseNotifications =
                 courseNotificationService
                         .getCourseNotificationByStudentAndCreatedAtIsGreaterThanEqual(

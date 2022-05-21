@@ -2,8 +2,6 @@ package com.a10.mejabelajar.course.model;
 
 import com.a10.mejabelajar.auth.model.Student;
 import com.a10.mejabelajar.auth.model.Teacher;
-import com.a10.mejabelajar.murid.model.Rate;
-import java.util.ArrayList;
 import java.util.List;
 import javax.persistence.*;
 import lombok.Data;
@@ -44,9 +42,6 @@ public class Course {
 
     @ManyToMany(mappedBy = "newCourse", cascade = CascadeType.ALL)
     private List<Student> newMurid;
-
-    @OneToMany(mappedBy = "course", cascade = CascadeType.ALL)
-    private List<Rate> newRate = new ArrayList<>();
 
     /**
      * Constructor to create course.

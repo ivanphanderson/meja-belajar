@@ -1,6 +1,7 @@
 package com.a10.mejabelajar.course.controller;
 
 import com.a10.mejabelajar.auth.model.Role;
+import com.a10.mejabelajar.auth.model.Student;
 import com.a10.mejabelajar.auth.model.Teacher;
 import com.a10.mejabelajar.auth.model.User;
 import com.a10.mejabelajar.auth.service.StudentService;
@@ -14,9 +15,13 @@ import com.a10.mejabelajar.course.service.CourseService;
 import java.time.Instant;
 import java.util.Date;
 import java.util.List;
+
+import com.a10.mejabelajar.murid.model.Rate;
+import com.a10.mejabelajar.murid.service.RateService;
 import org.springframework.beans.factory.annotation.Autowired;
 import org.springframework.http.ResponseEntity;
 import org.springframework.security.core.annotation.AuthenticationPrincipal;
+import org.springframework.security.core.context.SecurityContextHolder;
 import org.springframework.stereotype.Controller;
 import org.springframework.ui.Model;
 import org.springframework.web.bind.annotation.*;
@@ -37,6 +42,9 @@ public class CourseController {
 
     @Autowired
     private StudentService studentService;
+
+    @Autowired
+    private RateService rateService;
 
     @Autowired
     private CourseNotificationService courseNotificationService;
@@ -184,7 +192,7 @@ public class CourseController {
     @GetMapping(value = "/{courseId}")
     public String readCourseById(
             @AuthenticationPrincipal User user,
-            @PathVariable int courseId,
+            @PathVariable(value="courseId") int courseId,
             @RequestParam(name = "error", required = false) String error,
             Model model) {
         if (user == null) {
@@ -219,8 +227,35 @@ public class CourseController {
         }
         model.addAttribute(COURSE, course);
         model.addAttribute("courseInformations", courseInformations);
+
+        // Rate a course
+        List<Rate> listRate = rateService.getListRate();
+        model.addAttribute("rate", new Rate());
+        model.addAttribute("idCourse", courseId);
+        model.addAttribute("currentRate", listRate);
         return "course/readCourseById";
     }
+
+    /**
+     * Rate a course.
+     */
+    @PostMapping(value = "/rate")
+    public String rateCourse(@RequestParam Integer rate, @RequestParam Integer idCourse, @AuthenticationPrincipal User user) {
+        Object principal = SecurityContextHolder.getContext().getAuthentication().getPrincipal();
+        String studentId = ((User)principal).getId();
+        Student student = studentService.getStudentByUser(user);
+
+        Rate newRate = rateService.getByIdStudentAndIdCourse(studentId, idCourse);
+        if (newRate==null) {
+            rateService.createRate(studentId, idCourse, rate);
+            return "redirect:/murid";
+        }
+        else {
+            return "redirect:/course/"+idCourse+"?error=Anda sudah memberikan rate";
+        }
+
+    }
+
 
     /**
      * Archive a course.
@@ -299,5 +334,4 @@ public class CourseController {
         }
         return "";
     }
-
 }

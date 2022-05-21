@@ -31,4 +31,9 @@ public class RateServiceImpl implements RateService{
     public List<Rate> getListRate() {
         return rateRepository.findAll();
     }
+
+    @Override
+    public Rate getByIdStudentAndIdCourse(String idStudent, int idCourse) {
+        return rateRepository.findByIdStudentAndIdCourse(idStudent, idCourse);
+    }
 }

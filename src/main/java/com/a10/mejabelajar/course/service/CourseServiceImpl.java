@@ -102,4 +102,9 @@ public class CourseServiceImpl implements CourseService {
         courseRepository.save(course);
         teacherRepository.save(teacher);
     }
+
+    @Override
+    public List<Course> getCourseByArchived(boolean archived) {
+        return courseRepository.findAllByArchived(archived);
+    }
 }

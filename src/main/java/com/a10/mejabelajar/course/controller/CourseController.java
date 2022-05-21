@@ -245,8 +245,16 @@ public class CourseController {
         Object principal = SecurityContextHolder.getContext().getAuthentication().getPrincipal();
         String studentId = ((User)principal).getId();
         Student student = studentService.getStudentByUser(user);
-        rateService.createRate(studentId, idCourse, rate);
-        return "redirect:/murid";
+
+        Rate newRate = rateService.getByIdStudentAndIdCourse(studentId, idCourse);
+        if (newRate==null) {
+            rateService.createRate(studentId, idCourse, rate);
+            return "redirect:/murid";
+        }
+        else {
+            return "redirect:/course/"+idCourse+"?error=Anda sudah memberikan rate";
+        }
+
     }
 
 

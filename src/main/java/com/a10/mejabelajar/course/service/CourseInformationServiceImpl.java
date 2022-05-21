@@ -30,8 +30,7 @@ public class CourseInformationServiceImpl implements CourseInformationService {
         Date newDate = new Date(date.getTime() + 7 * HOUR);
         courseInformation.setCreatedAt(newDate);
         courseInformation.setUpdatedAt(newDate);
-        courseInformationRepository.save(courseInformation);
-        return courseInformation;
+        return courseInformationRepository.save(courseInformation);
     }
 
     @Override
@@ -46,8 +45,7 @@ public class CourseInformationServiceImpl implements CourseInformationService {
         Date newDate = new Date(date.getTime() + 7 * HOUR);
         courseInformation.setUpdatedAt(newDate);
         courseInformation.setCourse(oldCourseInformation.getCourse());
-        courseInformationRepository.save(courseInformation);
-        return  courseInformation;
+        return courseInformationRepository.save(courseInformation);
     }
 
     @Override

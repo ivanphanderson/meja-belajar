@@ -48,8 +48,7 @@ public class CourseServiceImpl implements CourseService {
         var teacher = teacherService.getTeacherByUser(user);
         teacher.setHaveCourse(true);
         course.setTeacher(teacher);
-        courseRepository.save(course);
-        return course;
+        return courseRepository.save(course);
     }
 
     @Override

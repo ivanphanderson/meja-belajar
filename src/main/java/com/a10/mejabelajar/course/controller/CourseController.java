@@ -11,6 +11,8 @@ import com.a10.mejabelajar.course.model.dto.CourseDataTransferObject;
 import com.a10.mejabelajar.course.service.CourseInformationService;
 import com.a10.mejabelajar.course.service.CourseNotificationService;
 import com.a10.mejabelajar.course.service.CourseService;
+
+import java.sql.*;
 import java.time.Instant;
 import java.util.Date;
 import java.util.List;
@@ -193,7 +195,7 @@ public class CourseController {
             @AuthenticationPrincipal User user,
             @PathVariable(value="courseId") int courseId,
             @RequestParam(name = "error", required = false) String error,
-            Model model) {
+            Model model) throws SQLException {
         if (user == null) {
             return "redirect:/login";
         }
@@ -228,10 +230,22 @@ public class CourseController {
         model.addAttribute("courseInformations", courseInformations);
 
         // Rate a course
-        List<Rate> listRate = rateService.getListRate();
+        Object principal = SecurityContextHolder.getContext().getAuthentication().getPrincipal();
+        String studentId = ((User)principal).getId();
+
+        // Average rate
+        Connection conn = DriverManager.getConnection("jdbc:postgresql://ec2-3-229-252-6.compute-1.amazonaws.com:5432/dek2gmuc9cqfl6", "snmncaqhruoukl", "5611939bd8f27a08fe9504b99386a08ea88243d455770f5984e07f4617234bc5");
+        Statement rateStat = conn.createStatement();
+        String formatString = String.format("SELECT AVG(nilai_rating) AS hasil FROM rate WHERE id_course=%s;", courseId);
+        ResultSet averageRate = rateStat.executeQuery(formatString);
+        averageRate.next();
+        int newAverageRate = averageRate.getInt("hasil");
+
+        Rate listRate = rateService.getByIdStudentAndIdCourse(studentId, courseId);
         model.addAttribute("rate", new Rate());
         model.addAttribute("idCourse", courseId);
         model.addAttribute("currentRate", listRate);
+        model.addAttribute("finalRate", newAverageRate);
         return "course/readCourseById";
     }
 

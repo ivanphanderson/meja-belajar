@@ -83,6 +83,7 @@
   <h6 th:text="|Type: ${course.getCourseType()}|"></h6>
   <h6 th:text="|Duration: ${course.getCourseDuration()} month(s)|"></h6>
   <p th:text="|${course.getCourseDescription()}|"><p>
+  <h6 th:text="|Rating: ${finalRate}|"></h6>
 
   <br>
   <div th:if="${course.isArchived() == false} and ${teacher != null}">

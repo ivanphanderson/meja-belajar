@@ -42,17 +42,4 @@ public class Course {
 
     @ManyToMany(mappedBy = "newCourse", cascade = CascadeType.ALL)
     private List<Student> newMurid;
-
-    /**
-     * Constructor to create course.
-     */
-    public Course(String courseName,
-                  CourseType courseType,
-                  String courseDescription,
-                  double courseDuration) {
-        this.courseName = courseName;
-        this.courseType = courseType;
-        this.courseDescription = courseDescription;
-        this.courseDuration = courseDuration;
-    }
 }

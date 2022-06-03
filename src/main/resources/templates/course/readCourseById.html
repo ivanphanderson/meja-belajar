@@ -111,7 +111,7 @@
     </div>
   </div>
 
-  <div>
+  <div th:if="${student!=null}">
     <form th:action="@{/course/rate}" method="POST">
       <label for="rate">Rate 1-5:</label>
       <input type="number" id="rate" name="rate" min="1" max="5">

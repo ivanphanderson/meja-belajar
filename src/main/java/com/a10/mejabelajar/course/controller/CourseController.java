@@ -2,22 +2,17 @@ package com.a10.mejabelajar.course.controller;
 
 import com.a10.mejabelajar.auth.model.Role;
 import com.a10.mejabelajar.auth.model.Teacher;
-import com.a10.mejabelajar.auth.model.User;
 import com.a10.mejabelajar.auth.service.StudentService;
 import com.a10.mejabelajar.auth.service.TeacherService;
 import com.a10.mejabelajar.auth.service.UserService;
 import com.a10.mejabelajar.course.exception.CourseInvalidException;
 import com.a10.mejabelajar.course.model.*;
 import com.a10.mejabelajar.course.model.dto.CourseDataTransferObject;
-import com.a10.mejabelajar.course.service.CourseNotificationService;
 import com.a10.mejabelajar.course.service.CourseService;
 import com.a10.mejabelajar.murid.model.Rate;
 import com.a10.mejabelajar.murid.service.RateService;
-import java.time.Instant;
-import java.util.Date;
 import java.util.List;
 import org.springframework.beans.factory.annotation.Autowired;
-import org.springframework.http.ResponseEntity;
 import org.springframework.security.core.context.SecurityContextHolder;
 import org.springframework.security.core.userdetails.UserDetails;
 import org.springframework.stereotype.Controller;
@@ -45,9 +40,6 @@ public class CourseController {
     @Autowired
     private UserService userService;
 
-    @Autowired
-    private CourseNotificationService courseNotificationService;
-
     private static final String COURSE = "course";
     private static final String COURSE_ID = "courseId";
     private static final String COURSE_TYPES = "courseTypes";
@@ -56,13 +48,6 @@ public class CourseController {
     private static final String TEACHER = "teacher";
     private static final String REDIRECT_COURSE = "redirect:/course/";
     private static final String REDIRECT_LOGIN = "redirect:/login";
-    private static final long HOUR = 3600L * 1000; // in milli-seconds.
-
-    @PostMapping(produces = {"application/json"})
-    @ResponseBody
-    public ResponseEntity<Course> createCourse(@RequestBody Course course) {
-        return ResponseEntity.ok(courseService.createCourse(course));
-    }
 
     /**
      * Show create course page.
@@ -103,7 +88,8 @@ public class CourseController {
         if (principal instanceof String) {
             return REDIRECT_LOGIN;
         }
-        var user = (User) principal;
+        var userDetails = (UserDetails) principal;
+        var user = userService.getUserByUsername(userDetails.getUsername());
 
         var teacher = teacherService.getTeacherByUser(user);
         if (teacher.isHaveCourse()) {
@@ -135,7 +121,8 @@ public class CourseController {
         if (principal instanceof String) {
             return REDIRECT_LOGIN;
         }
-        var user = (User) principal;
+        var userDetails = (UserDetails) principal;
+        var user = userService.getUserByUsername(userDetails.getUsername());
 
         var course = courseService.getCourseById(id);
         var teacher = teacherService.getTeacherByUser(user);
@@ -163,7 +150,8 @@ public class CourseController {
         if (principal instanceof String) {
             return REDIRECT_LOGIN;
         }
-        var user = (User) principal;
+        var userDetails = (UserDetails) principal;
+        var user = userService.getUserByUsername(userDetails.getUsername());
 
         var teacher = teacherService.getTeacherByUser(user);
         var course = courseService.getCourseById(id);
@@ -190,22 +178,20 @@ public class CourseController {
     }
 
     /**
-     * Show all course.
+     * Show all course. Will be removed once dashboard is created.
      */
     @GetMapping(value = "")
     public String readCourse(
-            @RequestParam(name = "error", required = false) String error,
             Model model) {
         var principal = SecurityContextHolder.getContext().getAuthentication().getPrincipal();
         if (principal instanceof String) {
             return REDIRECT_LOGIN;
         }
-        var user = (User) principal;
+        var userDetails = (UserDetails) principal;
+        var user = userService.getUserByUsername(userDetails.getUsername());
 
         List<Course> courses = courseService.   getCourses();
-        if (error != null) {
-            model.addAttribute(ERROR, error);
-        }
+
         if (user.getRole() == Role.STUDENT) {
             model.addAttribute(STUDENT, STUDENT);
         } else if (user.getRole() == Role.TEACHER) {
@@ -221,18 +207,17 @@ public class CourseController {
     @GetMapping(value = "/{courseId}")
     public String readCourseById(
             @PathVariable(value = "courseId") int courseId,
-            @RequestParam(name = "error", required = false) String error,
             Model model,
             RedirectAttributes redirectAttrs) {
         var principal = SecurityContextHolder.getContext().getAuthentication().getPrincipal();
         if (principal instanceof String) {
             return REDIRECT_LOGIN;
         }
-        var user = (User) principal;
+        var userDetails = (UserDetails) principal;
+        var user = userService.getUserByUsername(userDetails.getUsername());
 
         var course = courseService.getCourseById(courseId);
 
-        // Add if student
         if (user.getRole() == Role.STUDENT) {
             var student = studentService.getStudentByUser(user);
             List<Course> courses = courseService.getCoursesByStudent(student);
@@ -255,43 +240,20 @@ public class CourseController {
 
         List<CourseInformation> courseInformations = course.getCourseInformations();
 
-        if (error != null) {
-            model.addAttribute(ERROR, error);
-        }
         model.addAttribute(COURSE, course);
         model.addAttribute("courseInformations", courseInformations);
 
-        // Rate a course
-        List<Rate> listRate = rateService.getListRate();
+        String studentId = user.getId();
+
+        Double newAverageRate = rateService.getCourseAverageRateByIdCourse(courseId);
+
+        var listRate = rateService.getByIdStudentAndIdCourse(studentId, courseId);
         model.addAttribute("rate", new Rate());
         model.addAttribute("idCourse", courseId);
         model.addAttribute("currentRate", listRate);
+        model.addAttribute("finalRate", newAverageRate);
         return "course/readCourseById";
     }
-
-    /**
-     * Rate a course.
-     */
-    @PostMapping(value = "/rate")
-    public String rateCourse(
-            @RequestParam Integer rate,
-            @RequestParam Integer idCourse,
-            RedirectAttributes redirectAttrs
-    ) {
-        Object principal = SecurityContextHolder.getContext().getAuthentication().getPrincipal();
-        String studentId = ((User)principal).getId();
-
-        var newRate = rateService.getByIdStudentAndIdCourse(studentId, idCourse);
-        if (newRate == null) {
-            rateService.createRate(studentId, idCourse, rate);
-            return "redirect:/murid";
-        } else {
-            redirectAttrs.addFlashAttribute(ERROR, "Anda sudah memberikan rate");
-            return REDIRECT_COURSE + idCourse;
-        }
-
-    }
-
 
     /**
      * Archive a course.
@@ -302,63 +264,18 @@ public class CourseController {
         if (principal instanceof String) {
             return REDIRECT_LOGIN;
         }
-        var user = (User) principal;
+        var userDetails = (UserDetails) principal;
+        var user = userService.getUserByUsername(userDetails.getUsername());
 
-        var teacher = teacherService.getTeacherByUser(user);
         var course = courseService.getCourseById(courseId);
+        var teacher = teacherService.getTeacherByUser(user);
         String isValid =
                 validateTeacherAccess(teacher, course, "Archive the Course", redirectAttrs);
         if (!isValid.equals("")) {
             return isValid;
         }
-        courseService.archiveCourseById(user, courseId);
+        courseService.archiveCourseById(teacher, course);
         return REDIRECT_COURSE;
-    }
-
-    /**
-     * Show Notification.
-     */
-    @GetMapping(value = "/notification")
-    public String courseNotification(
-            Model model,
-            RedirectAttributes redirectAttrs
-    ) {
-        var principal = SecurityContextHolder.getContext().getAuthentication().getPrincipal();
-        if (principal instanceof String) {
-            return REDIRECT_LOGIN;
-        }
-        var user = (User) principal;
-
-        if (user.getRole() == Role.STUDENT) {
-            var student = studentService.getStudentByUser(user);
-
-            var instant = Instant.now();
-            var date = Date.from(instant);
-            var newDate = new Date(date.getTime() + 7 * HOUR);
-
-            List<CourseNotification> courseNotifications =
-                courseNotificationService
-                        .getCourseNotificationByStudentAndCreatedAtIsGreaterThanEqual(
-                                student,
-                                student.getLastNotifBtnClick()
-                        );
-
-            List<CourseNotification> courseNotifications1 =
-                courseNotificationService
-                        .getCourseNotificationByStudentAndCreatedAtIsLessThan(
-                                student,
-                                student.getLastNotifBtnClick()
-                        );
-
-            studentService.setStudentLastNotifBtnClick(student, newDate);
-            model.addAttribute("courseNotifications", courseNotifications);
-            model.addAttribute("courseNotifications1", courseNotifications1);
-            return "course/courseNotification";
-        } else {
-            redirectAttrs.addFlashAttribute(ERROR,
-                    "The feature is available only for student");
-            return REDIRECT_COURSE;
-        }
     }
 
     /**

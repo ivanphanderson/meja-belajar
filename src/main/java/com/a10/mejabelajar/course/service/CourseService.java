@@ -10,8 +10,6 @@ import java.util.List;
 public interface CourseService {
     Course createCourse(CourseDataTransferObject courseDataTransferObject, User user);
 
-//    Course createCourse(Course course);
-
     List<Course> getCourses();
 
     Course getCourseById(int id);

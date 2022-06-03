@@ -53,12 +53,6 @@ public class CourseController {
     private static final String REDIRECT_LOGIN = "redirect:/login";
     private static final long HOUR = 3600L * 1000; // in milli-seconds.
 
-//    @PostMapping(produces = {"application/json"})
-//    @ResponseBody
-//    public ResponseEntity<Course> createCourse(@RequestBody Course course) {
-//        return ResponseEntity.ok(courseService.createCourse(course));
-//    }
-
     /**
      * Show create course page.
      */
@@ -261,30 +255,6 @@ public class CourseController {
         model.addAttribute("currentRate", listRate);
         return "course/readCourseById";
     }
-
-    /**
-     * Rate a course.
-     */
-    @PostMapping(value = "/rate")
-    public String rateCourse(
-            @RequestParam Integer rate,
-            @RequestParam Integer idCourse,
-            RedirectAttributes redirectAttrs
-    ) {
-        Object principal = SecurityContextHolder.getContext().getAuthentication().getPrincipal();
-        String studentId = ((User)principal).getId();
-
-        var newRate = rateService.getByIdStudentAndIdCourse(studentId, idCourse);
-        if (newRate == null) {
-            rateService.createRate(studentId, idCourse, rate);
-            return "redirect:/murid";
-        } else {
-            redirectAttrs.addFlashAttribute(ERROR, "Anda sudah memberikan rate");
-            return REDIRECT_COURSE + idCourse;
-        }
-
-    }
-
 
     /**
      * Archive a course.

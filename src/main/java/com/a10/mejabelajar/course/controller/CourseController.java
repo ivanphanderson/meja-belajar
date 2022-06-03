@@ -11,7 +11,6 @@ import com.a10.mejabelajar.course.model.dto.CourseDataTransferObject;
 import com.a10.mejabelajar.course.service.CourseService;
 import com.a10.mejabelajar.murid.model.Rate;
 import com.a10.mejabelajar.murid.service.RateService;
-import java.sql.*;
 import java.util.List;
 import org.springframework.beans.factory.annotation.Autowired;
 import org.springframework.security.core.context.SecurityContextHolder;
@@ -209,7 +208,7 @@ public class CourseController {
     public String readCourseById(
             @PathVariable(value = "courseId") int courseId,
             Model model,
-            RedirectAttributes redirectAttrs) throws SQLException {
+            RedirectAttributes redirectAttrs) {
         var principal = SecurityContextHolder.getContext().getAuthentication().getPrincipal();
         if (principal instanceof String) {
             return REDIRECT_LOGIN;
@@ -248,7 +247,7 @@ public class CourseController {
 
         Double newAverageRate = rateService.getCourseAverageRateByIdCourse(courseId);
 
-        Rate listRate = rateService.getByIdStudentAndIdCourse(studentId, courseId);
+        var listRate = rateService.getByIdStudentAndIdCourse(studentId, courseId);
         model.addAttribute("rate", new Rate());
         model.addAttribute("idCourse", courseId);
         model.addAttribute("currentRate", listRate);

@@ -1,23 +1,24 @@
 package com.a10.mejabelajar.course.validator;
 
-import com.a10.mejabelajar.course.exception.CourseInformationInvalidException;
-import com.a10.mejabelajar.course.exception.CourseInvalidException;
-import com.a10.mejabelajar.course.model.Course;
-import com.a10.mejabelajar.course.model.CourseType;
-import com.a10.mejabelajar.course.model.dto.CourseDataTransferObject;
-import org.junit.jupiter.api.BeforeEach;
-import org.junit.jupiter.api.Test;
+import static org.junit.jupiter.api.Assertions.*;
 
+import com.a10.mejabelajar.course.exception.CourseInvalidException;
+import com.a10.mejabelajar.course.model.dto.CourseDataTransferObject;
 import java.lang.reflect.Constructor;
 import java.lang.reflect.InvocationTargetException;
 import java.lang.reflect.Modifier;
+import org.junit.jupiter.api.BeforeEach;
+import org.junit.jupiter.api.Test;
 
-import static org.junit.jupiter.api.Assertions.*;
+
 
 public class CourseValidatorTest {
 
     private CourseDataTransferObject courseDataTransferObject;
 
+    /**
+     * Run this before run every single test.
+     */
     @BeforeEach
     public void setUp() {
         courseDataTransferObject = new CourseDataTransferObject();
@@ -28,7 +29,7 @@ public class CourseValidatorTest {
     }
 
     @Test
-    public void testConstructorIsPrivate() throws NoSuchMethodException, IllegalAccessException, InvocationTargetException, InstantiationException {
+    public void testConstructorIsPrivate() throws NoSuchMethodException {
         Constructor<CourseValidator> constructor = CourseValidator.class.getDeclaredConstructor();
         assertTrue(Modifier.isPrivate(constructor.getModifiers()));
         constructor.setAccessible(true);

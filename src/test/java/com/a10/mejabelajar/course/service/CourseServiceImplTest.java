@@ -1,5 +1,9 @@
 package com.a10.mejabelajar.course.service;
 
+import static org.junit.jupiter.api.Assertions.*;
+import static org.mockito.Mockito.lenient;
+import static org.mockito.Mockito.when;
+
 import com.a10.mejabelajar.auth.model.Student;
 import com.a10.mejabelajar.auth.model.Teacher;
 import com.a10.mejabelajar.auth.model.User;
@@ -9,6 +13,8 @@ import com.a10.mejabelajar.course.model.Course;
 import com.a10.mejabelajar.course.model.CourseType;
 import com.a10.mejabelajar.course.model.dto.CourseDataTransferObject;
 import com.a10.mejabelajar.course.repository.CourseRepository;
+import java.util.ArrayList;
+import java.util.List;
 import org.junit.jupiter.api.BeforeEach;
 import org.junit.jupiter.api.Test;
 import org.junit.jupiter.api.extension.ExtendWith;
@@ -16,12 +22,7 @@ import org.mockito.InjectMocks;
 import org.mockito.Mock;
 import org.mockito.junit.jupiter.MockitoExtension;
 
-import java.util.ArrayList;
-import java.util.List;
 
-import static org.junit.jupiter.api.Assertions.*;
-import static org.mockito.Mockito.lenient;
-import static org.mockito.Mockito.when;
 
 @ExtendWith(MockitoExtension.class)
 public class CourseServiceImplTest {
@@ -46,6 +47,9 @@ public class CourseServiceImplTest {
 
     private static final int COURSE_ID = 100;
 
+    /**
+     * Run this before run every single test.
+     */
     @BeforeEach
     public void setUp() {
         user = new User();
@@ -73,7 +77,8 @@ public class CourseServiceImplTest {
     public void testCreateCourse() {
         when(teacherService.getTeacherByUser(user)).thenReturn(teacher);
 
-        lenient().when(courseService.createCourse(courseDataTransferObject, user)).thenReturn(course);
+        lenient().when(courseService.createCourse(courseDataTransferObject, user))
+                .thenReturn(course);
     }
 
     @Test
@@ -81,15 +86,16 @@ public class CourseServiceImplTest {
         when(teacherService.getTeacherByUser(user)).thenReturn(teacher);
 
         courseService.createCourse(courseDataTransferObject, user);
-        String pastName = courseDataTransferObject.getCourseName();
+        final String pastName = courseDataTransferObject.getCourseName();
 
-        String newName = "Fantasy";
+        final String newName = "Fantasy";
         courseDataTransferObject.setCourseName(newName);
         course.setCourseName(newName);
 
-        lenient().when(courseService.updateCourse(COURSE_ID, teacher, courseDataTransferObject)).thenReturn(course);
-        System.out.println(courseDataTransferObject.getCourseName());
-        Course courseResult = courseService.updateCourse(COURSE_ID, teacher, courseDataTransferObject);
+        lenient().when(courseService.updateCourse(COURSE_ID, teacher, courseDataTransferObject))
+                .thenReturn(course);
+        Course courseResult =
+                courseService.updateCourse(COURSE_ID, teacher, courseDataTransferObject);
 
         assertNotEquals(courseResult.getCourseName(), pastName);
     }
@@ -97,8 +103,8 @@ public class CourseServiceImplTest {
     @Test
     public void testArchiveCourse() {
         courseService.archiveCourseById(teacher, course);
-        assertEquals(teacher.isHaveCourse(), false);
-        assertEquals(course.isArchived(), true);
+        assertFalse(teacher.isHaveCourse());
+        assertTrue(course.isArchived());
     }
 
     @Test
@@ -130,7 +136,8 @@ public class CourseServiceImplTest {
         when(teacherService.getTeacherByUser(user)).thenReturn(teacher);
 
         courseService.createCourse(courseDataTransferObject, user);
-        lenient().when(courseService.getCourseByTeacherAndStatus(teacher, false)).thenReturn(course);
+        lenient().when(courseService.getCourseByTeacherAndStatus(teacher, false))
+                .thenReturn(course);
         var courseResult = courseService.getCourseByTeacherAndStatus(teacher, false);
         assertNotNull(courseResult);
     }

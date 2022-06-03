@@ -1,5 +1,11 @@
 package com.a10.mejabelajar.course.controller;
 
+import static org.mockito.ArgumentMatchers.any;
+import static org.mockito.Mockito.when;
+import static org.springframework.test.web.servlet.request.MockMvcRequestBuilders.get;
+import static org.springframework.test.web.servlet.result.MockMvcResultMatchers.*;
+import static org.springframework.test.web.servlet.result.MockMvcResultMatchers.status;
+
 import com.a10.mejabelajar.auth.model.Role;
 import com.a10.mejabelajar.auth.model.Student;
 import com.a10.mejabelajar.auth.model.Teacher;
@@ -8,14 +14,14 @@ import com.a10.mejabelajar.auth.service.StudentService;
 import com.a10.mejabelajar.auth.service.TeacherService;
 import com.a10.mejabelajar.auth.service.UserService;
 import com.a10.mejabelajar.course.model.Course;
-import com.a10.mejabelajar.course.model.CourseInformation;
 import com.a10.mejabelajar.course.model.CourseNotification;
 import com.a10.mejabelajar.course.service.CourseNotificationService;
 import com.a10.mejabelajar.course.service.CourseService;
-import com.a10.mejabelajar.murid.service.RateService;
+import java.util.ArrayList;
+import java.util.Date;
+import java.util.List;
 import org.junit.jupiter.api.BeforeEach;
 import org.junit.jupiter.api.Test;
-import org.mockito.Mock;
 import org.springframework.beans.factory.annotation.Autowired;
 import org.springframework.boot.test.autoconfigure.web.servlet.WebMvcTest;
 import org.springframework.boot.test.mock.mockito.MockBean;
@@ -27,15 +33,7 @@ import org.springframework.test.web.servlet.result.MockMvcResultMatchers;
 import org.springframework.test.web.servlet.setup.MockMvcBuilders;
 import org.springframework.web.context.WebApplicationContext;
 
-import java.util.ArrayList;
-import java.util.Date;
-import java.util.List;
 
-import static org.mockito.ArgumentMatchers.any;
-import static org.mockito.Mockito.when;
-import static org.springframework.test.web.servlet.request.MockMvcRequestBuilders.get;
-import static org.springframework.test.web.servlet.result.MockMvcResultMatchers.*;
-import static org.springframework.test.web.servlet.result.MockMvcResultMatchers.status;
 
 @WebMvcTest(controllers = CourseNotificationController.class)
 public class CourseNotificationControllerTest {
@@ -72,6 +70,9 @@ public class CourseNotificationControllerTest {
     private Course course;
     private Student student;
 
+    /**
+     * Run this before run every single test.
+     */
     @BeforeEach
     public void setUp() {
         mockMvc = MockMvcBuilders.webAppContextSetup(webApplicationContext).build();
@@ -87,7 +88,7 @@ public class CourseNotificationControllerTest {
     public void notLoggedInCantAccessCreateCourseGet() throws Exception {
         mockMvc.perform(get("/course/notification"))
                 .andExpect(status().is3xxRedirection())
-                .andExpect(redirectedUrl("/login"));;
+                .andExpect(redirectedUrl("/login"));
     }
 
     @Test
@@ -103,7 +104,8 @@ public class CourseNotificationControllerTest {
         mockMvc.perform(get("/course/notification"))
                 .andExpect(status().is3xxRedirection())
                 .andExpect(redirectedUrl("/course/"))
-                .andExpect(MockMvcResultMatchers.flash().attribute("error", "The feature is available only for student"));
+                .andExpect(MockMvcResultMatchers.flash()
+                        .attribute("error", "The feature is available only for student"));
     }
 
     @Test
@@ -120,9 +122,15 @@ public class CourseNotificationControllerTest {
         List<CourseNotification> courseNotifications2 = new ArrayList<>();
         courseNotifications2.add(courseNotification2);
 
-        when(courseNotificationService.getCourseNotificationByStudentAndCreatedAtIsGreaterThanEqual(any(Student.class), any(Date.class)))
+        when(courseNotificationService
+                .getCourseNotificationByStudentAndCreatedAtIsGreaterThanEqual(
+                        any(Student.class),
+                        any(Date.class)))
                 .thenReturn(courseNotifications1);
-        when(courseNotificationService.getCourseNotificationByStudentAndCreatedAtIsLessThan(any(Student.class), any(Date.class)))
+        when(courseNotificationService
+                .getCourseNotificationByStudentAndCreatedAtIsLessThan(
+                        any(Student.class),
+                        any(Date.class)))
                 .thenReturn(courseNotifications2);
 
 

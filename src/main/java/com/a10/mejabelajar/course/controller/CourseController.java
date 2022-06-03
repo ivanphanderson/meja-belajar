@@ -2,20 +2,17 @@ package com.a10.mejabelajar.course.controller;
 
 import com.a10.mejabelajar.auth.model.Role;
 import com.a10.mejabelajar.auth.model.Teacher;
-import com.a10.mejabelajar.auth.model.User;
 import com.a10.mejabelajar.auth.service.StudentService;
 import com.a10.mejabelajar.auth.service.TeacherService;
 import com.a10.mejabelajar.auth.service.UserService;
 import com.a10.mejabelajar.course.exception.CourseInvalidException;
 import com.a10.mejabelajar.course.model.*;
 import com.a10.mejabelajar.course.model.dto.CourseDataTransferObject;
-import com.a10.mejabelajar.course.service.CourseNotificationService;
 import com.a10.mejabelajar.course.service.CourseService;
 import com.a10.mejabelajar.murid.model.Rate;
 import com.a10.mejabelajar.murid.service.RateService;
 import java.util.List;
 import org.springframework.beans.factory.annotation.Autowired;
-import org.springframework.http.ResponseEntity;
 import org.springframework.security.core.context.SecurityContextHolder;
 import org.springframework.security.core.userdetails.UserDetails;
 import org.springframework.stereotype.Controller;
@@ -51,7 +48,6 @@ public class CourseController {
     private static final String TEACHER = "teacher";
     private static final String REDIRECT_COURSE = "redirect:/course/";
     private static final String REDIRECT_LOGIN = "redirect:/login";
-    private static final long HOUR = 3600L * 1000; // in milli-seconds.
 
     /**
      * Show create course page.

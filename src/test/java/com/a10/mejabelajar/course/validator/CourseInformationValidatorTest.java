@@ -1,20 +1,22 @@
 package com.a10.mejabelajar.course.validator;
 
+import static org.junit.jupiter.api.Assertions.*;
+
 import com.a10.mejabelajar.course.exception.CourseInformationInvalidException;
 import com.a10.mejabelajar.course.model.CourseInformation;
-import org.junit.jupiter.api.Test;
-
 import java.lang.reflect.Constructor;
 import java.lang.reflect.InvocationTargetException;
 import java.lang.reflect.Modifier;
+import org.junit.jupiter.api.Test;
 
-import static org.junit.jupiter.api.Assertions.*;
+
 
 public class CourseInformationValidatorTest {
 
     @Test
-    public void testConstructorIsPrivate() throws NoSuchMethodException, IllegalAccessException, InvocationTargetException, InstantiationException {
-        Constructor<CourseInformationValidator> constructor = CourseInformationValidator.class.getDeclaredConstructor();
+    public void testConstructorIsPrivate() throws NoSuchMethodException {
+        Constructor<CourseInformationValidator> constructor =
+                CourseInformationValidator.class.getDeclaredConstructor();
         assertTrue(Modifier.isPrivate(constructor.getModifiers()));
         constructor.setAccessible(true);
         assertThrows(InvocationTargetException.class, () -> {

@@ -5,6 +5,9 @@ import com.a10.mejabelajar.auth.service.StudentService;
 import com.a10.mejabelajar.auth.service.UserService;
 import com.a10.mejabelajar.course.model.CourseNotification;
 import com.a10.mejabelajar.course.service.CourseNotificationService;
+import java.time.Instant;
+import java.util.Date;
+import java.util.List;
 import org.springframework.beans.factory.annotation.Autowired;
 import org.springframework.security.core.context.SecurityContextHolder;
 import org.springframework.security.core.userdetails.UserDetails;
@@ -14,9 +17,6 @@ import org.springframework.web.bind.annotation.GetMapping;
 import org.springframework.web.bind.annotation.RequestMapping;
 import org.springframework.web.servlet.mvc.support.RedirectAttributes;
 
-import java.time.Instant;
-import java.util.Date;
-import java.util.List;
 
 @Controller
 @RequestMapping(path = "/course/notification")

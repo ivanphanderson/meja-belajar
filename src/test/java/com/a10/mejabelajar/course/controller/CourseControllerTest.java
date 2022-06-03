@@ -1,5 +1,11 @@
 package com.a10.mejabelajar.course.controller;
 
+import static org.mockito.ArgumentMatchers.any;
+import static org.mockito.ArgumentMatchers.anyInt;
+import static org.mockito.Mockito.when;
+import static org.springframework.test.web.servlet.request.MockMvcRequestBuilders.*;
+import static org.springframework.test.web.servlet.result.MockMvcResultMatchers.*;
+
 import com.a10.mejabelajar.auth.model.Role;
 import com.a10.mejabelajar.auth.model.Student;
 import com.a10.mejabelajar.auth.model.Teacher;
@@ -11,9 +17,10 @@ import com.a10.mejabelajar.course.exception.CourseInvalidException;
 import com.a10.mejabelajar.course.model.Course;
 import com.a10.mejabelajar.course.model.CourseInformation;
 import com.a10.mejabelajar.course.model.dto.CourseDataTransferObject;
-import com.a10.mejabelajar.course.service.CourseNotificationService;
 import com.a10.mejabelajar.course.service.CourseService;
 import com.a10.mejabelajar.murid.service.RateService;
+import java.util.ArrayList;
+import java.util.List;
 import org.junit.jupiter.api.BeforeEach;
 import org.junit.jupiter.api.Test;
 import org.mockito.Mock;
@@ -26,15 +33,6 @@ import org.springframework.security.test.context.support.WithMockUser;
 import org.springframework.test.web.servlet.MockMvc;
 import org.springframework.test.web.servlet.setup.MockMvcBuilders;
 import org.springframework.web.context.WebApplicationContext;
-
-import java.util.ArrayList;
-import java.util.List;
-
-import static org.mockito.ArgumentMatchers.any;
-import static org.mockito.ArgumentMatchers.anyInt;
-import static org.mockito.Mockito.when;
-import static org.springframework.test.web.servlet.request.MockMvcRequestBuilders.*;
-import static org.springframework.test.web.servlet.result.MockMvcResultMatchers.*;
 
 @WebMvcTest(controllers = CourseController.class)
 public class CourseControllerTest {
@@ -74,6 +72,9 @@ public class CourseControllerTest {
     private Course course;
     private Student student;
 
+    /**
+     * Run this before run every single test.
+     */
     @BeforeEach
     public void setUp() {
         mockMvc = MockMvcBuilders.webAppContextSetup(webApplicationContext).build();
@@ -90,7 +91,7 @@ public class CourseControllerTest {
     public void notLoggedInCantAccessCreateCourseGet() throws Exception {
         mockMvc.perform(get("/course/create"))
                 .andExpect(status().is3xxRedirection())
-                .andExpect(redirectedUrl("/login"));;
+                .andExpect(redirectedUrl("/login"));
     }
 
     @Test
@@ -122,7 +123,7 @@ public class CourseControllerTest {
     public void notLoggedInCantAccessCreateCoursePost() throws Exception {
         mockMvc.perform(post("/course/create"))
                 .andExpect(status().is3xxRedirection())
-                .andExpect(redirectedUrl("/login"));;
+                .andExpect(redirectedUrl("/login"));
     }
 
     @Test
@@ -155,7 +156,10 @@ public class CourseControllerTest {
         teacher.setHaveCourse(false);
         when(userService.getUserByUsername(TEACHER_UNAME)).thenReturn(user);
         when(teacherService.getTeacherByUser(user)).thenReturn(teacher);
-        when(courseService.createCourse(any(CourseDataTransferObject.class), any(User.class))).thenThrow(new CourseInvalidException("Course name should not be empty"));
+        when(courseService.createCourse(
+                any(CourseDataTransferObject.class),
+                any(User.class)))
+                .thenThrow(new CourseInvalidException("Course name should not be empty"));
 
         mockMvc.perform(post("/course/create"))
                 .andExpect(status().isOk())
@@ -181,7 +185,7 @@ public class CourseControllerTest {
     public void notLoggedInCantAccessUpdateCourseGet() throws Exception {
         mockMvc.perform(get("/course/update/" + COURSE_ID))
                 .andExpect(status().is3xxRedirection())
-                .andExpect(redirectedUrl("/login"));;
+                .andExpect(redirectedUrl("/login"));
     }
 
     @Test
@@ -249,7 +253,8 @@ public class CourseControllerTest {
         when(userService.getUserByUsername(TEACHER_UNAME)).thenReturn(user);
         when(teacherService.getTeacherByUser(user)).thenReturn(teacher);
         when(courseService.getCourseById(COURSE_ID)).thenReturn(course);
-        when(courseService.updateCourse(COURSE_ID, teacher, courseDataTransferObject)).thenReturn(course);
+        when(courseService.updateCourse(COURSE_ID, teacher, courseDataTransferObject))
+                .thenReturn(course);
 
         mockMvc.perform(post("/course/update/" + COURSE_ID))
                 .andExpect(status().is3xxRedirection());
@@ -266,7 +271,12 @@ public class CourseControllerTest {
         when(userService.getUserByUsername(TEACHER_UNAME)).thenReturn(user);
         when(teacherService.getTeacherByUser(user)).thenReturn(teacher);
         when(courseService.getCourseById(COURSE_ID)).thenReturn(course);
-        when(courseService.updateCourse(anyInt(), any(Teacher.class), any(CourseDataTransferObject.class))).thenThrow(new CourseInvalidException("Duration should be a positive Integer"));
+        when(courseService
+                .updateCourse(
+                        anyInt(),
+                        any(Teacher.class),
+                        any(CourseDataTransferObject.class)))
+                .thenThrow(new CourseInvalidException("Duration should be a positive Integer"));
 
         mockMvc.perform(post("/course/update/" + COURSE_ID))
                 .andExpect(status().isOk())
@@ -304,7 +314,7 @@ public class CourseControllerTest {
     public void notLoggedInCantAccessReadCourseGet() throws Exception {
         mockMvc.perform(get("/course/"))
                 .andExpect(status().is3xxRedirection())
-                .andExpect(redirectedUrl("/login"));;
+                .andExpect(redirectedUrl("/login"));
     }
 
     @Test
@@ -312,7 +322,7 @@ public class CourseControllerTest {
     public void notLoggedInCantAccessReadCourseByIdGet() throws Exception {
         mockMvc.perform(get("/course/" + COURSE_ID))
                 .andExpect(status().is3xxRedirection())
-                .andExpect(redirectedUrl("/login"));;
+                .andExpect(redirectedUrl("/login"));
     }
 
     @Test
@@ -371,7 +381,8 @@ public class CourseControllerTest {
 
         var course1 = new Course();
         List<Course> courses = new ArrayList<>();
-        courses.add(course); courses.add(course1);
+        courses.add(course);
+        courses.add(course1);
 
         when(userService.getUserByUsername(STUDENT_UNAME)).thenReturn(user);
         when(studentService.getStudentByUser(user)).thenReturn(student);
@@ -416,7 +427,7 @@ public class CourseControllerTest {
     public void notLoggedInCantAccessArchiveCoursePost() throws Exception {
         mockMvc.perform(post("/course/archive/" + COURSE_ID))
                 .andExpect(status().is3xxRedirection())
-                .andExpect(redirectedUrl("/login"));;
+                .andExpect(redirectedUrl("/login"));
     }
 
     @Test

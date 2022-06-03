@@ -1,5 +1,11 @@
 package com.a10.mejabelajar.course.controller;
 
+import static org.mockito.ArgumentMatchers.any;
+import static org.mockito.ArgumentMatchers.anyInt;
+import static org.mockito.Mockito.when;
+import static org.springframework.test.web.servlet.request.MockMvcRequestBuilders.*;
+import static org.springframework.test.web.servlet.result.MockMvcResultMatchers.*;
+
 import com.a10.mejabelajar.auth.model.Student;
 import com.a10.mejabelajar.auth.model.Teacher;
 import com.a10.mejabelajar.auth.model.User;
@@ -12,7 +18,7 @@ import com.a10.mejabelajar.course.model.CourseInformation;
 import com.a10.mejabelajar.course.service.CourseInformationService;
 import com.a10.mejabelajar.course.service.CourseNotificationService;
 import com.a10.mejabelajar.course.service.CourseService;
-import com.a10.mejabelajar.murid.service.RateService;
+import java.util.Date;
 import org.junit.jupiter.api.BeforeEach;
 import org.junit.jupiter.api.Test;
 import org.mockito.Mock;
@@ -26,13 +32,6 @@ import org.springframework.test.web.servlet.MockMvc;
 import org.springframework.test.web.servlet.setup.MockMvcBuilders;
 import org.springframework.web.context.WebApplicationContext;
 
-import java.util.Date;
-
-import static org.mockito.ArgumentMatchers.any;
-import static org.mockito.ArgumentMatchers.anyInt;
-import static org.mockito.Mockito.when;
-import static org.springframework.test.web.servlet.request.MockMvcRequestBuilders.*;
-import static org.springframework.test.web.servlet.result.MockMvcResultMatchers.*;
 
 @WebMvcTest(CourseInformationController.class)
 public class CourseInformationControllerTest {
@@ -68,7 +67,6 @@ public class CourseInformationControllerTest {
     private WebApplicationContext webApplicationContext;
 
     private static final String TEACHER_UNAME = "teacher";
-    private static final String STUDENT_UNAME = "student";
     private static final int COURSE_ID = 100;
     private static final int COURSE_INFORMATION_ID = 101;
     private Teacher teacher;
@@ -76,6 +74,9 @@ public class CourseInformationControllerTest {
     private Course course;
     private Student student;
 
+    /**
+     * Run this before run every single test.
+     */
     @BeforeEach
     public void setUp() {
         mockMvc = MockMvcBuilders.webAppContextSetup(webApplicationContext).build();
@@ -95,7 +96,7 @@ public class CourseInformationControllerTest {
     public void notLoggedInCantAccessCreateCourseInformationGet() throws Exception {
         mockMvc.perform(get("/course/information/create/" + COURSE_ID))
                 .andExpect(status().is3xxRedirection())
-                .andExpect(redirectedUrl("/login"));;
+                .andExpect(redirectedUrl("/login"));
     }
 
     @Test
@@ -148,7 +149,7 @@ public class CourseInformationControllerTest {
     public void notLoggedInCantAccessCreateCourseInformationPost() throws Exception {
         mockMvc.perform(post("/course/information/create/" + COURSE_ID))
                 .andExpect(status().is3xxRedirection())
-                .andExpect(redirectedUrl("/login"));;
+                .andExpect(redirectedUrl("/login"));
     }
 
     @Test
@@ -161,7 +162,8 @@ public class CourseInformationControllerTest {
         when(userService.getUserByUsername(TEACHER_UNAME)).thenReturn(user);
         when(teacherService.getTeacherByUser(user)).thenReturn(teacher);
         when(courseService.getCourseById(COURSE_ID)).thenReturn(course);
-        when(courseInformationService.createCourseInformation(courseInformation)).thenReturn(courseInformation);
+        when(courseInformationService.createCourseInformation(courseInformation))
+                .thenReturn(courseInformation);
 
         mockMvc.perform(post("/course/information/create/" + COURSE_ID))
                 .andExpect(status().is3xxRedirection());
@@ -177,7 +179,8 @@ public class CourseInformationControllerTest {
         when(userService.getUserByUsername(TEACHER_UNAME)).thenReturn(user);
         when(teacherService.getTeacherByUser(user)).thenReturn(teacher);
         when(courseService.getCourseById(COURSE_ID)).thenReturn(course);
-        when(courseInformationService.createCourseInformation(any(CourseInformation.class))).thenThrow(new CourseInformationInvalidException("Required Title"));
+        when(courseInformationService.createCourseInformation(any(CourseInformation.class)))
+                .thenThrow(new CourseInformationInvalidException("Required Title"));
 
         mockMvc.perform(post("/course/information/create/" + COURSE_ID))
                 .andExpect(status().isOk())
@@ -217,9 +220,10 @@ public class CourseInformationControllerTest {
     @Test
     @WithAnonymousUser
     public void notLoggedInCantAccessCreateUpdateInformationGet() throws Exception {
-        mockMvc.perform(get("/course/information/update/" + COURSE_ID + "/" + COURSE_INFORMATION_ID))
+        mockMvc.perform(
+                get("/course/information/update/" + COURSE_ID + "/" + COURSE_INFORMATION_ID))
                 .andExpect(status().is3xxRedirection())
-                .andExpect(redirectedUrl("/login"));;
+                .andExpect(redirectedUrl("/login"));
     }
 
     @Test
@@ -232,9 +236,11 @@ public class CourseInformationControllerTest {
         when(userService.getUserByUsername(TEACHER_UNAME)).thenReturn(user);
         when(teacherService.getTeacherByUser(user)).thenReturn(teacher);
         when(courseService.getCourseById(COURSE_ID)).thenReturn(course);
-        when(courseInformationService.getCourseInformationById(COURSE_INFORMATION_ID)).thenReturn(courseInformation);
+        when(courseInformationService.getCourseInformationById(COURSE_INFORMATION_ID))
+                .thenReturn(courseInformation);
 
-        mockMvc.perform(get("/course/information/update/" + COURSE_ID + "/" + COURSE_INFORMATION_ID))
+        mockMvc.perform(
+                get("/course/information/update/" + COURSE_ID + "/" + COURSE_INFORMATION_ID))
                 .andExpect(status().isOk())
                 .andExpect(model().attributeExists("courseId"))
                 .andExpect(model().attributeExists("courseInformation"))
@@ -254,25 +260,29 @@ public class CourseInformationControllerTest {
         when(courseService.getCourseById(COURSE_ID)).thenReturn(course);
         when(courseService.getCourseByTeacherAndStatus(teacher, false)).thenReturn(course);
 
-        mockMvc.perform(get("/course/information/update/" + COURSE_ID + "/" + COURSE_INFORMATION_ID))
+        mockMvc.perform(
+                get("/course/information/update/" + COURSE_ID + "/" + COURSE_INFORMATION_ID))
                 .andExpect(status().is3xxRedirection());
 
 
         course.setArchived((false));
         var teacher1 = new Teacher();
         course.setTeacher(teacher1);
-        mockMvc.perform(get("/course/information/update/" + COURSE_ID + "/" + COURSE_INFORMATION_ID))
+        mockMvc.perform(
+                get("/course/information/update/" + COURSE_ID + "/" + COURSE_INFORMATION_ID))
                 .andExpect(status().is3xxRedirection());
 
         teacher.setHaveCourse(false);
-        mockMvc.perform(get("/course/information/update/" + COURSE_ID + "/" + COURSE_INFORMATION_ID))
+        mockMvc.perform(
+                get("/course/information/update/" + COURSE_ID + "/" + COURSE_INFORMATION_ID))
                 .andExpect(status().is3xxRedirection());
     }
 
     @Test
     @WithAnonymousUser
     public void notLoggedInCantAccessUpdateCourseInformationPost() throws Exception {
-        mockMvc.perform(post("/course/information/update/" + COURSE_ID + "/" + COURSE_INFORMATION_ID))
+        mockMvc.perform(
+                post("/course/information/update/" + COURSE_ID + "/" + COURSE_INFORMATION_ID))
                 .andExpect(status().is3xxRedirection())
                 .andExpect(redirectedUrl("/login"));
     }
@@ -287,9 +297,12 @@ public class CourseInformationControllerTest {
         when(userService.getUserByUsername(TEACHER_UNAME)).thenReturn(user);
         when(teacherService.getTeacherByUser(user)).thenReturn(teacher);
         when(courseService.getCourseById(COURSE_ID)).thenReturn(course);
-        when(courseInformationService.updateCourseInformation(COURSE_INFORMATION_ID, courseInformation)).thenReturn(courseInformation);
+        when(courseInformationService
+                .updateCourseInformation(COURSE_INFORMATION_ID, courseInformation))
+                    .thenReturn(courseInformation);
 
-        mockMvc.perform(post("/course/information/update/" + COURSE_ID + "/" + COURSE_INFORMATION_ID))
+        mockMvc.perform(
+                post("/course/information/update/" + COURSE_ID + "/" + COURSE_INFORMATION_ID))
                 .andExpect(status().is3xxRedirection());
     }
 
@@ -303,9 +316,12 @@ public class CourseInformationControllerTest {
         when(userService.getUserByUsername(TEACHER_UNAME)).thenReturn(user);
         when(teacherService.getTeacherByUser(user)).thenReturn(teacher);
         when(courseService.getCourseById(COURSE_ID)).thenReturn(course);
-        when(courseInformationService.updateCourseInformation(anyInt(), any(CourseInformation.class))).thenThrow(new CourseInformationInvalidException("Required Title"));
+        when(courseInformationService
+                .updateCourseInformation(anyInt(), any(CourseInformation.class)))
+                    .thenThrow(new CourseInformationInvalidException("Required Title"));
 
-        mockMvc.perform(post("/course/information/update/" + COURSE_ID + "/" + COURSE_INFORMATION_ID))
+        mockMvc.perform(
+                post("/course/information/update/" + COURSE_ID + "/" + COURSE_INFORMATION_ID))
                 .andExpect(status().isOk())
                 .andExpect(model().attributeExists("error"))
                 .andExpect(model().attributeExists("courseId"))
@@ -326,25 +342,29 @@ public class CourseInformationControllerTest {
         when(courseService.getCourseById(COURSE_ID)).thenReturn(course);
         when(courseService.getCourseByTeacherAndStatus(teacher, false)).thenReturn(course);
 
-        mockMvc.perform(post("/course/information/update/" + COURSE_ID + "/" + COURSE_INFORMATION_ID))
+        mockMvc.perform(
+                post("/course/information/update/" + COURSE_ID + "/" + COURSE_INFORMATION_ID))
                 .andExpect(status().is3xxRedirection());
 
 
         course.setArchived((false));
         var teacher1 = new Teacher();
         course.setTeacher(teacher1);
-        mockMvc.perform(post("/course/information/update/" + COURSE_ID + "/" + COURSE_INFORMATION_ID))
+        mockMvc.perform(
+                post("/course/information/update/" + COURSE_ID + "/" + COURSE_INFORMATION_ID))
                 .andExpect(status().is3xxRedirection());
 
         teacher.setHaveCourse(false);
-        mockMvc.perform(post("/course/information/update/" + COURSE_ID + "/" + COURSE_INFORMATION_ID))
+        mockMvc.perform(
+                post("/course/information/update/" + COURSE_ID + "/" + COURSE_INFORMATION_ID))
                 .andExpect(status().is3xxRedirection());
     }
 
     @Test
     @WithAnonymousUser
     public void notLoggedInCantDeleteCourseInformationPost() throws Exception {
-        mockMvc.perform(post("/course/information/delete/" + COURSE_ID + "/" + COURSE_INFORMATION_ID))
+        mockMvc.perform(
+                post("/course/information/delete/" + COURSE_ID + "/" + COURSE_INFORMATION_ID))
                 .andExpect(status().is3xxRedirection())
                 .andExpect(redirectedUrl("/login"));
     }
@@ -359,9 +379,12 @@ public class CourseInformationControllerTest {
         when(userService.getUserByUsername(TEACHER_UNAME)).thenReturn(user);
         when(teacherService.getTeacherByUser(user)).thenReturn(teacher);
         when(courseService.getCourseById(COURSE_ID)).thenReturn(course);
-        when(courseInformationService.updateCourseInformation(COURSE_INFORMATION_ID, courseInformation)).thenReturn(courseInformation);
+        when(courseInformationService
+                .updateCourseInformation(COURSE_INFORMATION_ID, courseInformation))
+                    .thenReturn(courseInformation);
 
-        mockMvc.perform(post("/course/information/delete/" + COURSE_ID + "/" + COURSE_INFORMATION_ID))
+        mockMvc.perform(
+                post("/course/information/delete/" + COURSE_ID + "/" + COURSE_INFORMATION_ID))
                 .andExpect(status().is3xxRedirection())
                 .andExpect(redirectedUrl("/course/" + COURSE_ID));
     }
@@ -378,18 +401,21 @@ public class CourseInformationControllerTest {
         when(courseService.getCourseById(COURSE_ID)).thenReturn(course);
         when(courseService.getCourseByTeacherAndStatus(teacher, false)).thenReturn(course);
 
-        mockMvc.perform(post("/course/information/delete/" + COURSE_ID + "/" + COURSE_INFORMATION_ID))
+        mockMvc.perform(
+                post("/course/information/delete/" + COURSE_ID + "/" + COURSE_INFORMATION_ID))
                 .andExpect(status().is3xxRedirection());
 
 
         course.setArchived((false));
         var teacher1 = new Teacher();
         course.setTeacher(teacher1);
-        mockMvc.perform(post("/course/information/delete/" + COURSE_ID + "/" + COURSE_INFORMATION_ID))
+        mockMvc.perform(
+                post("/course/information/delete/" + COURSE_ID + "/" + COURSE_INFORMATION_ID))
                 .andExpect(status().is3xxRedirection());
 
         teacher.setHaveCourse(false);
-        mockMvc.perform(post("/course/information/delete/" + COURSE_ID + "/" + COURSE_INFORMATION_ID))
+        mockMvc.perform(
+                post("/course/information/delete/" + COURSE_ID + "/" + COURSE_INFORMATION_ID))
                 .andExpect(status().is3xxRedirection());
     }
 

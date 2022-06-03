@@ -1,5 +1,9 @@
 package com.a10.mejabelajar.course.service;
 
+import static org.junit.jupiter.api.Assertions.*;
+import static org.mockito.Mockito.lenient;
+import static org.mockito.Mockito.when;
+
 import com.a10.mejabelajar.auth.model.Student;
 import com.a10.mejabelajar.auth.service.StudentService;
 import com.a10.mejabelajar.course.model.Course;
@@ -7,6 +11,9 @@ import com.a10.mejabelajar.course.model.CourseInformation;
 import com.a10.mejabelajar.course.model.CourseNotification;
 import com.a10.mejabelajar.course.model.NotificationType;
 import com.a10.mejabelajar.course.repository.CourseNotificationRepository;
+import java.util.ArrayList;
+import java.util.Date;
+import java.util.List;
 import org.junit.jupiter.api.BeforeEach;
 import org.junit.jupiter.api.Test;
 import org.junit.jupiter.api.extension.ExtendWith;
@@ -14,13 +21,7 @@ import org.mockito.InjectMocks;
 import org.mockito.Mock;
 import org.mockito.junit.jupiter.MockitoExtension;
 
-import java.util.ArrayList;
-import java.util.Date;
-import java.util.List;
 
-import static org.junit.jupiter.api.Assertions.*;
-import static org.mockito.Mockito.lenient;
-import static org.mockito.Mockito.when;
 
 @ExtendWith(MockitoExtension.class)
 public class CourseNotificationServiceImplTest {
@@ -40,6 +41,9 @@ public class CourseNotificationServiceImplTest {
     private CourseInformation courseInformation;
     private CourseNotification courseNotification;
 
+    /**
+     * Run this before run every single test.
+     */
     @BeforeEach
     public void setUp() {
         course = new Course();
@@ -85,15 +89,25 @@ public class CourseNotificationServiceImplTest {
     public void testGetCourseNotificationByStudentAndCreatedAtIsGreaterThanEqual() {
         List<CourseNotification> courseNotifications = new ArrayList<>();
         courseNotifications.add(courseNotification);
-        lenient().when(courseNotificationService.getCourseNotificationByStudentAndCreatedAtIsGreaterThanEqual(student, date)).thenReturn(courseNotifications);
-        List<CourseNotification> courseNotifications1 = courseNotificationService.getCourseNotificationByStudentAndCreatedAtIsGreaterThanEqual(student, date);
+        lenient().when(courseNotificationService
+                .getCourseNotificationByStudentAndCreatedAtIsGreaterThanEqual(student, date))
+                .thenReturn(courseNotifications);
+        List<CourseNotification> courseNotifications1 =
+                courseNotificationService
+                        .getCourseNotificationByStudentAndCreatedAtIsGreaterThanEqual(
+                                student,
+                                date
+                        );
         assertNotEquals(courseNotifications1.size(), 0);
 
         var courseNotification1 = courseNotifications1.get(0);
         assertEquals(courseNotification1.getId(), courseNotification.getId());
-        assertEquals(courseNotification1.getNotificationType(), courseNotification1.getNotificationType());
-        assertEquals(courseNotification1.getNotificationType().toString(), courseNotification.getNotificationType().toString());
-        assertEquals(courseNotification1.getCourseInformation(), courseNotification.getCourseInformation());
+        assertEquals(courseNotification1.getNotificationType(),
+                courseNotification1.getNotificationType());
+        assertEquals(courseNotification1.getNotificationType().toString(),
+                courseNotification.getNotificationType().toString());
+        assertEquals(courseNotification1.getCourseInformation(),
+                courseNotification.getCourseInformation());
         assertEquals(courseNotification1.getStudent(), courseNotification1.getStudent());
         assertEquals(courseNotification1.getCreatedAt(), courseNotification.getCreatedAt());
     }
@@ -102,15 +116,22 @@ public class CourseNotificationServiceImplTest {
     public void testGetCourseNotificationByStudentAndCreatedAtIsLessThan() {
         List<CourseNotification> courseNotifications = new ArrayList<>();
         courseNotifications.add(courseNotification);
-        lenient().when(courseNotificationService.getCourseNotificationByStudentAndCreatedAtIsLessThan(student, date)).thenReturn(courseNotifications);
-        List<CourseNotification> courseNotifications1 = courseNotificationService.getCourseNotificationByStudentAndCreatedAtIsLessThan(student, date);
+        lenient().when(courseNotificationService
+                .getCourseNotificationByStudentAndCreatedAtIsLessThan(student, date))
+                .thenReturn(courseNotifications);
+        List<CourseNotification> courseNotifications1 =
+                courseNotificationService
+                        .getCourseNotificationByStudentAndCreatedAtIsLessThan(student, date);
         assertNotEquals(courseNotifications1.size(), 0);
 
         var courseNotification1 = courseNotifications1.get(0);
         assertEquals(courseNotification1.getId(), courseNotification.getId());
-        assertEquals(courseNotification1.getNotificationType(), courseNotification1.getNotificationType());
-        assertEquals(courseNotification1.getNotificationType().toString(), courseNotification.getNotificationType().toString());
-        assertEquals(courseNotification1.getCourseInformation(), courseNotification.getCourseInformation());
+        assertEquals(courseNotification1.getNotificationType(),
+                courseNotification1.getNotificationType());
+        assertEquals(courseNotification1.getNotificationType().toString(),
+                courseNotification.getNotificationType().toString());
+        assertEquals(courseNotification1.getCourseInformation(),
+                courseNotification.getCourseInformation());
         assertEquals(courseNotification1.getStudent(), courseNotification1.getStudent());
         assertEquals(courseNotification1.getCreatedAt(), courseNotification.getCreatedAt());
     }

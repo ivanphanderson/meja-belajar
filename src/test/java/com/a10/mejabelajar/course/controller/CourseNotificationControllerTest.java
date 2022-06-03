@@ -36,7 +36,7 @@ import org.springframework.web.context.WebApplicationContext;
 
 
 @WebMvcTest(controllers = CourseNotificationController.class)
-public class CourseNotificationControllerTest {
+class CourseNotificationControllerTest {
 
     @Autowired
     private MockMvc mockMvc;
@@ -74,7 +74,7 @@ public class CourseNotificationControllerTest {
      * Run this before run every single test.
      */
     @BeforeEach
-    public void setUp() {
+    void setUp() {
         mockMvc = MockMvcBuilders.webAppContextSetup(webApplicationContext).build();
         student = new Student();
         teacher = new Teacher();
@@ -85,7 +85,7 @@ public class CourseNotificationControllerTest {
 
     @Test
     @WithAnonymousUser
-    public void notLoggedInCantAccessCreateCourseGet() throws Exception {
+    void notLoggedInCantAccessCreateCourseGet() throws Exception {
         mockMvc.perform(get("/course/notification"))
                 .andExpect(status().is3xxRedirection())
                 .andExpect(redirectedUrl("/login"));
@@ -93,7 +93,7 @@ public class CourseNotificationControllerTest {
 
     @Test
     @WithMockUser(username = TEACHER_UNAME, authorities = {"USER", "TEACHER"})
-    public void notStudentCantAccessCourseNotification() throws Exception {
+    void notStudentCantAccessCourseNotification() throws Exception {
         user.setRole(Role.TEACHER);
 
         when(userService.getUserByUsername(TEACHER_UNAME)).thenReturn(user);
@@ -110,7 +110,7 @@ public class CourseNotificationControllerTest {
 
     @Test
     @WithMockUser(username = STUDENT_UNAME, authorities = {"USER", "STUDENT"})
-    public void studentCanAccessCourseNotification() throws Exception {
+    void studentCanAccessCourseNotification() throws Exception {
         user.setRole(Role.STUDENT);
         when(userService.getUserByUsername(STUDENT_UNAME)).thenReturn(user);
         when(studentService.getStudentByUser(user)).thenReturn(student);

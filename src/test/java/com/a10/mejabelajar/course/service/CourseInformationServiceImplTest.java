@@ -20,7 +20,7 @@ import org.mockito.junit.jupiter.MockitoExtension;
 
 
 @ExtendWith(MockitoExtension.class)
-public class CourseInformationServiceImplTest {
+class CourseInformationServiceImplTest {
 
     @Mock
     CourseInformationRepository courseInformationRepository;
@@ -38,7 +38,7 @@ public class CourseInformationServiceImplTest {
      * Run this before run every single test.
      */
     @BeforeEach
-    public void setUp() {
+    void setUp() {
         course = new Course();
         courseInformation = new CourseInformation();
         courseInformation.setCourse(course);
@@ -50,13 +50,14 @@ public class CourseInformationServiceImplTest {
     }
 
     @Test
-    public void testCreateCourseInformation() {
+    void testCreateCourseInformation() {
         lenient().when(courseInformationService.createCourseInformation(courseInformation))
                 .thenReturn(courseInformation);
+        assertNotNull(courseInformationService.createCourseInformation(courseInformation));
     }
 
     @Test
-    public void testUpdateCourseInformation() {
+    void testUpdateCourseInformation() {
         courseInformationService.createCourseInformation(courseInformation);
         final String pastTitle = courseInformation.getCourseInformationTitle();
         final String oldBody = courseInformation.getCourseInformationBody();
@@ -79,15 +80,15 @@ public class CourseInformationServiceImplTest {
                 courseInformationService
                         .updateCourseInformation(COURSE_INFORMATION_ID, courseInformation);
 
-        assertEquals(courseInformationResult.getId(), courseInformation.getId());
-        assertEquals(courseInformationResult.getCourseNotifications(), oldCourseNotifications);
-        assertNotEquals(courseInformationResult.getCourseInformationTitle(), pastTitle);
-        assertNotEquals(courseInformationResult.getCourseInformationBody(), oldBody);
-        assertNotEquals(courseInformationResult.getUpdatedAt(), oldUpdatedAt);
+        assertEquals(courseInformation.getId(), courseInformationResult.getId());
+        assertEquals(oldCourseNotifications, courseInformationResult.getCourseNotifications());
+        assertNotEquals(pastTitle, courseInformationResult.getCourseInformationTitle());
+        assertNotEquals(oldBody, courseInformationResult.getCourseInformationBody());
+        assertNotEquals(oldUpdatedAt, courseInformationResult.getUpdatedAt());
     }
 
     @Test
-    public void testDeleteCourseInformationById() {
+    void testDeleteCourseInformationById() {
         courseInformationService.createCourseInformation(courseInformation);
         lenient().when(courseInformationRepository
                 .findById(COURSE_INFORMATION_ID)).thenReturn(courseInformation);
@@ -98,11 +99,11 @@ public class CourseInformationServiceImplTest {
     }
 
     @Test
-    public void testGetCourseInformationById() {
+    void testGetCourseInformationById() {
         lenient().when(courseInformationService
                 .getCourseInformationById(COURSE_INFORMATION_ID)).thenReturn(courseInformation);
         CourseInformation calledCourseInformation =
                 courseInformationService.getCourseInformationById(COURSE_INFORMATION_ID);
-        assertEquals(calledCourseInformation.getId(), courseInformation.getId());
+        assertEquals(courseInformation.getId(), calledCourseInformation.getId());
     }
 }

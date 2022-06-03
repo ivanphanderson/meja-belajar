@@ -25,7 +25,7 @@ import org.mockito.junit.jupiter.MockitoExtension;
 
 
 @ExtendWith(MockitoExtension.class)
-public class CourseServiceImplTest {
+class CourseServiceImplTest {
 
     @Mock
     private CourseRepository courseRepository;
@@ -51,7 +51,7 @@ public class CourseServiceImplTest {
      * Run this before run every single test.
      */
     @BeforeEach
-    public void setUp() {
+    void setUp() {
         user = new User();
         teacher = new Teacher();
         student = new Student();
@@ -74,15 +74,17 @@ public class CourseServiceImplTest {
     }
 
     @Test
-    public void testCreateCourse() {
+    void testCreateCourse() {
         when(teacherService.getTeacherByUser(user)).thenReturn(teacher);
 
         lenient().when(courseService.createCourse(courseDataTransferObject, user))
                 .thenReturn(course);
+
+        assertNotNull(courseService.createCourse(courseDataTransferObject, user));
     }
 
     @Test
-    public void testUpdateCourse() {
+    void testUpdateCourse() {
         when(teacherService.getTeacherByUser(user)).thenReturn(teacher);
 
         courseService.createCourse(courseDataTransferObject, user);
@@ -97,18 +99,18 @@ public class CourseServiceImplTest {
         Course courseResult =
                 courseService.updateCourse(COURSE_ID, teacher, courseDataTransferObject);
 
-        assertNotEquals(courseResult.getCourseName(), pastName);
+        assertNotEquals(pastName, courseResult.getCourseName());
     }
 
     @Test
-    public void testArchiveCourse() {
+    void testArchiveCourse() {
         courseService.archiveCourseById(teacher, course);
         assertFalse(teacher.isHaveCourse());
         assertTrue(course.isArchived());
     }
 
     @Test
-    public void testGetAllCourses() {
+    void testGetAllCourses() {
         when(teacherService.getTeacherByUser(user)).thenReturn(teacher);
 
         courseService.createCourse(courseDataTransferObject, user);
@@ -116,14 +118,14 @@ public class CourseServiceImplTest {
     }
 
     @Test
-    public void testGetCourseById() {
+    void testGetCourseById() {
         lenient().when(courseService.getCourseById(COURSE_ID)).thenReturn(course);
         var course1 = courseService.getCourseById(COURSE_ID);
-        assertEquals(course1.getId(), COURSE_ID);
+        assertEquals(COURSE_ID, course1.getId());
     }
 
     @Test
-    public void testGetCourseByStudent() {
+    void testGetCourseByStudent() {
         List<Course> courses = new ArrayList<>();
         courses.add(course);
         lenient().when(courseService.getCoursesByStudent(student)).thenReturn(courses);
@@ -132,7 +134,7 @@ public class CourseServiceImplTest {
     }
 
     @Test
-    public void testGetCourseByTeacherAndStatus() {
+    void testGetCourseByTeacherAndStatus() {
         when(teacherService.getTeacherByUser(user)).thenReturn(teacher);
 
         courseService.createCourse(courseDataTransferObject, user);
@@ -143,7 +145,7 @@ public class CourseServiceImplTest {
     }
 
     @Test
-    public void testGetCourseByArchived() {
+    void testGetCourseByArchived() {
         List<Course> courses = new ArrayList<>();
         courses.add(course);
 
@@ -152,7 +154,7 @@ public class CourseServiceImplTest {
         courseService.createCourse(courseDataTransferObject, user);
         lenient().when(courseService.getCourseByArchived(false)).thenReturn(courses);
         var courseResult = courseService.getCourseByArchived(false);
-        assertNotEquals(courseResult.size(), 0);
+        assertNotEquals(0, courseResult.size());
     }
 
 }

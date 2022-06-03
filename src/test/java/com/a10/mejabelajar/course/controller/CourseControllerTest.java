@@ -35,7 +35,7 @@ import org.springframework.test.web.servlet.setup.MockMvcBuilders;
 import org.springframework.web.context.WebApplicationContext;
 
 @WebMvcTest(controllers = CourseController.class)
-public class CourseControllerTest {
+class CourseControllerTest {
 
     @Autowired
     private MockMvc mockMvc;
@@ -76,7 +76,7 @@ public class CourseControllerTest {
      * Run this before run every single test.
      */
     @BeforeEach
-    public void setUp() {
+    void setUp() {
         mockMvc = MockMvcBuilders.webAppContextSetup(webApplicationContext).build();
         student = new Student();
         teacher = new Teacher();
@@ -88,7 +88,7 @@ public class CourseControllerTest {
 
     @Test
     @WithAnonymousUser
-    public void notLoggedInCantAccessCreateCourseGet() throws Exception {
+    void notLoggedInCantAccessCreateCourseGet() throws Exception {
         mockMvc.perform(get("/course/create"))
                 .andExpect(status().is3xxRedirection())
                 .andExpect(redirectedUrl("/login"));
@@ -96,7 +96,7 @@ public class CourseControllerTest {
 
     @Test
     @WithMockUser(username = TEACHER_UNAME, authorities = {"USER", "TEACHER"})
-    public void teacherCanAccessCreateCourseGetWhenDontHaveActiveCourse() throws Exception {
+    void teacherCanAccessCreateCourseGetWhenDontHaveActiveCourse() throws Exception {
         teacher.setHaveCourse(false);
         when(userService.getUserByUsername(TEACHER_UNAME)).thenReturn(user);
         when(teacherService.getTeacherByUser(user)).thenReturn(teacher);
@@ -109,7 +109,7 @@ public class CourseControllerTest {
 
     @Test
     @WithMockUser(username = TEACHER_UNAME, authorities = {"USER", "TEACHER"})
-    public void teacherCantAccessCreateCourseGetWhenHaveActiveCourse() throws Exception {
+    void teacherCantAccessCreateCourseGetWhenHaveActiveCourse() throws Exception {
         teacher.setHaveCourse(true);
         when(userService.getUserByUsername(TEACHER_UNAME)).thenReturn(user);
         when(teacherService.getTeacherByUser(user)).thenReturn(teacher);
@@ -120,7 +120,7 @@ public class CourseControllerTest {
 
     @Test
     @WithAnonymousUser
-    public void notLoggedInCantAccessCreateCoursePost() throws Exception {
+    void notLoggedInCantAccessCreateCoursePost() throws Exception {
         mockMvc.perform(post("/course/create"))
                 .andExpect(status().is3xxRedirection())
                 .andExpect(redirectedUrl("/login"));
@@ -128,7 +128,7 @@ public class CourseControllerTest {
 
     @Test
     @WithMockUser(username = TEACHER_UNAME, authorities = {"USER", "TEACHER"})
-    public void teacherCanCreateCoursePostWhenDontHaveActiveCourse() throws Exception {
+    void teacherCanCreateCoursePostWhenDontHaveActiveCourse() throws Exception {
         CourseDataTransferObject courseDataTransferObject = new CourseDataTransferObject();
         courseDataTransferObject.setCourseName("course");
         courseDataTransferObject.setCourseType("IPA");
@@ -146,7 +146,7 @@ public class CourseControllerTest {
 
     @Test
     @WithMockUser(username = TEACHER_UNAME, authorities = {"USER", "TEACHER"})
-    public void teacherCantCreateCoursePostWhenGivingInvalidAttr() throws Exception {
+    void teacherCantCreateCoursePostWhenGivingInvalidAttr() throws Exception {
         CourseDataTransferObject courseDataTransferObject = new CourseDataTransferObject();
         courseDataTransferObject.setCourseName("");
         courseDataTransferObject.setCourseType("IPA");
@@ -171,7 +171,7 @@ public class CourseControllerTest {
 
     @Test
     @WithMockUser(username = TEACHER_UNAME, authorities = {"USER", "TEACHER"})
-    public void teacherCantAccessCreateCoursePostWhenHaveActiveCourse() throws Exception {
+    void teacherCantAccessCreateCoursePostWhenHaveActiveCourse() throws Exception {
         teacher.setHaveCourse(true);
         when(userService.getUserByUsername(TEACHER_UNAME)).thenReturn(user);
         when(teacherService.getTeacherByUser(user)).thenReturn(teacher);
@@ -182,7 +182,7 @@ public class CourseControllerTest {
 
     @Test
     @WithAnonymousUser
-    public void notLoggedInCantAccessUpdateCourseGet() throws Exception {
+    void notLoggedInCantAccessUpdateCourseGet() throws Exception {
         mockMvc.perform(get("/course/update/" + COURSE_ID))
                 .andExpect(status().is3xxRedirection())
                 .andExpect(redirectedUrl("/login"));
@@ -190,7 +190,7 @@ public class CourseControllerTest {
 
     @Test
     @WithMockUser(username = TEACHER_UNAME, authorities = {"USER", "TEACHER"})
-    public void teacherCanAccessUpdateCourseGet() throws Exception {
+    void teacherCanAccessUpdateCourseGet() throws Exception {
         teacher.setHaveCourse(false);
         course.setArchived(false);
         course.setTeacher(teacher);
@@ -209,7 +209,7 @@ public class CourseControllerTest {
 
     @Test
     @WithMockUser(username = TEACHER_UNAME, authorities = {"USER", "TEACHER"})
-    public void teacherCantAccessUpdateCourseGetWhenItsInvalid() throws Exception {
+    void teacherCantAccessUpdateCourseGetWhenItsInvalid() throws Exception {
         teacher.setHaveCourse(true);
         course.setArchived(false);
 
@@ -230,14 +230,14 @@ public class CourseControllerTest {
 
     @Test
     @WithAnonymousUser
-    public void notLoggedInCantAccessUpdateCoursePost() throws Exception {
+    void notLoggedInCantAccessUpdateCoursePost() throws Exception {
         mockMvc.perform(post("/course/update/" + COURSE_ID))
                 .andExpect(status().is3xxRedirection());
     }
 
     @Test
     @WithMockUser(username = TEACHER_UNAME, authorities = {"USER", "TEACHER"})
-    public void teacherCanUpdateCoursePostWhenItsValid() throws Exception {
+    void teacherCanUpdateCoursePostWhenItsValid() throws Exception {
         teacher.setHaveCourse(true);
         course.setArchived(false);
         course.setTeacher(teacher);
@@ -262,7 +262,7 @@ public class CourseControllerTest {
 
     @Test
     @WithMockUser(username = TEACHER_UNAME, authorities = {"USER", "TEACHER"})
-    public void teacherCantUpdateCoursePostWhenGivingInvalidAttr() throws Exception {
+    void teacherCantUpdateCoursePostWhenGivingInvalidAttr() throws Exception {
 
         teacher.setHaveCourse(true);
         course.setArchived(false);
@@ -289,7 +289,7 @@ public class CourseControllerTest {
 
     @Test
     @WithMockUser(username = TEACHER_UNAME, authorities = {"USER", "TEACHER"})
-    public void teacherCantAccessUpdateCoursePostWhenItsInvalid() throws Exception {
+    void teacherCantAccessUpdateCoursePostWhenItsInvalid() throws Exception {
         teacher.setHaveCourse(true);
         course.setArchived(false);
 
@@ -311,7 +311,7 @@ public class CourseControllerTest {
 
     @Test
     @WithAnonymousUser
-    public void notLoggedInCantAccessReadCourseGet() throws Exception {
+    void notLoggedInCantAccessReadCourseGet() throws Exception {
         mockMvc.perform(get("/course/"))
                 .andExpect(status().is3xxRedirection())
                 .andExpect(redirectedUrl("/login"));
@@ -319,7 +319,7 @@ public class CourseControllerTest {
 
     @Test
     @WithAnonymousUser
-    public void notLoggedInCantAccessReadCourseByIdGet() throws Exception {
+    void notLoggedInCantAccessReadCourseByIdGet() throws Exception {
         mockMvc.perform(get("/course/" + COURSE_ID))
                 .andExpect(status().is3xxRedirection())
                 .andExpect(redirectedUrl("/login"));
@@ -327,7 +327,7 @@ public class CourseControllerTest {
 
     @Test
     @WithMockUser(username = TEACHER_UNAME, authorities = {"USER", "TEACHER"})
-    public void teacherCanAccessReadCourseByIdGetWhenValid() throws Exception {
+    void teacherCanAccessReadCourseByIdGetWhenValid() throws Exception {
         teacher.setHaveCourse(true);
         course.setArchived(false);
         course.setTeacher(teacher);
@@ -351,7 +351,7 @@ public class CourseControllerTest {
 
     @Test
     @WithMockUser(username = TEACHER_UNAME, authorities = {"USER", "TEACHER"})
-    public void teacherCantAccessReadCourseByIdGetWhenInvalid() throws Exception {
+     void teacherCantAccessReadCourseByIdGetWhenInvalid() throws Exception {
         teacher.setHaveCourse(true);
         course.setArchived(false);
         user.setRole(Role.TEACHER);
@@ -369,7 +369,7 @@ public class CourseControllerTest {
 
     @Test
     @WithMockUser(username = STUDENT_UNAME, authorities = {"USER", "STUDENT"})
-    public void studentCanAccessReadCourseByIdGetWhenValid() throws Exception {
+     void studentCanAccessReadCourseByIdGetWhenValid() throws Exception {
         teacher.setHaveCourse(true);
         course.setArchived(false);
         course.setTeacher(teacher);
@@ -399,7 +399,7 @@ public class CourseControllerTest {
 
     @Test
     @WithMockUser(username = STUDENT_UNAME, authorities = {"USER", "STUDENT"})
-    public void studentCantAccessReadCourseByIdGetWhenInvalid() throws Exception {
+     void studentCantAccessReadCourseByIdGetWhenInvalid() throws Exception {
         teacher.setHaveCourse(true);
         course.setArchived(false);
         course.setTeacher(teacher);
@@ -424,7 +424,7 @@ public class CourseControllerTest {
 
     @Test
     @WithAnonymousUser
-    public void notLoggedInCantAccessArchiveCoursePost() throws Exception {
+     void notLoggedInCantAccessArchiveCoursePost() throws Exception {
         mockMvc.perform(post("/course/archive/" + COURSE_ID))
                 .andExpect(status().is3xxRedirection())
                 .andExpect(redirectedUrl("/login"));
@@ -432,7 +432,7 @@ public class CourseControllerTest {
 
     @Test
     @WithMockUser(username = TEACHER_UNAME, authorities = {"USER", "TEACHER"})
-    public void teacherCanArchiveCoursePostWhenItsValid() throws Exception {
+     void teacherCanArchiveCoursePostWhenItsValid() throws Exception {
         teacher.setHaveCourse(true);
         course.setArchived(false);
         course.setTeacher(teacher);
@@ -447,7 +447,7 @@ public class CourseControllerTest {
 
     @Test
     @WithMockUser(username = TEACHER_UNAME, authorities = {"USER", "TEACHER"})
-    public void teacherCantAccessArchiveCoursePostWhenItsInvalid() throws Exception {
+     void teacherCantAccessArchiveCoursePostWhenItsInvalid() throws Exception {
         teacher.setHaveCourse(true);
         course.setArchived(false);
 

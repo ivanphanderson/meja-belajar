@@ -264,8 +264,8 @@ public class CourseController {
         var userDetails = (UserDetails) principal;
         var user = userService.getUserByUsername(userDetails.getUsername());
 
-        var teacher = teacherService.getTeacherByUser(user);
         var course = courseService.getCourseById(courseId);
+        var teacher = teacherService.getTeacherByUser(user);
         String isValid =
                 validateTeacherAccess(teacher, course, "Archive the Course", redirectAttrs);
         if (!isValid.equals("")) {

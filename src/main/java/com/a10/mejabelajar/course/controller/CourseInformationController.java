@@ -53,16 +53,8 @@ public class CourseInformationController {
             Model model,
             RedirectAttributes redirectAttrs) {
         var principal = SecurityContextHolder.getContext().getAuthentication().getPrincipal();
-        if (principal instanceof String) {
-            return REDIRECT_LOGIN;
-        }
-        var userDetails = (UserDetails) principal;
-        var user = userService.getUserByUsername(userDetails.getUsername());
-
-        var teacher = teacherService.getTeacherByUser(user);
-        var course = courseService.getCourseById(courseId);
         String isValid =
-                validateTeacherAccess(teacher, course, "Create Course Information", redirectAttrs);
+                validator(principal, courseId, "Create Course Information", redirectAttrs);
         if (!isValid.equals("")) {
             return isValid;
         }
@@ -83,16 +75,9 @@ public class CourseInformationController {
             RedirectAttributes redirectAttrs) {
 
         var principal = SecurityContextHolder.getContext().getAuthentication().getPrincipal();
-        if (principal instanceof String) {
-            return REDIRECT_LOGIN;
-        }
-        var userDetails = (UserDetails) principal;
-        var user = userService.getUserByUsername(userDetails.getUsername());
-
         var course = courseService.getCourseById(courseId);
-        var teacher = teacherService.getTeacherByUser(user);
         String isValid =
-                validateTeacherAccess(teacher, course, "Create Course Information", redirectAttrs);
+                validator(principal, courseId, "Create Course Information", redirectAttrs);
         if (!isValid.equals("")) {
             return isValid;
         }
@@ -124,7 +109,7 @@ public class CourseInformationController {
             Model model,
             RedirectAttributes redirectAttrs) {
         var principal = SecurityContextHolder.getContext().getAuthentication().getPrincipal();
-        String isValid = validator(principal, courseId, redirectAttrs);
+        String isValid = validator(principal, courseId, "Update Course Information", redirectAttrs);
         if (!isValid.equals("")) {
             return isValid;
         }
@@ -148,7 +133,7 @@ public class CourseInformationController {
             Model model,
             RedirectAttributes redirectAttrs) {
         var principal = SecurityContextHolder.getContext().getAuthentication().getPrincipal();
-        String isValid = validator(principal, courseId, redirectAttrs);
+        String isValid = validator(principal, courseId, "Update Course Information", redirectAttrs);
         if (!isValid.equals("")) {
             return isValid;
         }
@@ -181,7 +166,7 @@ public class CourseInformationController {
             @PathVariable int courseInformationId,
             RedirectAttributes redirectAttrs) {
         var principal = SecurityContextHolder.getContext().getAuthentication().getPrincipal();
-        String isValid = validator(principal, courseId, redirectAttrs);
+        String isValid = validator(principal, courseId, "Delete Course Information", redirectAttrs);
         if (!isValid.equals("")) {
             return isValid;
         }
@@ -192,7 +177,11 @@ public class CourseInformationController {
     /**
      * Validate user authentication and authorization.
      */
-    public String validator(Object principal, int courseId, RedirectAttributes redirectAttrs) {
+    public String validator(
+            Object principal,
+            int courseId,
+            String action,
+            RedirectAttributes redirectAttrs) {
         if (principal instanceof String) {
             return REDIRECT_LOGIN;
         }
@@ -202,7 +191,7 @@ public class CourseInformationController {
         var teacher = teacherService.getTeacherByUser(user);
         var course = courseService.getCourseById(courseId);
         String isValid =
-                validateTeacherAccess(teacher, course, "Update Course Information", redirectAttrs);
+                validateTeacherAccess(teacher, course, action, redirectAttrs);
         if (!isValid.equals("")) {
             return isValid;
         }

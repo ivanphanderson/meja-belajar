@@ -12,7 +12,7 @@ import org.junit.jupiter.api.Test;
 
 
 
-public class CourseValidatorTest {
+class CourseValidatorTest {
 
     private CourseDataTransferObject courseDataTransferObject;
 
@@ -20,7 +20,7 @@ public class CourseValidatorTest {
      * Run this before run every single test.
      */
     @BeforeEach
-    public void setUp() {
+    void setUp() {
         courseDataTransferObject = new CourseDataTransferObject();
         courseDataTransferObject.setCourseName("Good Course");
         courseDataTransferObject.setCourseType("IPS");
@@ -29,7 +29,7 @@ public class CourseValidatorTest {
     }
 
     @Test
-    public void testConstructorIsPrivate() throws NoSuchMethodException {
+    void testConstructorIsPrivate() throws NoSuchMethodException {
         Constructor<CourseValidator> constructor = CourseValidator.class.getDeclaredConstructor();
         assertTrue(Modifier.isPrivate(constructor.getModifiers()));
         constructor.setAccessible(true);
@@ -39,7 +39,7 @@ public class CourseValidatorTest {
     }
 
     @Test
-    public void testValidateCourseNameIfInvalid() {
+    void testValidateCourseNameIfInvalid() {
         courseDataTransferObject.setCourseName("");
         Exception exception = assertThrows(CourseInvalidException.class, () -> {
             CourseValidator.validateCourseAttribute(courseDataTransferObject);
@@ -52,7 +52,7 @@ public class CourseValidatorTest {
     }
 
     @Test
-    public void testValidateCourseTypeIfInvalid() {
+    void testValidateCourseTypeIfInvalid() {
         courseDataTransferObject.setCourseType("asdasa");
         Exception exception = assertThrows(CourseInvalidException.class, () -> {
             CourseValidator.validateCourseAttribute(courseDataTransferObject);
@@ -65,7 +65,7 @@ public class CourseValidatorTest {
     }
 
     @Test
-    public void testValidateCourseDurationIfDurationIsNegative() {
+    void testValidateCourseDurationIfDurationIsNegative() {
         courseDataTransferObject.setCourseDuration("-99");
         Exception exception = assertThrows(CourseInvalidException.class, () -> {
             CourseValidator.validateCourseAttribute(courseDataTransferObject);
@@ -78,7 +78,7 @@ public class CourseValidatorTest {
     }
 
     @Test
-    public void testValidateCourseDurationIfDurationIsNotInteger() {
+    void testValidateCourseDurationIfDurationIsNotInteger() {
         courseDataTransferObject.setCourseDuration("12noos");
         Exception exception = assertThrows(CourseInvalidException.class, () -> {
             CourseValidator.validateCourseAttribute(courseDataTransferObject);
@@ -91,7 +91,7 @@ public class CourseValidatorTest {
     }
 
     @Test
-    public void testValidateCourseIfValid() {
+    void testValidateCourseIfValid() {
         CourseValidator.validateCourseAttribute(courseDataTransferObject);
     }
 }

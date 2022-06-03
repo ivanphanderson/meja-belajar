@@ -11,10 +11,10 @@ import org.junit.jupiter.api.Test;
 
 
 
-public class CourseInformationValidatorTest {
+class CourseInformationValidatorTest {
 
     @Test
-    public void testConstructorIsPrivate() throws NoSuchMethodException {
+    void testConstructorIsPrivate() throws NoSuchMethodException {
         Constructor<CourseInformationValidator> constructor =
                 CourseInformationValidator.class.getDeclaredConstructor();
         assertTrue(Modifier.isPrivate(constructor.getModifiers()));
@@ -25,7 +25,7 @@ public class CourseInformationValidatorTest {
     }
 
     @Test
-    public void testCourseInformationValidatorIfValid() {
+    void testCourseInformationValidatorIfValid() {
         CourseInformation courseInformation = new CourseInformation();
         courseInformation.setCourseInformationTitle("Title");
 
@@ -33,7 +33,7 @@ public class CourseInformationValidatorTest {
     }
 
     @Test
-    public void testCourseInformationValidatorIfTitleIsEmpty() {
+    void testCourseInformationValidatorIfTitleIsEmpty() {
         CourseInformation courseInformation = new CourseInformation();
         courseInformation.setCourseInformationTitle("");
 

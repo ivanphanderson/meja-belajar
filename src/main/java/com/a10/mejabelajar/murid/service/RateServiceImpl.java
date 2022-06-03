@@ -36,4 +36,9 @@ public class RateServiceImpl implements RateService{
     public Rate getByIdStudentAndIdCourse(String idStudent, int idCourse) {
         return rateRepository.findByIdStudentAndIdCourse(idStudent, idCourse);
     }
+
+    @Override
+    public Double getCourseAverageRateByIdCourse(int idCourse) {
+        return rateRepository.findAverageRateByIdCourse(idCourse);
+    }
 }

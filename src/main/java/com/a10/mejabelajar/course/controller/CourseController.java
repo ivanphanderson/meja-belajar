@@ -11,6 +11,7 @@ import com.a10.mejabelajar.course.model.dto.CourseDataTransferObject;
 import com.a10.mejabelajar.course.service.CourseService;
 import com.a10.mejabelajar.murid.model.Rate;
 import com.a10.mejabelajar.murid.service.RateService;
+import java.sql.*;
 import java.util.List;
 import org.springframework.beans.factory.annotation.Autowired;
 import org.springframework.security.core.context.SecurityContextHolder;
@@ -182,7 +183,6 @@ public class CourseController {
      */
     @GetMapping(value = "")
     public String readCourse(
-            @RequestParam(name = "error", required = false) String error,
             Model model) {
         var principal = SecurityContextHolder.getContext().getAuthentication().getPrincipal();
         if (principal instanceof String) {
@@ -209,7 +209,7 @@ public class CourseController {
     public String readCourseById(
             @PathVariable(value = "courseId") int courseId,
             Model model,
-            RedirectAttributes redirectAttrs) {
+            RedirectAttributes redirectAttrs) throws SQLException {
         var principal = SecurityContextHolder.getContext().getAuthentication().getPrincipal();
         if (principal instanceof String) {
             return REDIRECT_LOGIN;
@@ -244,11 +244,15 @@ public class CourseController {
         model.addAttribute(COURSE, course);
         model.addAttribute("courseInformations", courseInformations);
 
-        // Rate a course
-        List<Rate> listRate = rateService.getListRate();
+        String studentId = user.getId();
+
+        Double newAverageRate = rateService.getCourseAverageRateByIdCourse(courseId);
+
+        Rate listRate = rateService.getByIdStudentAndIdCourse(studentId, courseId);
         model.addAttribute("rate", new Rate());
         model.addAttribute("idCourse", courseId);
         model.addAttribute("currentRate", listRate);
+        model.addAttribute("finalRate", newAverageRate);
         return "course/readCourseById";
     }
 

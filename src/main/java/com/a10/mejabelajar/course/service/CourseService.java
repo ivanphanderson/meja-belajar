@@ -10,7 +10,7 @@ import java.util.List;
 public interface CourseService {
     Course createCourse(CourseDataTransferObject courseDataTransferObject, User user);
 
-    Course createCourse(Course course);
+//    Course createCourse(Course course);
 
     List<Course> getCourses();
 
@@ -22,7 +22,7 @@ public interface CourseService {
 
     Course updateCourse(int id, Teacher teacher, CourseDataTransferObject courseDataTransferObject);
 
-    void archiveCourseById(User user, int id);
+    void archiveCourseById(Teacher teacher, Course course);
 
     List<Course> getCourseByArchived(boolean archived);
 }

@@ -29,11 +29,11 @@ public class CourseServiceImpl implements CourseService {
 
     private ModelMapper modelMapper = new ModelMapper();
 
-    @Override
-    public Course createCourse(Course course) {
-        courseRepository.save(course);
-        return course;
-    }
+//    @Override
+//    public Course createCourse(Course course) {
+//        courseRepository.save(course);
+//        return course;
+//    }
 
     @Override
     public Course createCourse(CourseDataTransferObject courseDataTransferObject, User user) {
@@ -72,6 +72,14 @@ public class CourseServiceImpl implements CourseService {
     }
 
     @Override
+    public void archiveCourseById(Teacher teacher, Course course) {
+        teacher.setHaveCourse(false);
+        course.setArchived(true);
+        courseRepository.save(course);
+        teacherRepository.save(teacher);
+    }
+
+    @Override
     public List<Course> getCourses() {
         return courseRepository.findAll();
     }
@@ -89,16 +97,6 @@ public class CourseServiceImpl implements CourseService {
     @Override
     public Course getCourseByTeacherAndStatus(Teacher teacher, boolean status) {
         return courseRepository.findByTeacherAndArchived(teacher, status);
-    }
-
-    @Override
-    public void archiveCourseById(User user, int id) {
-        var course = getCourseById(id);
-        var teacher = teacherService.getTeacherByUser(user);
-        teacher.setHaveCourse(false);
-        course.setArchived(true);
-        courseRepository.save(course);
-        teacherRepository.save(teacher);
     }
 
     @Override

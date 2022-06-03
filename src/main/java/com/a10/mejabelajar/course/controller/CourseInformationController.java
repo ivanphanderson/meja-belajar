@@ -1,8 +1,8 @@
 package com.a10.mejabelajar.course.controller;
 
 import com.a10.mejabelajar.auth.model.Teacher;
-import com.a10.mejabelajar.auth.model.User;
 import com.a10.mejabelajar.auth.service.TeacherService;
+import com.a10.mejabelajar.auth.service.UserService;
 import com.a10.mejabelajar.course.exception.CourseInformationInvalidException;
 import com.a10.mejabelajar.course.model.Course;
 import com.a10.mejabelajar.course.model.CourseInformation;
@@ -13,6 +13,7 @@ import com.a10.mejabelajar.course.service.CourseService;
 import org.modelmapper.ModelMapper;
 import org.springframework.beans.factory.annotation.Autowired;
 import org.springframework.security.core.context.SecurityContextHolder;
+import org.springframework.security.core.userdetails.UserDetails;
 import org.springframework.stereotype.Controller;
 import org.springframework.ui.Model;
 import org.springframework.web.bind.annotation.*;
@@ -33,6 +34,9 @@ public class CourseInformationController {
     @Autowired
     private TeacherService teacherService;
 
+    @Autowired
+    private UserService userService;
+
     private static final String COURSE_ID = "courseId";
     private static final String COURSE_INFORMATION = "courseInformation";
     private static final String ERROR = "error";
@@ -52,7 +56,8 @@ public class CourseInformationController {
         if (principal instanceof String) {
             return REDIRECT_LOGIN;
         }
-        var user = (User) principal;
+        var userDetails = (UserDetails) principal;
+        var user = userService.getUserByUsername(userDetails.getUsername());
 
         var teacher = teacherService.getTeacherByUser(user);
         var course = courseService.getCourseById(courseId);
@@ -81,7 +86,8 @@ public class CourseInformationController {
         if (principal instanceof String) {
             return REDIRECT_LOGIN;
         }
-        var user = (User) principal;
+        var userDetails = (UserDetails) principal;
+        var user = userService.getUserByUsername(userDetails.getUsername());
 
         var course = courseService.getCourseById(courseId);
         var teacher = teacherService.getTeacherByUser(user);
@@ -190,7 +196,8 @@ public class CourseInformationController {
         if (principal instanceof String) {
             return REDIRECT_LOGIN;
         }
-        var user = (User) principal;
+        var userDetails = (UserDetails) principal;
+        var user = userService.getUserByUsername(userDetails.getUsername());
 
         var teacher = teacherService.getTeacherByUser(user);
         var course = courseService.getCourseById(courseId);
@@ -221,8 +228,7 @@ public class CourseInformationController {
             }
             redirectAttrs.addFlashAttribute(ERROR, "You don't have access to " + action);
             return REDIRECT_COURSE
-                    + courseService.getCourseByTeacherAndStatus(teacher, false).getId()
-                    + "?error=You don't have access to " + action;
+                    + courseService.getCourseByTeacherAndStatus(teacher, false).getId();
         }
         return "";
     }

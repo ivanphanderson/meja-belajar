@@ -13,8 +13,6 @@ import com.a10.mejabelajar.course.service.CourseNotificationService;
 import com.a10.mejabelajar.course.service.CourseService;
 import com.a10.mejabelajar.murid.model.Rate;
 import com.a10.mejabelajar.murid.service.RateService;
-import java.time.Instant;
-import java.util.Date;
 import java.util.List;
 import org.springframework.beans.factory.annotation.Autowired;
 import org.springframework.http.ResponseEntity;
@@ -45,9 +43,6 @@ public class CourseController {
     @Autowired
     private UserService userService;
 
-    @Autowired
-    private CourseNotificationService courseNotificationService;
-
     private static final String COURSE = "course";
     private static final String COURSE_ID = "courseId";
     private static final String COURSE_TYPES = "courseTypes";
@@ -58,11 +53,11 @@ public class CourseController {
     private static final String REDIRECT_LOGIN = "redirect:/login";
     private static final long HOUR = 3600L * 1000; // in milli-seconds.
 
-    @PostMapping(produces = {"application/json"})
-    @ResponseBody
-    public ResponseEntity<Course> createCourse(@RequestBody Course course) {
-        return ResponseEntity.ok(courseService.createCourse(course));
-    }
+//    @PostMapping(produces = {"application/json"})
+//    @ResponseBody
+//    public ResponseEntity<Course> createCourse(@RequestBody Course course) {
+//        return ResponseEntity.ok(courseService.createCourse(course));
+//    }
 
     /**
      * Show create course page.
@@ -103,7 +98,8 @@ public class CourseController {
         if (principal instanceof String) {
             return REDIRECT_LOGIN;
         }
-        var user = (User) principal;
+        var userDetails = (UserDetails) principal;
+        var user = userService.getUserByUsername(userDetails.getUsername());
 
         var teacher = teacherService.getTeacherByUser(user);
         if (teacher.isHaveCourse()) {
@@ -135,7 +131,8 @@ public class CourseController {
         if (principal instanceof String) {
             return REDIRECT_LOGIN;
         }
-        var user = (User) principal;
+        var userDetails = (UserDetails) principal;
+        var user = userService.getUserByUsername(userDetails.getUsername());
 
         var course = courseService.getCourseById(id);
         var teacher = teacherService.getTeacherByUser(user);
@@ -163,7 +160,8 @@ public class CourseController {
         if (principal instanceof String) {
             return REDIRECT_LOGIN;
         }
-        var user = (User) principal;
+        var userDetails = (UserDetails) principal;
+        var user = userService.getUserByUsername(userDetails.getUsername());
 
         var teacher = teacherService.getTeacherByUser(user);
         var course = courseService.getCourseById(id);
@@ -190,7 +188,7 @@ public class CourseController {
     }
 
     /**
-     * Show all course.
+     * Show all course. Will be removed once dashboard is created.
      */
     @GetMapping(value = "")
     public String readCourse(
@@ -200,12 +198,11 @@ public class CourseController {
         if (principal instanceof String) {
             return REDIRECT_LOGIN;
         }
-        var user = (User) principal;
+        var userDetails = (UserDetails) principal;
+        var user = userService.getUserByUsername(userDetails.getUsername());
 
         List<Course> courses = courseService.   getCourses();
-        if (error != null) {
-            model.addAttribute(ERROR, error);
-        }
+
         if (user.getRole() == Role.STUDENT) {
             model.addAttribute(STUDENT, STUDENT);
         } else if (user.getRole() == Role.TEACHER) {
@@ -221,18 +218,17 @@ public class CourseController {
     @GetMapping(value = "/{courseId}")
     public String readCourseById(
             @PathVariable(value = "courseId") int courseId,
-            @RequestParam(name = "error", required = false) String error,
             Model model,
             RedirectAttributes redirectAttrs) {
         var principal = SecurityContextHolder.getContext().getAuthentication().getPrincipal();
         if (principal instanceof String) {
             return REDIRECT_LOGIN;
         }
-        var user = (User) principal;
+        var userDetails = (UserDetails) principal;
+        var user = userService.getUserByUsername(userDetails.getUsername());
 
         var course = courseService.getCourseById(courseId);
 
-        // Add if student
         if (user.getRole() == Role.STUDENT) {
             var student = studentService.getStudentByUser(user);
             List<Course> courses = courseService.getCoursesByStudent(student);
@@ -255,9 +251,6 @@ public class CourseController {
 
         List<CourseInformation> courseInformations = course.getCourseInformations();
 
-        if (error != null) {
-            model.addAttribute(ERROR, error);
-        }
         model.addAttribute(COURSE, course);
         model.addAttribute("courseInformations", courseInformations);
 
@@ -302,7 +295,8 @@ public class CourseController {
         if (principal instanceof String) {
             return REDIRECT_LOGIN;
         }
-        var user = (User) principal;
+        var userDetails = (UserDetails) principal;
+        var user = userService.getUserByUsername(userDetails.getUsername());
 
         var teacher = teacherService.getTeacherByUser(user);
         var course = courseService.getCourseById(courseId);
@@ -311,54 +305,8 @@ public class CourseController {
         if (!isValid.equals("")) {
             return isValid;
         }
-        courseService.archiveCourseById(user, courseId);
+        courseService.archiveCourseById(teacher, course);
         return REDIRECT_COURSE;
-    }
-
-    /**
-     * Show Notification.
-     */
-    @GetMapping(value = "/notification")
-    public String courseNotification(
-            Model model,
-            RedirectAttributes redirectAttrs
-    ) {
-        var principal = SecurityContextHolder.getContext().getAuthentication().getPrincipal();
-        if (principal instanceof String) {
-            return REDIRECT_LOGIN;
-        }
-        var user = (User) principal;
-
-        if (user.getRole() == Role.STUDENT) {
-            var student = studentService.getStudentByUser(user);
-
-            var instant = Instant.now();
-            var date = Date.from(instant);
-            var newDate = new Date(date.getTime() + 7 * HOUR);
-
-            List<CourseNotification> courseNotifications =
-                courseNotificationService
-                        .getCourseNotificationByStudentAndCreatedAtIsGreaterThanEqual(
-                                student,
-                                student.getLastNotifBtnClick()
-                        );
-
-            List<CourseNotification> courseNotifications1 =
-                courseNotificationService
-                        .getCourseNotificationByStudentAndCreatedAtIsLessThan(
-                                student,
-                                student.getLastNotifBtnClick()
-                        );
-
-            studentService.setStudentLastNotifBtnClick(student, newDate);
-            model.addAttribute("courseNotifications", courseNotifications);
-            model.addAttribute("courseNotifications1", courseNotifications1);
-            return "course/courseNotification";
-        } else {
-            redirectAttrs.addFlashAttribute(ERROR,
-                    "The feature is available only for student");
-            return REDIRECT_COURSE;
-        }
     }
 
     /**

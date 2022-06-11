@@ -26,7 +26,7 @@ import static org.springframework.test.web.servlet.request.MockMvcRequestBuilder
 import static org.springframework.test.web.servlet.result.MockMvcResultMatchers.*;
 
 @WebMvcTest(controllers = AdminDashboardController.class)
-public class AdminDashboardControllerTest {
+class AdminDashboardControllerTest {
     @Autowired
     private MockMvc mockMvc;
 

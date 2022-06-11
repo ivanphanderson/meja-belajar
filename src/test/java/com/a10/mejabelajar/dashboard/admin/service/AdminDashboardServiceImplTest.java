@@ -20,7 +20,7 @@ import static org.mockito.ArgumentMatchers.any;
 import static org.mockito.Mockito.*;
 
 @ExtendWith(MockitoExtension.class)
-public class AdminDashboardServiceImplTest {
+class AdminDashboardServiceImplTest {
     @InjectMocks
     private AdminDashboardServiceImpl dashboardService;
 
@@ -48,12 +48,14 @@ public class AdminDashboardServiceImplTest {
     @Test
     void testNotEmptyTokenValidation(){
         dto.setToken("");
-        assertThrows(EmptyTokenException.class, ()-> dashboardService.validateNewToken(dto.getToken()));
+        String dtoToken = dto.getToken();
+        assertThrows(EmptyTokenException.class, ()-> dashboardService.validateNewToken(dtoToken));
     }
 
     @Test
     void testTokenNotAlreadyGeneratedValidation(){
         when(tokenRepository.findByToken(TOKEN)).thenReturn(new AdminRegistrationToken(TOKEN));
-        assertThrows(TokenAlreadyGeneratedException.class, ()-> dashboardService.validateNewToken(dto.getToken()));
+        String dtoToken = dto.getToken();
+        assertThrows(TokenAlreadyGeneratedException.class, ()-> dashboardService.validateNewToken(dtoToken));
     }
 }

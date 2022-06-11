@@ -19,7 +19,7 @@ import static org.junit.jupiter.api.Assertions.assertNotNull;
 import static org.mockito.Mockito.*;
 
 @ExtendWith(MockitoExtension.class)
-public class StudentDashboardServiceImplTest {
+class StudentDashboardServiceImplTest {
     @InjectMocks
     private StudentDashboardServiceImpl dashboardService;
 

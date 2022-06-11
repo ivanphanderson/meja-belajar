@@ -27,7 +27,7 @@ import static org.springframework.test.web.servlet.result.MockMvcResultMatchers.
 import static org.springframework.test.web.servlet.result.MockMvcResultMatchers.model;
 
 @WebMvcTest(controllers = TeacherDashboardController.class)
-public class TeacherDashboardControllerTest {
+class TeacherDashboardControllerTest {
     @Autowired
     private MockMvc mockMvc;
 
@@ -89,7 +89,7 @@ public class TeacherDashboardControllerTest {
 
     @Test
     @WithMockUser(username = MOCK_USERNAME, authorities = {"USER", "TEACHER"})
-    void teacherCanAccessTEacherDashboard() throws Exception {
+    void teacherCanAccessTeacherDashboard() throws Exception {
         Mockito.when(securityContext.getAuthentication()).thenReturn(authentication);
         SecurityContextHolder.setContext(securityContext);
 

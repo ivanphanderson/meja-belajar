@@ -1,5 +1,6 @@
 package com.a10.mejabelajar.dashboard.student.controller;
 
+import com.a10.mejabelajar.auth.model.Role;
 import com.a10.mejabelajar.auth.model.Student;
 import com.a10.mejabelajar.auth.model.User;
 import com.a10.mejabelajar.auth.service.StudentService;
@@ -25,7 +26,7 @@ public class StudentDashboardController {
         if(user == null){
             return "redirect:/login";
         }
-        Student student = studentService.getStudentByUser(user);
+        var student = studentService.getStudentByUser(user);
         model.addAttribute("takenCourses", dashboardService.getTakenCourse(student));
         model.addAttribute("username", user.getUsername());
         model.addAttribute("email", user.getEmail());

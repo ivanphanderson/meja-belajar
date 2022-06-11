@@ -26,7 +26,7 @@ import static org.springframework.test.web.servlet.result.MockMvcResultMatchers.
 import static org.springframework.test.web.servlet.result.MockMvcResultMatchers.model;
 
 @WebMvcTest(controllers = StudentDashboardController.class)
-public class StudentDashboardControllerTest {
+class StudentDashboardControllerTest {
     @Autowired
     private MockMvc mockMvc;
 
@@ -81,14 +81,14 @@ public class StudentDashboardControllerTest {
 
     @Test
     @WithMockUser(username = MOCK_USERNAME, authorities = {"USER", "TEACHER"})
-    void studentCantAccessStudentDashboard() throws Exception {
+    void teacherCantAccessStudentDashboard() throws Exception {
         mockMvc.perform(get("/dashboard/student/"))
                 .andExpect(status().is3xxRedirection());
     }
 
     @Test
     @WithMockUser(username = MOCK_USERNAME, authorities = {"USER", "STUDENT"})
-    void studentCanAccessTEacherDashboard() throws Exception {
+    void studentCanAccessStudentDashboard() throws Exception {
         Mockito.when(securityContext.getAuthentication()).thenReturn(authentication);
         SecurityContextHolder.setContext(securityContext);
 

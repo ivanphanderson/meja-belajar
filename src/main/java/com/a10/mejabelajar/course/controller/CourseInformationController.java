@@ -52,16 +52,21 @@ public class CourseInformationController {
             @PathVariable int courseId,
             Model model,
             RedirectAttributes redirectAttrs) {
-        var principal = SecurityContextHolder.getContext().getAuthentication().getPrincipal();
-        String isValid =
-                validator(principal, courseId, "Create Course Information", redirectAttrs);
-        if (!isValid.equals("")) {
-            return isValid;
-        }
+        try {
+            var principal = SecurityContextHolder.getContext().getAuthentication().getPrincipal();
+            String isValid =
+                    validator(principal, courseId, "Create Course Information", redirectAttrs);
+            if (!isValid.equals("")) {
+                return isValid;
+            }
 
-        model.addAttribute(COURSE_ID, courseId);
-        model.addAttribute(COURSE_INFORMATION, new CourseInformationDataTransferObject());
-        return "course/createCourseInformation";
+            model.addAttribute(COURSE_ID, courseId);
+            model.addAttribute(COURSE_INFORMATION, new CourseInformationDataTransferObject());
+            return "course/createCourseInformation";
+        } catch (Exception e) {
+            model.addAttribute(ERROR, "An unexpected error occured");
+            return "course/courseErrorPage";
+        }
     }
 
     /**
@@ -73,16 +78,15 @@ public class CourseInformationController {
             @PathVariable int courseId,
             Model model,
             RedirectAttributes redirectAttrs) {
-
-        var principal = SecurityContextHolder.getContext().getAuthentication().getPrincipal();
-        var course = courseService.getCourseById(courseId);
-        String isValid =
-                validator(principal, courseId, "Create Course Information", redirectAttrs);
-        if (!isValid.equals("")) {
-            return isValid;
-        }
-
         try {
+            var principal = SecurityContextHolder.getContext().getAuthentication().getPrincipal();
+            var course = courseService.getCourseById(courseId);
+            String isValid =
+                    validator(principal, courseId, "Create Course Information", redirectAttrs);
+            if (!isValid.equals("")) {
+                return isValid;
+            }
+
             var courseInformation = new CourseInformation();
             modelMapper.map(courseInformationDataTransferObject, courseInformation);
 
@@ -96,6 +100,9 @@ public class CourseInformationController {
             model.addAttribute(COURSE_ID, courseId);
             model.addAttribute(COURSE_INFORMATION, courseInformationDataTransferObject);
             return "course/createCourseInformation";
+        } catch (Exception e) {
+            model.addAttribute(ERROR, "An unexpected error occured");
+            return "course/courseErrorPage";
         }
     }
 
@@ -108,18 +115,24 @@ public class CourseInformationController {
             @PathVariable int courseInformationId,
             Model model,
             RedirectAttributes redirectAttrs) {
-        var principal = SecurityContextHolder.getContext().getAuthentication().getPrincipal();
-        String isValid = validator(principal, courseId, "Update Course Information", redirectAttrs);
-        if (!isValid.equals("")) {
-            return isValid;
-        }
+        try {
+            var principal = SecurityContextHolder.getContext().getAuthentication().getPrincipal();
+            String isValid =
+                    validator(principal, courseId, "Update Course Information", redirectAttrs);
+            if (!isValid.equals("")) {
+                return isValid;
+            }
 
-        var courseInformation =
-                courseInformationService.getCourseInformationById(courseInformationId);
-        model.addAttribute(COURSE_ID, courseId);
-        model.addAttribute(COURSE_INFORMATION, courseInformation);
-        model.addAttribute("courseInformationId", courseInformationId);
-        return "course/updateCourseInformation";
+            var courseInformation =
+                    courseInformationService.getCourseInformationById(courseInformationId);
+            model.addAttribute(COURSE_ID, courseId);
+            model.addAttribute(COURSE_INFORMATION, courseInformation);
+            model.addAttribute("courseInformationId", courseInformationId);
+            return "course/updateCourseInformation";
+        } catch (Exception e) {
+            model.addAttribute(ERROR, "An unexpected error occured");
+            return "course/courseErrorPage";
+        }
     }
 
     /**
@@ -132,13 +145,14 @@ public class CourseInformationController {
             @PathVariable int courseInformationId,
             Model model,
             RedirectAttributes redirectAttrs) {
-        var principal = SecurityContextHolder.getContext().getAuthentication().getPrincipal();
-        String isValid = validator(principal, courseId, "Update Course Information", redirectAttrs);
-        if (!isValid.equals("")) {
-            return isValid;
-        }
-
         try {
+            var principal = SecurityContextHolder.getContext().getAuthentication().getPrincipal();
+            String isValid =
+                    validator(principal, courseId, "Update Course Information", redirectAttrs);
+            if (!isValid.equals("")) {
+                return isValid;
+            }
+
             var courseInformation = new CourseInformation();
             modelMapper.map(courseInformationDataTransferObject, courseInformation);
 
@@ -154,6 +168,9 @@ public class CourseInformationController {
             model.addAttribute("courseInformationId", courseInformationId);
             model.addAttribute(COURSE_INFORMATION, courseInformationDataTransferObject);
             return "course/updateCourseInformation";
+        } catch (Exception e) {
+            model.addAttribute(ERROR, "An unexpected error occured");
+            return "course/courseErrorPage";
         }
     }
 
@@ -164,14 +181,21 @@ public class CourseInformationController {
     public String deleteCourseInformation(
             @PathVariable int courseId,
             @PathVariable int courseInformationId,
-            RedirectAttributes redirectAttrs) {
-        var principal = SecurityContextHolder.getContext().getAuthentication().getPrincipal();
-        String isValid = validator(principal, courseId, "Delete Course Information", redirectAttrs);
-        if (!isValid.equals("")) {
-            return isValid;
+            RedirectAttributes redirectAttrs,
+            Model model) {
+        try {
+            var principal = SecurityContextHolder.getContext().getAuthentication().getPrincipal();
+            String isValid =
+                    validator(principal, courseId, "Delete Course Information", redirectAttrs);
+            if (!isValid.equals("")) {
+                return isValid;
+            }
+            courseInformationService.deleteCourseInformationById(courseInformationId);
+            return REDIRECT_COURSE + courseId;
+        } catch (Exception e) {
+            model.addAttribute(ERROR, "An unexpected error occured");
+            return "course/courseErrorPage";
         }
-        courseInformationService.deleteCourseInformationById(courseInformationId);
-        return REDIRECT_COURSE + courseId;
     }
 
     /**

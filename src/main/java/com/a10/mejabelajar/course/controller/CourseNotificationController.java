@@ -43,42 +43,47 @@ public class CourseNotificationController {
     public String courseNotification(
             Model model,
             RedirectAttributes redirectAttrs) {
-        var principal = SecurityContextHolder.getContext().getAuthentication().getPrincipal();
-        if (principal instanceof String) {
-            return REDIRECT_LOGIN;
-        }
-        var userDetails = (UserDetails) principal;
-        var user = userService.getUserByUsername(userDetails.getUsername());
+        try {
+            var principal = SecurityContextHolder.getContext().getAuthentication().getPrincipal();
+            if (principal instanceof String) {
+                return REDIRECT_LOGIN;
+            }
+            var userDetails = (UserDetails) principal;
+            var user = userService.getUserByUsername(userDetails.getUsername());
 
-        if (user.getRole() == Role.STUDENT) {
-            var student = studentService.getStudentByUser(user);
+            if (user.getRole() == Role.STUDENT) {
+                var student = studentService.getStudentByUser(user);
 
-            var instant = Instant.now();
-            var date = Date.from(instant);
-            var newDate = new Date(date.getTime() + 7 * HOUR);
+                var instant = Instant.now();
+                var date = Date.from(instant);
+                var newDate = new Date(date.getTime() + 7 * HOUR);
 
-            List<CourseNotification> courseNotifications =
-                    courseNotificationService
-                            .getCourseNotificationByStudentAndCreatedAtIsGreaterThanEqual(
-                                    student,
-                                    student.getLastNotifBtnClick()
-                            );
+                List<CourseNotification> courseNotifications =
+                        courseNotificationService
+                                .getCourseNotificationByStudentAndCreatedAtIsGreaterThanEqual(
+                                        student,
+                                        student.getLastNotifBtnClick()
+                                );
 
-            List<CourseNotification> courseNotifications1 =
-                    courseNotificationService
-                            .getCourseNotificationByStudentAndCreatedAtIsLessThan(
-                                    student,
-                                    student.getLastNotifBtnClick()
-                            );
+                List<CourseNotification> courseNotifications1 =
+                        courseNotificationService
+                                .getCourseNotificationByStudentAndCreatedAtIsLessThan(
+                                        student,
+                                        student.getLastNotifBtnClick()
+                                );
 
-            studentService.setStudentLastNotifBtnClick(student, newDate);
-            model.addAttribute("courseNotifications", courseNotifications);
-            model.addAttribute("courseNotifications1", courseNotifications1);
-            return "course/courseNotification";
-        } else {
-            redirectAttrs.addFlashAttribute(ERROR,
-                    "The feature is available only for student");
-            return REDIRECT_COURSE;
+                studentService.setStudentLastNotifBtnClick(student, newDate);
+                model.addAttribute("courseNotifications", courseNotifications);
+                model.addAttribute("courseNotifications1", courseNotifications1);
+                return "course/courseNotification";
+            } else {
+                redirectAttrs.addFlashAttribute(ERROR,
+                        "The feature is available only for student");
+                return REDIRECT_COURSE;
+            }
+        } catch (Exception e) {
+            model.addAttribute(ERROR, "An unexpected error occured");
+            return "course/courseErrorPage";
         }
     }
 }

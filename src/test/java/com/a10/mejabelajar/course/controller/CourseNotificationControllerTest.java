@@ -1,6 +1,7 @@
 package com.a10.mejabelajar.course.controller;
 
 import static org.mockito.ArgumentMatchers.any;
+import static org.mockito.ArgumentMatchers.anyString;
 import static org.mockito.Mockito.when;
 import static org.springframework.test.web.servlet.request.MockMvcRequestBuilders.get;
 import static org.springframework.test.web.servlet.result.MockMvcResultMatchers.*;
@@ -85,7 +86,7 @@ class CourseNotificationControllerTest {
 
     @Test
     @WithAnonymousUser
-    void notLoggedInCantAccessCreateCourseGet() throws Exception {
+    void notLoggedInCantAccessCourseNotificationeGet() throws Exception {
         mockMvc.perform(get("/course/notification"))
                 .andExpect(status().is3xxRedirection())
                 .andExpect(redirectedUrl("/login"));
@@ -93,7 +94,7 @@ class CourseNotificationControllerTest {
 
     @Test
     @WithMockUser(username = TEACHER_UNAME, authorities = {"USER", "TEACHER"})
-    void notStudentCantAccessCourseNotification() throws Exception {
+    void notStudentCantAccessCourseNotificationGet() throws Exception {
         user.setRole(Role.TEACHER);
 
         when(userService.getUserByUsername(TEACHER_UNAME)).thenReturn(user);
@@ -110,7 +111,7 @@ class CourseNotificationControllerTest {
 
     @Test
     @WithMockUser(username = STUDENT_UNAME, authorities = {"USER", "STUDENT"})
-    void studentCanAccessCourseNotification() throws Exception {
+    void studentCanAccessCourseNotificationGet() throws Exception {
         user.setRole(Role.STUDENT);
         when(userService.getUserByUsername(STUDENT_UNAME)).thenReturn(user);
         when(studentService.getStudentByUser(user)).thenReturn(student);
@@ -139,5 +140,16 @@ class CourseNotificationControllerTest {
                 .andExpect(model().attributeExists("courseNotifications"))
                 .andExpect(model().attributeExists("courseNotifications1"))
                 .andExpect(view().name("course/courseNotification"));
+    }
+
+    @Test
+    @WithMockUser(username = STUDENT_UNAME, authorities = {"USER", "STUDENT"})
+    void showErrorPageIfUnexpectedErrorOccurWhenAccessingUpdateCourseInformationGet()
+            throws Exception {
+        when(userService.getUserByUsername(anyString())).thenThrow(IllegalArgumentException.class);
+        mockMvc.perform(get("/course/notification"))
+                .andExpect(status().isOk())
+                .andExpect(model().attributeExists("error"))
+                .andExpect(view().name("course/courseErrorPage"));
     }
 }

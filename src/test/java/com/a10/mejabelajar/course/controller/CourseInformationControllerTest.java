@@ -1,7 +1,6 @@
 package com.a10.mejabelajar.course.controller;
 
-import static org.mockito.ArgumentMatchers.any;
-import static org.mockito.ArgumentMatchers.anyInt;
+import static org.mockito.ArgumentMatchers.*;
 import static org.mockito.Mockito.when;
 import static org.springframework.test.web.servlet.request.MockMvcRequestBuilders.*;
 import static org.springframework.test.web.servlet.result.MockMvcResultMatchers.*;
@@ -65,6 +64,7 @@ class CourseInformationControllerTest {
     private static final String TEACHER_UNAME = "teacher";
     private static final int COURSE_ID = 100;
     private static final int COURSE_INFORMATION_ID = 101;
+    private static final String ERROR = "error";
     private Teacher teacher;
     private User user;
     private Course course;
@@ -146,6 +146,17 @@ class CourseInformationControllerTest {
     }
 
     @Test
+    @WithMockUser(username = TEACHER_UNAME, authorities = {"USER", "TEACHER"})
+    void showErrorPageIfUnexpectedErrorOccurWhenAccessingCreateCourseInformationGet()
+            throws Exception {
+        when(userService.getUserByUsername(anyString())).thenThrow(IllegalArgumentException.class);
+        mockMvc.perform(get("/course/information/create/" + COURSE_ID))
+                .andExpect(status().isOk())
+                .andExpect(model().attributeExists(ERROR))
+                .andExpect(view().name("course/courseErrorPage"));
+    }
+
+    @Test
     @WithAnonymousUser
     void notLoggedInCantAccessCreateCourseInformationPost() throws Exception {
         mockMvc.perform(post("/course/information/create/" + COURSE_ID))
@@ -223,6 +234,17 @@ class CourseInformationControllerTest {
     }
 
     @Test
+    @WithMockUser(username = TEACHER_UNAME, authorities = {"USER", "TEACHER"})
+    void showErrorPageIfUnexpectedErrorOccurWhenAccessingCreateCourseInformationPost()
+            throws Exception {
+        when(userService.getUserByUsername(anyString())).thenThrow(IllegalArgumentException.class);
+        mockMvc.perform(post("/course/information/create/" + COURSE_ID))
+                .andExpect(status().isOk())
+                .andExpect(model().attributeExists(ERROR))
+                .andExpect(view().name("course/courseErrorPage"));
+    }
+
+    @Test
     @WithAnonymousUser
     void notLoggedInCantAccessCreateUpdateInformationGet() throws Exception {
         mockMvc.perform(
@@ -284,6 +306,18 @@ class CourseInformationControllerTest {
                 get("/course/information/update/" + COURSE_ID + "/" + COURSE_INFORMATION_ID))
                 .andExpect(status().is3xxRedirection())
                 .andExpect(redirectedUrl("/course/"));
+    }
+
+    @Test
+    @WithMockUser(username = TEACHER_UNAME, authorities = {"USER", "TEACHER"})
+    void showErrorPageIfUnexpectedErrorOccurWhenAccessingUpdateCourseInformationGet()
+            throws Exception {
+        when(userService.getUserByUsername(anyString())).thenThrow(IllegalArgumentException.class);
+        mockMvc.perform(
+                get("/course/information/update/" + COURSE_ID + "/" + COURSE_INFORMATION_ID))
+                .andExpect(status().isOk())
+                .andExpect(model().attributeExists(ERROR))
+                .andExpect(view().name("course/courseErrorPage"));
     }
 
     @Test
@@ -373,6 +407,18 @@ class CourseInformationControllerTest {
     }
 
     @Test
+    @WithMockUser(username = TEACHER_UNAME, authorities = {"USER", "TEACHER"})
+    void showErrorPageIfUnexpectedErrorOccurWhenAccessingUpdateCourseInformationPost()
+            throws Exception {
+        when(userService.getUserByUsername(anyString())).thenThrow(IllegalArgumentException.class);
+        mockMvc.perform(
+                post("/course/information/update/" + COURSE_ID + "/" + COURSE_INFORMATION_ID))
+                .andExpect(status().isOk())
+                .andExpect(model().attributeExists(ERROR))
+                .andExpect(view().name("course/courseErrorPage"));
+    }
+
+    @Test
     @WithAnonymousUser
     void notLoggedInCantDeleteCourseInformationPost() throws Exception {
         mockMvc.perform(
@@ -432,6 +478,18 @@ class CourseInformationControllerTest {
                 post("/course/information/delete/" + COURSE_ID + "/" + COURSE_INFORMATION_ID))
                 .andExpect(status().is3xxRedirection())
                 .andExpect(redirectedUrl("/course/"));
+    }
+
+    @Test
+    @WithMockUser(username = TEACHER_UNAME, authorities = {"USER", "TEACHER"})
+    void showErrorPageIfUnexpectedErrorOccurWhenAccessingDeleteCourseInformationPost()
+            throws Exception {
+        when(userService.getUserByUsername(anyString())).thenThrow(IllegalArgumentException.class);
+        mockMvc.perform(
+                post("/course/information/delete/" + COURSE_ID + "/" + COURSE_INFORMATION_ID))
+                .andExpect(status().isOk())
+                .andExpect(model().attributeExists(ERROR))
+                .andExpect(view().name("course/courseErrorPage"));
     }
 
 }

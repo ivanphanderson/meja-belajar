@@ -54,26 +54,31 @@ public class CourseController {
      */
     @GetMapping(path = "/create")
     public String createCourse(Model model, RedirectAttributes redirectAttrs) {
-        var principal = SecurityContextHolder.getContext().getAuthentication().getPrincipal();
-        if (principal instanceof String) {
-            return REDIRECT_LOGIN;
+        try {
+            var principal = SecurityContextHolder.getContext().getAuthentication().getPrincipal();
+            if (principal instanceof String) {
+                return REDIRECT_LOGIN;
+            }
+            var userDetails = (UserDetails) principal;
+            var user = userService.getUserByUsername(userDetails.getUsername());
+
+            var teacher = teacherService.getTeacherByUser(user);
+
+            if (teacher.isHaveCourse()) {
+                redirectAttrs.addFlashAttribute(ERROR,
+                        "You already have this course, archive this course "
+                                + "in order to create a new one");
+                return REDIRECT_COURSE
+                        + courseService.getCourseByTeacherAndStatus(teacher, false).getId();
+            }
+
+            model.addAttribute(COURSE_TYPES, CourseType.values());
+            model.addAttribute("newCourse", new Course());
+            return "course/createCourse";
+        } catch (Exception e) {
+            model.addAttribute(ERROR, "An unexpected error occured");
+            return "course/courseErrorPage";
         }
-        var userDetails = (UserDetails) principal;
-        var user = userService.getUserByUsername(userDetails.getUsername());
-
-        var teacher = teacherService.getTeacherByUser(user);
-
-        if (teacher.isHaveCourse()) {
-            redirectAttrs.addFlashAttribute(ERROR,
-                    "You already have this course, archive this course "
-                            + "in order to create a new one");
-            return REDIRECT_COURSE
-                    + courseService.getCourseByTeacherAndStatus(teacher, false).getId();
-        }
-
-        model.addAttribute(COURSE_TYPES, CourseType.values());
-        model.addAttribute("newCourse", new Course());
-        return "course/createCourse";
     }
 
     /**
@@ -84,23 +89,23 @@ public class CourseController {
             @ModelAttribute("courseDto") CourseDataTransferObject courseDataTransferObject,
             Model model,
             RedirectAttributes redirectAttrs) {
-        var principal = SecurityContextHolder.getContext().getAuthentication().getPrincipal();
-        if (principal instanceof String) {
-            return REDIRECT_LOGIN;
-        }
-        var userDetails = (UserDetails) principal;
-        var user = userService.getUserByUsername(userDetails.getUsername());
-
-        var teacher = teacherService.getTeacherByUser(user);
-        if (teacher.isHaveCourse()) {
-            redirectAttrs.addFlashAttribute(ERROR,
-                    "You already have this course, archive this course "
-                    + "in order to create a new one");
-            return REDIRECT_COURSE
-                    + courseService.getCourseByTeacherAndStatus(teacher, false).getId();
-        }
-
         try {
+            var principal = SecurityContextHolder.getContext().getAuthentication().getPrincipal();
+            if (principal instanceof String) {
+                return REDIRECT_LOGIN;
+            }
+            var userDetails = (UserDetails) principal;
+            var user = userService.getUserByUsername(userDetails.getUsername());
+
+            var teacher = teacherService.getTeacherByUser(user);
+            if (teacher.isHaveCourse()) {
+                redirectAttrs.addFlashAttribute(ERROR,
+                        "You already have this course, archive this course "
+                        + "in order to create a new one");
+                return REDIRECT_COURSE
+                        + courseService.getCourseByTeacherAndStatus(teacher, false).getId();
+            }
+
             courseService.createCourse(courseDataTransferObject, user);
             return "redirect:";
         } catch (CourseInvalidException e) {
@@ -108,6 +113,9 @@ public class CourseController {
             model.addAttribute(COURSE_TYPES, CourseType.values());
             model.addAttribute("newCourse", courseDataTransferObject);
             return "course/createCourse";
+        } catch (Exception e) {
+            model.addAttribute(ERROR, "An unexpected error occured");
+            return "course/courseErrorPage";
         }
     }
 
@@ -117,23 +125,29 @@ public class CourseController {
     @GetMapping(path = "/update/{id}")
     public String updateCourse(
             @PathVariable int id, Model model, RedirectAttributes redirectAttrs) {
-        var principal = SecurityContextHolder.getContext().getAuthentication().getPrincipal();
-        if (principal instanceof String) {
-            return REDIRECT_LOGIN;
-        }
-        var userDetails = (UserDetails) principal;
-        var user = userService.getUserByUsername(userDetails.getUsername());
+        try {
+            var principal = SecurityContextHolder.getContext().getAuthentication().getPrincipal();
+            if (principal instanceof String) {
+                return REDIRECT_LOGIN;
+            }
+            var userDetails = (UserDetails) principal;
+            var user = userService.getUserByUsername(userDetails.getUsername());
 
-        var course = courseService.getCourseById(id);
-        var teacher = teacherService.getTeacherByUser(user);
-        String isValid = validateTeacherAccess(teacher, course, "Update The Course", redirectAttrs);
-        if (!isValid.equals("")) {
-            return isValid;
+            var course = courseService.getCourseById(id);
+            var teacher = teacherService.getTeacherByUser(user);
+            String isValid =
+                    validateTeacherAccess(teacher, course, "Update The Course", redirectAttrs);
+            if (!isValid.equals("")) {
+                return isValid;
+            }
+            model.addAttribute(COURSE_TYPES, CourseType.values());
+            model.addAttribute(COURSE, course);
+            model.addAttribute(COURSE_ID, id);
+            return "course/updateCourse";
+        } catch (Exception e) {
+            model.addAttribute(ERROR, "An unexpected error occured");
+            return "course/courseErrorPage";
         }
-        model.addAttribute(COURSE_TYPES, CourseType.values());
-        model.addAttribute(COURSE, course);
-        model.addAttribute(COURSE_ID, id);
-        return "course/updateCourse";
     }
 
     /**
@@ -145,22 +159,22 @@ public class CourseController {
             @PathVariable int id,
             Model model,
             RedirectAttributes redirectAttrs) {
-
-        var principal = SecurityContextHolder.getContext().getAuthentication().getPrincipal();
-        if (principal instanceof String) {
-            return REDIRECT_LOGIN;
-        }
-        var userDetails = (UserDetails) principal;
-        var user = userService.getUserByUsername(userDetails.getUsername());
-
-        var teacher = teacherService.getTeacherByUser(user);
-        var course = courseService.getCourseById(id);
-        String isValid = validateTeacherAccess(teacher, course, "Update the Course", redirectAttrs);
-        if (!isValid.equals("")) {
-            return isValid;
-        }
-
         try {
+            var principal = SecurityContextHolder.getContext().getAuthentication().getPrincipal();
+            if (principal instanceof String) {
+                return REDIRECT_LOGIN;
+            }
+            var userDetails = (UserDetails) principal;
+            var user = userService.getUserByUsername(userDetails.getUsername());
+
+            var teacher = teacherService.getTeacherByUser(user);
+            var course = courseService.getCourseById(id);
+            String isValid =
+                    validateTeacherAccess(teacher, course, "Update the Course", redirectAttrs);
+            if (!isValid.equals("")) {
+                return isValid;
+            }
+
             courseService.updateCourse(
                     id,
                     teacher,
@@ -174,6 +188,9 @@ public class CourseController {
             model.addAttribute(COURSE, courseDataTransferObject);
             model.addAttribute(COURSE_ID, id);
             return "course/updateCourse";
+        } catch (Exception e) {
+            model.addAttribute(ERROR, "An unexpected error occured");
+            return "course/courseErrorPage";
         }
     }
 
@@ -190,7 +207,7 @@ public class CourseController {
         var userDetails = (UserDetails) principal;
         var user = userService.getUserByUsername(userDetails.getUsername());
 
-        List<Course> courses = courseService.   getCourses();
+        List<Course> courses = courseService.getCourses();
 
         if (user.getRole() == Role.STUDENT) {
             model.addAttribute(STUDENT, STUDENT);
@@ -209,73 +226,86 @@ public class CourseController {
             @PathVariable(value = "courseId") int courseId,
             Model model,
             RedirectAttributes redirectAttrs) {
-        var principal = SecurityContextHolder.getContext().getAuthentication().getPrincipal();
-        if (principal instanceof String) {
-            return REDIRECT_LOGIN;
-        }
-        var userDetails = (UserDetails) principal;
-        var user = userService.getUserByUsername(userDetails.getUsername());
-
-        var course = courseService.getCourseById(courseId);
-
-        if (user.getRole() == Role.STUDENT) {
-            var student = studentService.getStudentByUser(user);
-            List<Course> courses = courseService.getCoursesByStudent(student);
-            if (!courses.contains(course)) {
-                redirectAttrs.addFlashAttribute(ERROR, "You are not enrolled to this course");
-                return REDIRECT_COURSE;
+        try {
+            var principal = SecurityContextHolder.getContext().getAuthentication().getPrincipal();
+            if (principal instanceof String) {
+                return REDIRECT_LOGIN;
             }
-            model.addAttribute(STUDENT, student);
-        }
-        if (user.getRole() == Role.TEACHER) {
-            var teacher = teacherService.getTeacherByUser(user);
-            String isValid =
-                    validateTeacherAccess(teacher, course, "Read The Course", redirectAttrs);
-            if (!isValid.equals("")) {
-                return isValid;
+            var userDetails = (UserDetails) principal;
+            var user = userService.getUserByUsername(userDetails.getUsername());
+
+            var course = courseService.getCourseById(courseId);
+
+            if (user.getRole() == Role.STUDENT) {
+                var student = studentService.getStudentByUser(user);
+                List<Course> courses = courseService.getCoursesByStudent(student);
+                if (!courses.contains(course)) {
+                    redirectAttrs.addFlashAttribute(ERROR, "You are not enrolled to this course");
+                    return REDIRECT_COURSE;
+                }
+                model.addAttribute(STUDENT, student);
             }
-            model.addAttribute(TEACHER, teacher);
+            if (user.getRole() == Role.TEACHER) {
+                var teacher = teacherService.getTeacherByUser(user);
+                String isValid =
+                        validateTeacherAccess(teacher, course, "Read The Course", redirectAttrs);
+                if (!isValid.equals("")) {
+                    return isValid;
+                }
+                model.addAttribute(TEACHER, teacher);
+            }
+
+
+            List<CourseInformation> courseInformations = course.getCourseInformations();
+
+            model.addAttribute(COURSE, course);
+            model.addAttribute("courseInformations", courseInformations);
+
+            String studentId = user.getId();
+
+            Double newAverageRate = rateService.getCourseAverageRateByIdCourse(courseId);
+
+            var listRate = rateService.getByIdStudentAndIdCourse(studentId, courseId);
+            model.addAttribute("rate", new Rate());
+            model.addAttribute("idCourse", courseId);
+            model.addAttribute("currentRate", listRate);
+            model.addAttribute("finalRate", newAverageRate);
+            return "course/readCourseById";
+        } catch (Exception e) {
+            model.addAttribute(ERROR, "An unexpected error occured");
+            return "course/courseErrorPage";
         }
-
-
-        List<CourseInformation> courseInformations = course.getCourseInformations();
-
-        model.addAttribute(COURSE, course);
-        model.addAttribute("courseInformations", courseInformations);
-
-        String studentId = user.getId();
-
-        Double newAverageRate = rateService.getCourseAverageRateByIdCourse(courseId);
-
-        var listRate = rateService.getByIdStudentAndIdCourse(studentId, courseId);
-        model.addAttribute("rate", new Rate());
-        model.addAttribute("idCourse", courseId);
-        model.addAttribute("currentRate", listRate);
-        model.addAttribute("finalRate", newAverageRate);
-        return "course/readCourseById";
     }
 
     /**
      * Archive a course.
      */
     @PostMapping(value = "/archive/{courseId}")
-    public String archiveCourse(@PathVariable int courseId, RedirectAttributes redirectAttrs) {
-        var principal = SecurityContextHolder.getContext().getAuthentication().getPrincipal();
-        if (principal instanceof String) {
-            return REDIRECT_LOGIN;
-        }
-        var userDetails = (UserDetails) principal;
-        var user = userService.getUserByUsername(userDetails.getUsername());
+    public String archiveCourse(
+            @PathVariable int courseId,
+            RedirectAttributes redirectAttrs,
+            Model model) {
+        try {
+            var principal = SecurityContextHolder.getContext().getAuthentication().getPrincipal();
+            if (principal instanceof String) {
+                return REDIRECT_LOGIN;
+            }
+            var userDetails = (UserDetails) principal;
+            var user = userService.getUserByUsername(userDetails.getUsername());
 
-        var course = courseService.getCourseById(courseId);
-        var teacher = teacherService.getTeacherByUser(user);
-        String isValid =
-                validateTeacherAccess(teacher, course, "Archive the Course", redirectAttrs);
-        if (!isValid.equals("")) {
-            return isValid;
+            var course = courseService.getCourseById(courseId);
+            var teacher = teacherService.getTeacherByUser(user);
+            String isValid =
+                    validateTeacherAccess(teacher, course, "Archive the Course", redirectAttrs);
+            if (!isValid.equals("")) {
+                return isValid;
+            }
+            courseService.archiveCourseById(teacher, course);
+            return REDIRECT_COURSE;
+        } catch (Exception e) {
+            model.addAttribute(ERROR, "An unexpected error occured");
+            return "course/courseErrorPage";
         }
-        courseService.archiveCourseById(teacher, course);
-        return REDIRECT_COURSE;
     }
 
     /**

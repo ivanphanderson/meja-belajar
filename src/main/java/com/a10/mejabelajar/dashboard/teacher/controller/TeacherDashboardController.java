@@ -26,7 +26,11 @@ public class TeacherDashboardController {
      */
     @GetMapping(value = "/")
     public String teacherDashboard(@AuthenticationPrincipal User user, Model model) {
-        Teacher teacher = teacherService.getTeacherByUser(user);
+        if(user == null){
+            return "redirect:/login";
+        }
+
+        var teacher = teacherService.getTeacherByUser(user);
         model.addAttribute("activeCourse", dashboardService.getActiveCourse(teacher));
         model.addAttribute("archivedCourses", dashboardService.getArchivedCourse(teacher));
         model.addAttribute("username", user.getUsername());

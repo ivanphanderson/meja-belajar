@@ -71,7 +71,7 @@ public class RegistrationServiceImpl implements RegistrationService {
 
     public boolean validateEmailPattern(String email) {
         // Pattern taken from https://www.baeldung.com/java-email-validation-regex
-        var p = Pattern.compile("^(?=.{1,64}@)[A-Za-z0-9_-]+(\\.[A-Za-z0-9_-]+)*@[^-][A-Za-z0-9-]+(\\.[A-Za-z0-9-]+)*(\\.[A-Za-z]{2,})$");
+        var p = Pattern.compile("^[\\w!#$%&'*+/=?`{|}~^-]+(?:\\.[\\w!#$%&'*+/=?`{|}~^-]+)*@(?:[a-zA-Z0-9-]+\\.)+[a-zA-Z]{2,6}$");
         return p.matcher(email).matches();
     }
 
@@ -150,13 +150,13 @@ public class RegistrationServiceImpl implements RegistrationService {
     }
 
     public void createTeacher(User user) {
-        Teacher teacher = new Teacher();
+        var teacher = new Teacher();
         teacher.setUser(user);
         teacherRepository.save(teacher);
     }
 
     public void createStudent(User user) {
-        Student student = new Student();
+        var student = new Student();
         student.setUser(user);
         studentRepository.save(student);
     }

@@ -26,6 +26,9 @@ public class AdminDashboardController {
 
     @GetMapping(value = "/")
     public String dashboardAdmin(@AuthenticationPrincipal User user,  Model model) {
+        if (user == null){
+            return "redirect:/login";
+        }
         model.addAttribute("users", activationService.notActiveUsers());
         model.addAttribute("role", user.getRole());
         model.addAttribute("username", user.getUsername());

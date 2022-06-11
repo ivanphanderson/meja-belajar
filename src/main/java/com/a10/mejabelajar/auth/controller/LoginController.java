@@ -9,6 +9,10 @@ import org.springframework.web.bind.annotation.RequestParam;
 @Controller
 @RequestMapping("/login")
 public class LoginController {
+
+    /**
+     * Show login page.
+     */
     @GetMapping({""})
     public String getLoginPage(
             @RequestParam(value = "error", defaultValue = "false") boolean error, Model model) {

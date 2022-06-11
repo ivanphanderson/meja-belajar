@@ -45,14 +45,6 @@ sonarqube-check:
   script: gradle sonarqube -D "sonar.qualitygate.wait=true" -D "sonar.host.url=$SONAR_HOST_URL" -D "sonar.projectKey=$SONAR_PROJECT_KEY" -D "sonar.login=$SONAR_TOKEN"
   allow_failure: true
 
-checkstyle:
-  stage: test
-  script: gradle checkstyleMain checkstyleTest
-  allow_failure: true
-  cache:
-    key: "$CI_COMMIT_REF_NAME"
-    policy: pull
-
 deployment:
   image: ruby:latest
   stage: deploy

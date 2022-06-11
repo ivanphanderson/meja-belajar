@@ -131,13 +131,8 @@ public class CourseController {
             var userDetails = (UserDetails) principal;
             var user = userService.getUserByUsername(userDetails.getUsername());
 
-            CompletableFuture<Course> courseFuture =
-                    CompletableFuture.supplyAsync(() -> courseService.getCourseById(id));
-            CompletableFuture<Teacher> teacherFuture =
-                    CompletableFuture.supplyAsync(() -> teacherService.getTeacherByUser(user));
-
-            var course = courseFuture.get();
-            var teacher = teacherFuture.get();
+            var course = courseService.getCourseById(id);
+            var teacher = teacherService.getTeacherByUser(user);
             String isValid =
                     validateTeacherAccess(teacher, course, "Update The Course", redirectAttrs);
             if (!isValid.equals("")) {
@@ -170,13 +165,9 @@ public class CourseController {
             var userDetails = (UserDetails) principal;
             var user = userService.getUserByUsername(userDetails.getUsername());
 
-            CompletableFuture<Course> courseFuture =
-                    CompletableFuture.supplyAsync(() -> courseService.getCourseById(id));
-            CompletableFuture<Teacher> teacherFuture =
-                    CompletableFuture.supplyAsync(() -> teacherService.getTeacherByUser(user));
+            var teacher = teacherService.getTeacherByUser(user);
+            var course = courseService.getCourseById(id);
 
-            var course = courseFuture.get();
-            var teacher = teacherFuture.get();
             String isValid =
                     validateTeacherAccess(teacher, course, "Update the Course", redirectAttrs);
             if (!isValid.equals("")) {

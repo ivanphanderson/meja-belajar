@@ -34,6 +34,9 @@ public class AdminController {
     @Autowired
     private UserService userService;
 
+    /**
+     * Show form log.
+     */
     @GetMapping(value = "/form-log")
     public String formLog(Model model) {
         model.addAttribute("students", studentService.getStudents());
@@ -41,6 +44,9 @@ public class AdminController {
         return "admin/formLog";
     }
 
+    /**
+     * Post form log.
+     */
     @PostMapping(value = "/form-log")
     public String formLog(@AuthenticationPrincipal User user,
                           @RequestParam String start,
@@ -68,6 +74,9 @@ public class AdminController {
         return "redirect:/admin/logs";
     }
 
+    /**
+     * Get user log.
+     */
     @GetMapping(value = "/logs")
     public String getLogs(@AuthenticationPrincipal User user,
                             Model model) {
@@ -96,6 +105,9 @@ public class AdminController {
         return "admin/userActivation";
     }
 
+    /**
+     * Update user activation.
+     */
     @GetMapping(value = "/{userId}/user-activation")
     public String updateActivation(@PathVariable String userId) {
         var user = userService.getUserById(userId);
@@ -103,6 +115,9 @@ public class AdminController {
         return "redirect:/admin/user-activation";
     }
 
+    /**
+     * Do log payment.
+     */
     @GetMapping(value = "/log/{logId}/bayar")
     public String bayarLog(@PathVariable String logId) {
         var log = logService.getLogById(logId);
@@ -110,6 +125,9 @@ public class AdminController {
         return "redirect:/admin/logs";
     }
 
+    /**
+     * Verify log.
+     */
     @GetMapping(value = "/log/{logId}/verifikasi")
     public String verifikasiLog(@PathVariable String logId) {
         var log = logService.getLogById(logId);

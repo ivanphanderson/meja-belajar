@@ -34,13 +34,18 @@ public class MuridController {
 
     @PostMapping(produces = {"application/json"})
     @ResponseBody
-    public ResponseEntity<Student> registrationMurid(@RequestBody Student student, @AuthenticationPrincipal User user) {
+    public ResponseEntity<Student> registrationMurid(
+            @RequestBody Student student, @AuthenticationPrincipal User user) {
         var newStudent = studentService.getStudentByUser(user);
         return ResponseEntity.ok(muridService.regisMurid(newStudent));
     }
 
+    /**
+     * Enroll user.
+     */
     @PostMapping(path = "/{id}", produces = {"application/json"})
-    public String updateMurid(@PathVariable(value = "id") int id, @AuthenticationPrincipal User user) {
+    public String updateMurid(
+            @PathVariable(value = "id") int id, @AuthenticationPrincipal User user) {
         var newStudent = studentService.getStudentByUser(user);
         muridService.updateMurid(id, newStudent);
         return "redirect:/course/" + id;

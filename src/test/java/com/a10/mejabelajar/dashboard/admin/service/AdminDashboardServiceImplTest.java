@@ -1,9 +1,8 @@
 package com.a10.mejabelajar.dashboard.admin.service;
 
 
-import com.a10.mejabelajar.auth.exception.RegistrationFieldEmptyException;
 import com.a10.mejabelajar.auth.model.AdminRegistrationToken;
-import com.a10.mejabelajar.auth.model.AdminRegistrationTokenDTO;
+import com.a10.mejabelajar.auth.model.AdminRegistrationTokenDto;
 import com.a10.mejabelajar.auth.repository.TokenRepository;
 import com.a10.mejabelajar.dashboard.admin.exception.EmptyTokenException;
 import com.a10.mejabelajar.dashboard.admin.exception.TokenAlreadyGeneratedException;
@@ -27,13 +26,13 @@ class AdminDashboardServiceImplTest {
     @Mock
     private TokenRepository tokenRepository;
 
-    private AdminRegistrationTokenDTO dto;
+    private AdminRegistrationTokenDto dto;
     private AdminRegistrationToken token;
     private static final String TOKEN = "abc";
 
     @BeforeEach
     void setUp(){
-        dto = new AdminRegistrationTokenDTO();
+        dto = new AdminRegistrationTokenDto();
         dto.setToken(TOKEN);
     }
 

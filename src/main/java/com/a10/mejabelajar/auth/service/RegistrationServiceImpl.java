@@ -25,6 +25,9 @@ public class RegistrationServiceImpl implements RegistrationService {
     @Autowired
     private TokenRepository tokenRepository;
 
+    /**
+     * Validate email and username.
+     */
     public void validateEmailAndUsername(String email, String username) {
         if (!validateUsernameNotAlreadyUsed(username)) {
             throw new UsernameOrEmailAlreadyUsedException("Username already used");
@@ -37,7 +40,10 @@ public class RegistrationServiceImpl implements RegistrationService {
         }
     }
 
-    public void validateAdminRegistration(CreateAdminDTO dto) {
+    /**
+     * Validate admin registration.
+     */
+    public void validateAdminRegistration(CreateAdminDto dto) {
         if (!validateNoFieldEmpty(dto)) {
             throw new RegistrationFieldEmptyException("All field must not be empty");
         }
@@ -49,7 +55,10 @@ public class RegistrationServiceImpl implements RegistrationService {
         }
     }
 
-    public void validateTeacherAndStudentRegistration(CreateStudentAndTeacherDTO dto) {
+    /**
+     * Validate teacher and student registration.
+     */
+    public void validateTeacherAndStudentRegistration(CreateStudentAndTeacherDto dto) {
         if (!validateNoFieldEmpty(dto)) {
             throw new RegistrationFieldEmptyException("All field must not be empty");
         }
@@ -69,13 +78,21 @@ public class RegistrationServiceImpl implements RegistrationService {
         return userRepository.findByEmail(email) == null;
     }
 
+    /**
+     * Validate email pattern.
+     */
     public boolean validateEmailPattern(String email) {
         // Pattern taken from https://www.baeldung.com/java-email-validation-regex
-        var p = Pattern.compile("^[\\w!#$%&'*+/=?`{|}~^-]+(?:\\.[\\w!#$%&'*+/=?`{|}~^-]+)*@(?:[a-zA-Z0-9-]+\\.)+[a-zA-Z]{2,6}$");
+        var p = Pattern.compile(
+                "^[\\w!#$%&'*+/=?`{|}~^-]+(?:\\.[\\w!#$%&'*+/=?`{|}~^-]+)*"
+                        + "@(?:[a-zA-Z0-9-]+\\.)+[a-zA-Z]{2,6}$");
         return p.matcher(email).matches();
     }
 
-    public boolean validateNoFieldEmpty(CreateStudentAndTeacherDTO dto) {
+    /**
+     * Validate no field empty.
+     */
+    public boolean validateNoFieldEmpty(CreateStudentAndTeacherDto dto) {
         if (dto.getUsername().equals("")) {
             return false;
         }
@@ -88,7 +105,10 @@ public class RegistrationServiceImpl implements RegistrationService {
         return !dto.getRole().equals("");
     }
 
-    public boolean validateNoFieldEmpty(CreateAdminDTO dto) {
+    /**
+     * Validate no field empty.
+     */
+    public boolean validateNoFieldEmpty(CreateAdminDto dto) {
         if (dto.getUsername().equals("")) {
             return false;
         }
@@ -105,17 +125,21 @@ public class RegistrationServiceImpl implements RegistrationService {
         return role.equals("student") || role.equals("teacher");
     }
 
-    public boolean validateToken(CreateAdminDTO dto) {
+    public boolean validateToken(CreateAdminDto dto) {
         AdminRegistrationToken token = tokenRepository.findByToken(dto.getToken());
         return token != null && token.isActive();
     }
 
     @Override
-    public User createUser(CreateStudentAndTeacherDTO dto) {
+    public User createUser(CreateStudentAndTeacherDto dto) {
         validateTeacherAndStudentRegistration(dto);
         var passwordEncoder = new BCryptPasswordEncoder();
         String encodedPassword = passwordEncoder.encode(dto.getPassword());
-        var user = new User(dto.getUsername(), dto.getEmail(), encodedPassword, Role.valueOf(dto.getRole().toUpperCase()));
+        var user = new User(
+                dto.getUsername(),
+                dto.getEmail(),
+                encodedPassword,
+                Role.valueOf(dto.getRole().toUpperCase()));
         userRepository.save(user);
 
         if (dto.getRole().equals("student")) {
@@ -128,7 +152,7 @@ public class RegistrationServiceImpl implements RegistrationService {
     }
 
     @Override
-    public User createUser(CreateAdminDTO dto) {
+    public User createUser(CreateAdminDto dto) {
         validateAdminRegistration(dto);
         var passwordEncoder = new BCryptPasswordEncoder();
         String encodedPassword = passwordEncoder.encode(dto.getPassword());
@@ -143,18 +167,27 @@ public class RegistrationServiceImpl implements RegistrationService {
         return user;
     }
 
+    /**
+     * Create admin.
+     */
     public void createAdmin(User user) {
         var admin = new Admin();
         admin.setUser(user);
         adminRepository.save(admin);
     }
 
+    /**
+     * Create teacher.
+     */
     public void createTeacher(User user) {
         var teacher = new Teacher();
         teacher.setUser(user);
         teacherRepository.save(teacher);
     }
 
+    /**
+     * Create student.
+     */
     public void createStudent(User user) {
         var student = new Student();
         student.setUser(user);

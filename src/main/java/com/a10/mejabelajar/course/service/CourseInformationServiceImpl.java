@@ -1,10 +1,13 @@
 package com.a10.mejabelajar.course.service;
 
 import com.a10.mejabelajar.course.model.CourseInformation;
+import com.a10.mejabelajar.course.model.CourseNotification;
 import com.a10.mejabelajar.course.repository.CourseInformationRepository;
+import com.a10.mejabelajar.course.repository.CourseNotificationRepository;
 import com.a10.mejabelajar.course.validator.CourseInformationValidator;
 import java.time.Instant;
 import java.util.Date;
+import java.util.List;
 import org.springframework.beans.factory.annotation.Autowired;
 import org.springframework.stereotype.Service;
 
@@ -16,6 +19,9 @@ public class CourseInformationServiceImpl implements CourseInformationService {
 
     @Autowired
     CourseInformationRepository courseInformationRepository;
+
+    @Autowired
+    CourseNotificationRepository courseNotificationRepository;
 
     @Override
     public CourseInformation getCourseInformationById(int id) {
@@ -51,7 +57,14 @@ public class CourseInformationServiceImpl implements CourseInformationService {
     @Override
     public void deleteCourseInformationById(int id) {
         var courseInformation = getCourseInformationById(id);
-        courseInformation.setCourse(null);
-        courseInformationRepository.save(courseInformation);
+
+        List<CourseNotification> courseNotifications =
+                courseNotificationRepository.findAllByCourseInformation(courseInformation);
+
+        for (CourseNotification courseNotification: courseNotifications) {
+            courseNotificationRepository.deleteCourseNotificationById(courseNotification.getId());
+        }
+
+        courseInformationRepository.delete(courseInformation);
     }
 }

@@ -1,5 +1,6 @@
 package com.a10.mejabelajar.auth.service;
 
+import static org.junit.jupiter.api.Assertions.*;
 import static org.mockito.Mockito.*;
 
 import com.a10.mejabelajar.auth.exception.InvalidRoleException;
@@ -15,7 +16,6 @@ import org.mockito.InjectMocks;
 import org.mockito.Mock;
 import org.mockito.junit.jupiter.MockitoExtension;
 import org.springframework.security.crypto.bcrypt.BCryptPasswordEncoder;
-import static org.junit.jupiter.api.Assertions.*;
 
 @ExtendWith(MockitoExtension.class)
 class RegistrationServiceImplTest {
@@ -54,7 +54,7 @@ class RegistrationServiceImplTest {
     private CreateAdminDTO adminDTO;
 
     @BeforeEach
-    void setUp(){
+    void setUp() {
         BCryptPasswordEncoder passwordEncoder = new BCryptPasswordEncoder();
         String encodedPassword = passwordEncoder.encode(MOCK_PASSWORD);
         mockUserStudent = new User(MOCK_USERNAME, MOCK_EMAIL, encodedPassword, STUDENT_ROLE);
@@ -82,7 +82,7 @@ class RegistrationServiceImplTest {
     }
 
     @Test
-    void testCreateStudent(){
+    void testCreateStudent() {
         User user = registrationService.createUser(studentDTO);
         verify(userRepository, times(1)).save(any(User.class));
         verify(studentRepository, times(1)).save(any(Student.class));
@@ -92,7 +92,7 @@ class RegistrationServiceImplTest {
     }
 
     @Test
-    void testCreateTeacher(){
+    void testCreateTeacher() {
         User user = registrationService.createUser(teacherDTO);
         verify(userRepository, times(1)).save(any(User.class));
         verify(teacherRepository, times(1)).save(any(Teacher.class));
@@ -102,7 +102,7 @@ class RegistrationServiceImplTest {
     }
 
     @Test
-    void testCreateAdmin(){
+    void testCreateAdmin() {
         when(tokenRepository.findByToken(MOCK_TOKEN)).thenReturn(token);
         User user = registrationService.createUser(adminDTO);
         verify(userRepository, times(1)).save(any(User.class));
@@ -113,37 +113,37 @@ class RegistrationServiceImplTest {
     }
 
     @Test
-    void testUsernameValidation(){
+    void testUsernameValidation() {
         when(userRepository.findByUsername(MOCK_USERNAME)).thenReturn(mockUserStudent);
-        assertThrows(UsernameOrEmailAlreadyUsedException.class, ()-> registrationService.validateTeacherAndStudentRegistration(studentDTO));
-        assertThrows(UsernameOrEmailAlreadyUsedException.class, ()-> registrationService.validateAdminRegistration(adminDTO));
+        assertThrows(UsernameOrEmailAlreadyUsedException.class, () -> registrationService.validateTeacherAndStudentRegistration(studentDTO));
+        assertThrows(UsernameOrEmailAlreadyUsedException.class, () -> registrationService.validateAdminRegistration(adminDTO));
     }
 
     @Test
-    void testEmailValidation(){
+    void testEmailValidation() {
         when(userRepository.findByEmail(MOCK_EMAIL)).thenReturn(mockUserStudent);
-        assertThrows(UsernameOrEmailAlreadyUsedException.class, ()-> registrationService.validateTeacherAndStudentRegistration(studentDTO));
-        assertThrows(UsernameOrEmailAlreadyUsedException.class, ()-> registrationService.validateAdminRegistration(adminDTO));
+        assertThrows(UsernameOrEmailAlreadyUsedException.class, () -> registrationService.validateTeacherAndStudentRegistration(studentDTO));
+        assertThrows(UsernameOrEmailAlreadyUsedException.class, () -> registrationService.validateAdminRegistration(adminDTO));
     }
 
     @Test
-    void testRoleValidation(){
+    void testRoleValidation() {
         String role = "admin";
         studentDTO.setRole(role);
-        assertThrows(InvalidRoleException.class, ()-> registrationService.validateTeacherAndStudentRegistration(studentDTO));
+        assertThrows(InvalidRoleException.class, () -> registrationService.validateTeacherAndStudentRegistration(studentDTO));
     }
 
     @Test
-    void testEmptyFieldValidation(){
+    void testEmptyFieldValidation() {
         studentDTO.setUsername("");
         adminDTO.setUsername("");
-        assertThrows(RegistrationFieldEmptyException.class, ()-> registrationService.validateTeacherAndStudentRegistration(studentDTO));
-        assertThrows(RegistrationFieldEmptyException.class, ()-> registrationService.validateAdminRegistration(adminDTO));
+        assertThrows(RegistrationFieldEmptyException.class, () -> registrationService.validateTeacherAndStudentRegistration(studentDTO));
+        assertThrows(RegistrationFieldEmptyException.class, () -> registrationService.validateAdminRegistration(adminDTO));
     }
 
     @Test
-    void testTokenValidation(){
+    void testTokenValidation() {
         when(tokenRepository.findByToken(MOCK_TOKEN)).thenReturn(null);
-        assertThrows(InvalidTokenException.class, ()-> registrationService.validateAdminRegistration(adminDTO));
+        assertThrows(InvalidTokenException.class, () -> registrationService.validateAdminRegistration(adminDTO));
     }
 }

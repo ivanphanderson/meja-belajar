@@ -35,7 +35,7 @@ public class RateController {
             return "redirect:/murid";
         } else {
             redirectAttrs.addFlashAttribute("error", "Anda sudah memberikan rate");
-            return "redirect:/course" + idCourse;
+            return "redirect:/course/" + idCourse;
         }
 
     }

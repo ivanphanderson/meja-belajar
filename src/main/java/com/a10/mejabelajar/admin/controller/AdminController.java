@@ -8,16 +8,20 @@ import com.a10.mejabelajar.auth.model.User;
 import com.a10.mejabelajar.auth.service.StudentService;
 import com.a10.mejabelajar.auth.service.TeacherService;
 import com.a10.mejabelajar.auth.service.UserService;
-import java.util.concurrent.CompletableFuture;
 import org.springframework.beans.factory.annotation.Autowired;
-import org.springframework.security.core.annotation.AuthenticationPrincipal;
+import org.springframework.security.core.context.SecurityContextHolder;
 import org.springframework.stereotype.Controller;
 import org.springframework.ui.Model;
 import org.springframework.web.bind.annotation.*;
 
+import java.util.concurrent.CompletableFuture;
+
 @Controller
 @RequestMapping(path = "/admin")
 public class AdminController {
+
+    private final String ERROR = "error";
+    private final String REDIRECT_LOGS = "redirect:/admin/logs";
 
     @Autowired
     private LogService logService;
@@ -42,43 +46,42 @@ public class AdminController {
     }
 
     @PostMapping(value = "/form-log")
-    public String formLog(@AuthenticationPrincipal User user,
-                          @RequestParam String start,
+    public String formLog(@RequestParam String start,
                           @RequestParam String end,
                           @RequestParam String desc,
                           @RequestParam(value = "studentId") String studentId,
                           Model model) {
-
+        var user = getPrincipalUser();
         var student = CompletableFuture.supplyAsync(() -> studentService.getStudentById(studentId));
         var teacher = CompletableFuture.supplyAsync(() -> teacherService.getTeacherByUser(user));
         var students = CompletableFuture.supplyAsync(() -> studentService.getStudents());
 
-        try {
+        try{
             String duration = logService.countDuration(start, end);
             logService.createLog(start, end, duration, desc, student.join(), teacher.join());
         } catch (LogInvalidException e) {
-            model.addAttribute("error", e.getMessage());
+            model.addAttribute(ERROR, e.getMessage());
             model.addAttribute("students", students.join());
             model.addAttribute("newLog", new Log());
             return "admin/formLog";
         } catch (Exception e) {
-            model.addAttribute("error", e);
+            model.addAttribute(ERROR, e);
             return "admin/errorPage";
         }
-        return "redirect:/admin/logs";
+        return REDIRECT_LOGS;
     }
 
     @GetMapping(value = "/logs")
-    public String getLogs(@AuthenticationPrincipal User user,
-                            Model model) {
-        try {
+    public String getLogs(Model model) {
+        var user = getPrincipalUser();
+        try{
             var logs = logService.getLogs(user);
             model.addAttribute("role", user.getRole());
             model.addAttribute("logs", logs);
             model.addAttribute("username", user.getUsername());
             return "admin/logs";
         } catch (Exception e) {
-            model.addAttribute("error", e);
+            model.addAttribute(ERROR, e);
             return "admin/errorPage";
         }
 
@@ -87,7 +90,7 @@ public class AdminController {
     @GetMapping(value = "/log/{logId}/delete-log")
     public String deleteLog(@PathVariable String logId) {
         logService.deleteLog(logId);
-        return "redirect:/admin/logs";
+        return REDIRECT_LOGS;
     }
 
     @GetMapping(value = "/user-activation")
@@ -107,15 +110,18 @@ public class AdminController {
     public String bayarLog(@PathVariable String logId) {
         var log = logService.getLogById(logId);
         logService.bayarLog(log);
-        return "redirect:/admin/logs";
+        return REDIRECT_LOGS;
     }
 
     @GetMapping(value = "/log/{logId}/verifikasi")
     public String verifikasiLog(@PathVariable String logId) {
         var log = logService.getLogById(logId);
         logService.verifikasiLog(log);
-        return "redirect:/admin/logs";
+        return REDIRECT_LOGS;
     }
 
-
+    private User getPrincipalUser() {
+        var principal = SecurityContextHolder.getContext().getAuthentication().getPrincipal();
+        return (User) principal;
+    }
 }

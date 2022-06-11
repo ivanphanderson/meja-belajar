@@ -32,7 +32,7 @@ public class CourseNotificationController {
     CourseNotificationService courseNotificationService;
 
     private static final String ERROR = "error";
-    private static final String REDIRECT_COURSE = "redirect:/course/";
+    private static final String REDIRECT_DASHBOARD = "redirect:/dashboard/teacher/";
     private static final String REDIRECT_LOGIN = "redirect:/login";
     private static final long HOUR = 3600L * 1000; // in milli-seconds.
 
@@ -79,7 +79,7 @@ public class CourseNotificationController {
             } else {
                 redirectAttrs.addFlashAttribute(ERROR,
                         "The feature is available only for student");
-                return REDIRECT_COURSE;
+                return REDIRECT_DASHBOARD;
             }
         } catch (Exception e) {
             model.addAttribute(ERROR, "An unexpected error occured");

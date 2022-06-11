@@ -142,7 +142,7 @@ class CourseInformationControllerTest {
         teacher.setHaveCourse(false);
         mockMvc.perform(get("/course/information/create/" + COURSE_ID))
                 .andExpect(status().is3xxRedirection())
-                .andExpect(redirectedUrl("/course/"));
+                .andExpect(redirectedUrl("/dashboard/teacher/"));
     }
 
     @Test
@@ -230,7 +230,7 @@ class CourseInformationControllerTest {
         teacher.setHaveCourse(false);
         mockMvc.perform(post("/course/information/create/" + COURSE_ID))
                 .andExpect(status().is3xxRedirection())
-                .andExpect(redirectedUrl("/course/"));
+                .andExpect(redirectedUrl("/dashboard/teacher/"));
     }
 
     @Test
@@ -306,7 +306,7 @@ class CourseInformationControllerTest {
         mockMvc.perform(
                 get("/course/information/update/" + COURSE_ID + "/" + COURSE_INFORMATION_ID))
                 .andExpect(status().is3xxRedirection())
-                .andExpect(redirectedUrl("/course/"));
+                .andExpect(redirectedUrl("/dashboard/teacher/"));
     }
 
     @Test
@@ -404,7 +404,7 @@ class CourseInformationControllerTest {
         mockMvc.perform(
                 post("/course/information/update/" + COURSE_ID + "/" + COURSE_INFORMATION_ID))
                 .andExpect(status().is3xxRedirection())
-                .andExpect(redirectedUrl("/course/"));
+                .andExpect(redirectedUrl("/dashboard/teacher/"));
     }
 
     @Test
@@ -478,7 +478,7 @@ class CourseInformationControllerTest {
         mockMvc.perform(
                 post("/course/information/delete/" + COURSE_ID + "/" + COURSE_INFORMATION_ID))
                 .andExpect(status().is3xxRedirection())
-                .andExpect(redirectedUrl("/course/"));
+                .andExpect(redirectedUrl("/dashboard/teacher/"));
     }
 
     @Test

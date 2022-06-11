@@ -50,6 +50,7 @@ public class CourseController {
     private static final String UNEXPECTED_ERROR_MSG = "An unexpected error occured";
     private static final String REDIRECT_COURSE = "redirect:/course/";
     private static final String REDIRECT_LOGIN = "redirect:/login";
+    private static final String REDIRECT_DASHBOARD = "redirect:/dashboard/teacher/";
     private static final String COURSE_ERROR_PAGE = "course/courseErrorPage";
 
     /**
@@ -191,30 +192,6 @@ public class CourseController {
     }
 
     /**
-     * Show all course. Will be removed once dashboard is created.
-     */
-    @GetMapping(value = "")
-    public String readCourse(
-            Model model) {
-        var principal = SecurityContextHolder.getContext().getAuthentication().getPrincipal();
-        if (principal instanceof String) {
-            return REDIRECT_LOGIN;
-        }
-        var userDetails = (UserDetails) principal;
-        var user = userService.getUserByUsername(userDetails.getUsername());
-
-        List<Course> courses = courseService.getCourses();
-
-        if (user.getRole() == Role.STUDENT) {
-            model.addAttribute(STUDENT, STUDENT);
-        } else if (user.getRole() == Role.TEACHER) {
-            model.addAttribute(TEACHER, TEACHER);
-        }
-        model.addAttribute("courses", courses);
-        return "course/readCourse";
-    }
-
-    /**
      * Show course page specified by its id in path variable.
      */
     @GetMapping(value = "/{courseId}")
@@ -237,7 +214,7 @@ public class CourseController {
                 List<Course> courses = courseService.getCoursesByStudent(student);
                 if (!courses.contains(course)) {
                     redirectAttrs.addFlashAttribute(ERROR, "You are not enrolled to this course");
-                    return REDIRECT_COURSE;
+                    return REDIRECT_DASHBOARD;
                 }
                 model.addAttribute(STUDENT, student);
             }
@@ -261,10 +238,12 @@ public class CourseController {
 
             Double newAverageRate = rateService.getCourseAverageRateByIdCourse(courseId);
 
-            var listRate = rateService.getByIdStudentAndIdCourse(studentId, courseId);
+            var rate = rateService.getByIdStudentAndIdCourse(studentId, courseId);
+
             model.addAttribute("rate", new Rate());
             model.addAttribute("idCourse", courseId);
-            model.addAttribute("currentRate", listRate);
+            model.addAttribute("studentRate", rate);
+            model.addAttribute("currentRate", rate);
             model.addAttribute("finalRate", newAverageRate);
             return "course/readCourseById";
         } catch (Exception e) {
@@ -297,7 +276,7 @@ public class CourseController {
                 return isValid;
             }
             courseService.archiveCourseById(teacher, course);
-            return REDIRECT_COURSE;
+            return REDIRECT_DASHBOARD;
         } catch (Exception e) {
             model.addAttribute(ERROR, UNEXPECTED_ERROR_MSG);
             return COURSE_ERROR_PAGE;
@@ -334,7 +313,7 @@ public class CourseController {
         }
         if (course.getTeacher() != teacher) {
             redirectAttrs.addFlashAttribute(ERROR, "You don't have access to " + action);
-            return REDIRECT_COURSE;
+            return REDIRECT_DASHBOARD;
         }
         return "";
     }

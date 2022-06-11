@@ -104,7 +104,7 @@ class CourseNotificationControllerTest {
 
         mockMvc.perform(get("/course/notification"))
                 .andExpect(status().is3xxRedirection())
-                .andExpect(redirectedUrl("/course/"))
+                .andExpect(redirectedUrl("/dashboard/teacher/"))
                 .andExpect(MockMvcResultMatchers.flash()
                         .attribute("error", "The feature is available only for student"));
     }

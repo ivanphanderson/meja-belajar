@@ -239,7 +239,7 @@ public class CourseInformationController {
         if (course.getTeacher() != teacher) {
             if (!teacher.isHaveCourse()) {
                 redirectAttrs.addFlashAttribute(ERROR, "You don't have access to " + action);
-                return REDIRECT_COURSE;
+                return "redirect:/dashboard/teacher/";
             }
             redirectAttrs.addFlashAttribute(ERROR, "You don't have access to " + action);
             return REDIRECT_COURSE

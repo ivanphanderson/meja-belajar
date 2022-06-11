@@ -245,12 +245,12 @@ class CourseControllerTest {
 
         mockMvc.perform(get("/course/update/" + COURSE_ID))
                 .andExpect(status().is3xxRedirection())
-                .andExpect(redirectedUrl("/course/"));
+                .andExpect(redirectedUrl("/dashboard/teacher/"));
 
         course.setArchived(true);
         mockMvc.perform(get("/course/update/" + COURSE_ID))
                 .andExpect(status().is3xxRedirection())
-                .andExpect(redirectedUrl("/course/"));
+                .andExpect(redirectedUrl("/dashboard/teacher/"));
     }
 
     @Test
@@ -339,7 +339,7 @@ class CourseControllerTest {
 
         mockMvc.perform(post("/course/update/" + COURSE_ID))
                 .andExpect(status().is3xxRedirection())
-                .andExpect(redirectedUrl("/course/"));
+                .andExpect(redirectedUrl("/dashboard/teacher/"));
 
         course.setArchived(true);
         course.setTeacher(teacher);
@@ -406,7 +406,7 @@ class CourseControllerTest {
 
         mockMvc.perform(get("/course/" + COURSE_ID))
                 .andExpect(status().is3xxRedirection())
-                .andExpect(redirectedUrlPattern("/course/**"));
+                .andExpect(redirectedUrl("/dashboard/teacher/"));
     }
 
     @Test
@@ -495,7 +495,7 @@ class CourseControllerTest {
 
         mockMvc.perform(post("/course/archive/" + COURSE_ID))
                 .andExpect(status().is3xxRedirection())
-                .andExpect(redirectedUrl("/course/"));
+                .andExpect(redirectedUrl("/dashboard/teacher/"));
     }
 
     @Test
@@ -513,7 +513,7 @@ class CourseControllerTest {
 
         mockMvc.perform(post("/course/archive/" + COURSE_ID))
                 .andExpect(status().is3xxRedirection())
-                .andExpect(redirectedUrl("/course/"));
+                .andExpect(redirectedUrl("/dashboard/teacher/"));
     }
 
     @Test

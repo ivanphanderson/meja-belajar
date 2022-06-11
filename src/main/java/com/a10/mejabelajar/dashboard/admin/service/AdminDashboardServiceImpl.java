@@ -1,15 +1,15 @@
-package com.a10.mejabelajar.dashboard.service;
+package com.a10.mejabelajar.dashboard.admin.service;
 
 import com.a10.mejabelajar.auth.model.AdminRegistrationToken;
 import com.a10.mejabelajar.auth.model.AdminRegistrationTokenDTO;
 import com.a10.mejabelajar.auth.repository.TokenRepository;
-import com.a10.mejabelajar.dashboard.exception.EmptyTokenException;
-import com.a10.mejabelajar.dashboard.exception.TokenAlreadyGeneratedException;
+import com.a10.mejabelajar.dashboard.admin.exception.EmptyTokenException;
+import com.a10.mejabelajar.dashboard.admin.exception.TokenAlreadyGeneratedException;
 import org.springframework.beans.factory.annotation.Autowired;
 import org.springframework.stereotype.Service;
 
 @Service
-public class DashboardServiceImpl implements DashboardService{
+public class AdminDashboardServiceImpl implements AdminDashboardService {
     @Autowired
     private TokenRepository tokenRepository;
 

@@ -1,10 +1,9 @@
 package com.a10.mejabelajar.auth.model;
 
+import javax.persistence.*;
 import lombok.Data;
 import lombok.NoArgsConstructor;
 import org.hibernate.annotations.GenericGenerator;
-
-import javax.persistence.*;
 
 @Data
 @NoArgsConstructor
@@ -12,8 +11,8 @@ import javax.persistence.*;
 @Table(name = "admin")
 public class Admin {
     @Id
-    @GeneratedValue(generator="uuid2")
-    @GenericGenerator(name="uuid2", strategy= "org.hibernate.id.UUIDGenerator")
+    @GeneratedValue(generator = "uuid2")
+    @GenericGenerator(name = "uuid2", strategy = "org.hibernate.id.UUIDGenerator")
     private String id;
 
     @OneToOne(cascade = CascadeType.ALL)

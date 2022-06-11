@@ -4,13 +4,12 @@ import com.a10.mejabelajar.auth.repository.StudentRepository;
 import com.a10.mejabelajar.course.repository.CourseRepository;
 import com.a10.mejabelajar.murid.model.Rate;
 import com.a10.mejabelajar.murid.repository.RateRepository;
+import java.util.List;
 import org.springframework.beans.factory.annotation.Autowired;
 import org.springframework.stereotype.Service;
 
-import java.util.List;
-
 @Service
-public class RateServiceImpl implements RateService{
+public class RateServiceImpl implements RateService {
 
     @Autowired
     private RateRepository rateRepository;

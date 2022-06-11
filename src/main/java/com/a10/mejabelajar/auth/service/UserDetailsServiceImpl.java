@@ -1,6 +1,5 @@
 package com.a10.mejabelajar.auth.service;
 
-import com.a10.mejabelajar.auth.model.User;
 import com.a10.mejabelajar.auth.repository.UserRepository;
 import org.springframework.beans.factory.annotation.Autowired;
 import org.springframework.security.core.userdetails.UserDetails;
@@ -14,9 +13,9 @@ public class UserDetailsServiceImpl implements UserDetailsService {
     UserRepository userRepository;
 
     @Override
-    public UserDetails loadUserByUsername(String username){
-        User user = userRepository.findByUsername(username);
-        if(user == null){
+    public UserDetails loadUserByUsername(String username) {
+        var user = userRepository.findByUsername(username);
+        if (user == null) {
             throw new UsernameNotFoundException("User not found");
         }
         return user;

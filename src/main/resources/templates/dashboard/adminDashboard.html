@@ -7,13 +7,20 @@
     <script src="https://ajax.googleapis.com/ajax/libs/jquery/3.5.1/jquery.min.js"></script>
 </head>
 <body>
+<nav class="navbar navbar-expand-lg navbar-light bg-light mb-5">
+    <div class="container-fluid">
+        <ul class="navbar-nav me-auto mb-2 mb-lg-0">
+            <a class="nav-link active" href="/dashboard/teacher/">Dashboard</a>
+            <a class="nav-link active" href="/logout">Logout</a>
+        </ul>
+    </div>
+</nav>
 <div class="container-md" style="margin-top: 15px;">
-    <nav class="nav mb-5">
-        <a class="nav-link disabled" th:text="${username}"></a>
-        <a class="nav-link disabled" th:text="${email}"></a>
-        <a class="nav-link" href="/logout">Logout</a>
-
-    </nav>
+    <h5>You're logged in as:</h5>
+    <div class="card card-body" style="width: 18rem;">
+        <h5 class="card-title" th:text="${username}"></h5>
+        <h6 class="card-subtitle mb-2 text-muted" th:text="${email}"></h6>
+    </div><br>
     <div class="row g-3">
         <div class="col">
             <h5 class="text-left lh-lg">User Need to be Activate</h5>
@@ -88,7 +95,7 @@
         </div>
     </div>
     <h5 class="text-left lh-lg mt-3">Generate Token</h5>
-    <div class="card card-body">
+    <div class="card card-body mb-5">
         <div id="message">
         </div>
         <form id="generate_token" th:action="@{/dashboard/admin/generate-token}"  th:object="${dto}" action="#" method="post">

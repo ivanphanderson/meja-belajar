@@ -1,15 +1,15 @@
-package com.a10.mejabelajar.dashboard.service;
+package com.a10.mejabelajar.dashboard.admin.service;
 
 import com.a10.mejabelajar.auth.model.AdminRegistrationToken;
 import com.a10.mejabelajar.auth.model.AdminRegistrationTokenDTO;
 import com.a10.mejabelajar.auth.repository.TokenRepository;
-import com.a10.mejabelajar.dashboard.exception.EmptyTokenException;
-import com.a10.mejabelajar.dashboard.exception.TokenAlreadyGeneratedException;
+import com.a10.mejabelajar.dashboard.admin.exception.EmptyTokenException;
+import com.a10.mejabelajar.dashboard.admin.exception.TokenAlreadyGeneratedException;
 import org.springframework.beans.factory.annotation.Autowired;
 import org.springframework.stereotype.Service;
 
 @Service
-public class DashboardServiceImpl implements DashboardService{
+public class AdminDashboardServiceImpl implements AdminDashboardService {
     @Autowired
     private TokenRepository tokenRepository;
 
@@ -17,30 +17,29 @@ public class DashboardServiceImpl implements DashboardService{
     public AdminRegistrationToken generateToken(AdminRegistrationTokenDTO tokenDTO) {
         validateNewToken(tokenDTO.getToken());
         AdminRegistrationToken token = tokenRepository.findByToken(tokenDTO.getToken());
-        if(token != null && !token.isActive()){
+        if (token != null && !token.isActive()) {
             token.setActive(true);
-        }
-        else {
+        } else {
             token = new AdminRegistrationToken(tokenDTO.getToken());
         }
         tokenRepository.save(token);
         return token;
     }
 
-    public void validateNewToken(String newToken){
-        if (!validateTokenNotEmpty(newToken)){
+    public void validateNewToken(String newToken) {
+        if (!validateTokenNotEmpty(newToken)) {
             throw new EmptyTokenException("Token can not be empty");
         }
-        if (!validateTokenNotAlreadyGenerated(newToken)){
+        if (!validateTokenNotAlreadyGenerated(newToken)) {
             throw new TokenAlreadyGeneratedException("Token already generated");
         }
     }
 
-    public boolean validateTokenNotEmpty(String newToken){
+    public boolean validateTokenNotEmpty(String newToken) {
         return !newToken.equals("");
     }
 
-    public boolean validateTokenNotAlreadyGenerated(String newToken){
+    public boolean validateTokenNotAlreadyGenerated(String newToken) {
         AdminRegistrationToken token = tokenRepository.findByToken(newToken);
         return token == null || !token.isActive();
     }

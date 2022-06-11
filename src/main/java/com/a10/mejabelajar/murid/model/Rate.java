@@ -1,7 +1,6 @@
 package com.a10.mejabelajar.murid.model;
 
 import javax.persistence.*;
-
 import lombok.AllArgsConstructor;
 import lombok.Builder;
 import lombok.Data;

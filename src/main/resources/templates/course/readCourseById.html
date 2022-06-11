@@ -58,6 +58,10 @@
   </style>
 </head>
 <body>
+<div th:if="${teacher != null}">
+  <div th:replace="navbar/teacherNavbar"::teacher_navbar></div>
+</div>
+
 <div id="body">
   <div th:if="${error!=null}" class="alert alert-danger" role="alert">
     <p th:text="${error}"></p>
@@ -82,6 +86,7 @@
 
   <h6 th:text="|Type: ${course.getCourseType()}|"></h6>
   <h6 th:text="|Duration: ${course.getCourseDuration()} month(s)|"></h6>
+  <h6 th:text="|Overall Rating: ${finalRate}|"></h6>
   <p th:text="|${course.getCourseDescription()}|"><p>
 
   <br>
@@ -110,7 +115,7 @@
     </div>
   </div>
 
-  <div>
+  <div th:if="${student != null and studentRate == null}">
     <form th:action="@{/course/rate}" method="POST">
       <label for="rate">Rate 1-5:</label>
       <input type="number" id="rate" name="rate" min="1" max="5">
@@ -118,27 +123,6 @@
       <input type="submit" value="Rate">
     </form>
   </div>
-
-  <table class="table table-striped my-2">
-    <thead>
-    <tr>
-      <th>Rate Id</th>
-      <th>Course Id</th>
-      <th>Student Id</th>
-      <th>Rate score</th>
-    </tr>
-    </thead>
-    <tbody> <tr th:each="post: ${currentRate}">
-      <td th:text="${post.getId()}"></td>
-      <td th:text="${post.getIdCourse()}"></td>
-      <td th:text="${post.getIdStudent()}"></td>
-      <td th:text="${post.getNilaiRating()}"></td>
-    </tr>
-    </tbody>
-  </table>
-
-
-  <p>Semoga sukses</p>
 </div>
 </body>
 </html>

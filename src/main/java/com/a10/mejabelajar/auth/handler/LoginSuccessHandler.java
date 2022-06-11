@@ -2,34 +2,30 @@ package com.a10.mejabelajar.auth.handler;
 
 import com.a10.mejabelajar.auth.model.Role;
 import com.a10.mejabelajar.auth.model.User;
-import org.springframework.security.core.Authentication;
-import org.springframework.security.web.authentication.AuthenticationSuccessHandler;
-
-import javax.servlet.ServletException;
+import java.io.IOException;
 import javax.servlet.http.HttpServletRequest;
 import javax.servlet.http.HttpServletResponse;
-import java.io.IOException;
+import org.springframework.security.core.Authentication;
+import org.springframework.security.web.authentication.AuthenticationSuccessHandler;
 
 public class LoginSuccessHandler implements AuthenticationSuccessHandler {
     @Override
     public void onAuthenticationSuccess(HttpServletRequest request, HttpServletResponse response,
                                         Authentication authentication) throws IOException {
 
-         User user = (User) authentication.getPrincipal();
+        var user = (User) authentication.getPrincipal();
 
-        String redirectURL = request.getContextPath();
+        String redirectUrl = request.getContextPath();
 
-        if(user.getRole() == Role.ADMIN){
-            redirectURL = "/dashboard/admin";
-        }
-        else if(user.getRole() == Role.STUDENT){
-            redirectURL = "/dashboard/student";
-        }
-        else if(user.getRole() == Role.TEACHER){
-            redirectURL = "/dashboard/teacher";
+        if (user.getRole() == Role.ADMIN) {
+            redirectUrl = "/dashboard/admin/";
+        } else if (user.getRole() == Role.STUDENT) {
+            redirectUrl = "/dashboard/student/";
+        } else if (user.getRole() == Role.TEACHER) {
+            redirectUrl = "/dashboard/teacher/";
         }
 
-        response.sendRedirect(redirectURL);
+        response.sendRedirect(redirectUrl);
 
     }
 }

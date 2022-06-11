@@ -11,7 +11,14 @@ public interface LogService {
 
     void deleteLog(String id);
 
-    Log createLog(String starts, String ends, String duration, String desc, Student student, Teacher teacher);
+    Log createLog(
+            String starts,
+            String ends,
+            String duration,
+            String desc,
+            Student student,
+            Teacher teacher);
+
     String countDuration(String start, String end);
 
     List<Log> getAll();
@@ -19,5 +26,6 @@ public interface LogService {
     Log getLogById(String logId);
 
     Log bayarLog(Log log);
+
     Log verifikasiLog(Log log);
 }

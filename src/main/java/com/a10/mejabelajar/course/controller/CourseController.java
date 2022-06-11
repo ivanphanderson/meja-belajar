@@ -2,6 +2,7 @@ package com.a10.mejabelajar.course.controller;
 
 import com.a10.mejabelajar.auth.model.Role;
 import com.a10.mejabelajar.auth.model.Teacher;
+import com.a10.mejabelajar.auth.model.User;
 import com.a10.mejabelajar.auth.service.StudentService;
 import com.a10.mejabelajar.auth.service.TeacherService;
 import com.a10.mejabelajar.auth.service.UserService;
@@ -46,8 +47,10 @@ public class CourseController {
     private static final String ERROR = "error";
     private static final String STUDENT = "student";
     private static final String TEACHER = "teacher";
+    private static final String UNEXPECTED_ERROR_MSG = "An unexpected error occured";
     private static final String REDIRECT_COURSE = "redirect:/course/";
     private static final String REDIRECT_LOGIN = "redirect:/login";
+    private static final String COURSE_ERROR_PAGE = "course/courseErrorPage";
 
     /**
      * Show create course page.
@@ -62,22 +65,18 @@ public class CourseController {
             var userDetails = (UserDetails) principal;
             var user = userService.getUserByUsername(userDetails.getUsername());
 
-            var teacher = teacherService.getTeacherByUser(user);
-
-            if (teacher.isHaveCourse()) {
-                redirectAttrs.addFlashAttribute(ERROR,
-                        "You already have this course, archive this course "
-                                + "in order to create a new one");
-                return REDIRECT_COURSE
-                        + courseService.getCourseByTeacherAndStatus(teacher, false).getId();
+            String isValid =
+                    validateCreateCourse(redirectAttrs, user);
+            if (!isValid.equals("")) {
+                return isValid;
             }
 
             model.addAttribute(COURSE_TYPES, CourseType.values());
             model.addAttribute("newCourse", new Course());
             return "course/createCourse";
         } catch (Exception e) {
-            model.addAttribute(ERROR, "An unexpected error occured");
-            return "course/courseErrorPage";
+            model.addAttribute(ERROR, UNEXPECTED_ERROR_MSG);
+            return COURSE_ERROR_PAGE;
         }
     }
 
@@ -97,13 +96,10 @@ public class CourseController {
             var userDetails = (UserDetails) principal;
             var user = userService.getUserByUsername(userDetails.getUsername());
 
-            var teacher = teacherService.getTeacherByUser(user);
-            if (teacher.isHaveCourse()) {
-                redirectAttrs.addFlashAttribute(ERROR,
-                        "You already have this course, archive this course "
-                        + "in order to create a new one");
-                return REDIRECT_COURSE
-                        + courseService.getCourseByTeacherAndStatus(teacher, false).getId();
+            String isValid =
+                    validateCreateCourse(redirectAttrs, user);
+            if (!isValid.equals("")) {
+                return isValid;
             }
 
             courseService.createCourse(courseDataTransferObject, user);
@@ -114,8 +110,8 @@ public class CourseController {
             model.addAttribute("newCourse", courseDataTransferObject);
             return "course/createCourse";
         } catch (Exception e) {
-            model.addAttribute(ERROR, "An unexpected error occured");
-            return "course/courseErrorPage";
+            model.addAttribute(ERROR, UNEXPECTED_ERROR_MSG);
+            return COURSE_ERROR_PAGE;
         }
     }
 
@@ -145,8 +141,8 @@ public class CourseController {
             model.addAttribute(COURSE_ID, id);
             return "course/updateCourse";
         } catch (Exception e) {
-            model.addAttribute(ERROR, "An unexpected error occured");
-            return "course/courseErrorPage";
+            model.addAttribute(ERROR, UNEXPECTED_ERROR_MSG);
+            return COURSE_ERROR_PAGE;
         }
     }
 
@@ -189,8 +185,8 @@ public class CourseController {
             model.addAttribute(COURSE_ID, id);
             return "course/updateCourse";
         } catch (Exception e) {
-            model.addAttribute(ERROR, "An unexpected error occured");
-            return "course/courseErrorPage";
+            model.addAttribute(ERROR, UNEXPECTED_ERROR_MSG);
+            return COURSE_ERROR_PAGE;
         }
     }
 
@@ -272,8 +268,8 @@ public class CourseController {
             model.addAttribute("finalRate", newAverageRate);
             return "course/readCourseById";
         } catch (Exception e) {
-            model.addAttribute(ERROR, "An unexpected error occured");
-            return "course/courseErrorPage";
+            model.addAttribute(ERROR, UNEXPECTED_ERROR_MSG);
+            return COURSE_ERROR_PAGE;
         }
     }
 
@@ -303,15 +299,32 @@ public class CourseController {
             courseService.archiveCourseById(teacher, course);
             return REDIRECT_COURSE;
         } catch (Exception e) {
-            model.addAttribute(ERROR, "An unexpected error occured");
-            return "course/courseErrorPage";
+            model.addAttribute(ERROR, UNEXPECTED_ERROR_MSG);
+            return COURSE_ERROR_PAGE;
+        }
+    }
+
+    private String validateCreateCourse(
+            RedirectAttributes redirectAttrs,
+            User user
+    ) {
+        var teacher = teacherService.getTeacherByUser(user);
+
+        if (teacher.isHaveCourse()) {
+            redirectAttrs.addFlashAttribute(ERROR,
+                    "You already have this course, archive this course "
+                            + "in order to create a new one");
+            return REDIRECT_COURSE
+                    + courseService.getCourseByTeacherAndStatus(teacher, false).getId();
+        } else {
+            return "";
         }
     }
 
     /**
      * Validate teacher access to a course.
      */
-    public String validateTeacherAccess(
+    private String validateTeacherAccess(
             Teacher teacher,
             Course course,
             String action,

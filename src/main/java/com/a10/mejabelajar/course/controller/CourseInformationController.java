@@ -40,8 +40,10 @@ public class CourseInformationController {
     private static final String COURSE_ID = "courseId";
     private static final String COURSE_INFORMATION = "courseInformation";
     private static final String ERROR = "error";
+    private static final String UNEXPECTED_ERROR_MSG = "An unexpected error occured";
     private static final String REDIRECT_COURSE = "redirect:/course/";
     private static final String REDIRECT_LOGIN = "redirect:/login";
+    private static final String COURSE_ERROR_PAGE = "course/courseErrorPage";
     private ModelMapper modelMapper = new ModelMapper();
 
     /**
@@ -64,8 +66,8 @@ public class CourseInformationController {
             model.addAttribute(COURSE_INFORMATION, new CourseInformationDataTransferObject());
             return "course/createCourseInformation";
         } catch (Exception e) {
-            model.addAttribute(ERROR, "An unexpected error occured");
-            return "course/courseErrorPage";
+            model.addAttribute(ERROR, UNEXPECTED_ERROR_MSG);
+            return COURSE_ERROR_PAGE;
         }
     }
 
@@ -101,8 +103,8 @@ public class CourseInformationController {
             model.addAttribute(COURSE_INFORMATION, courseInformationDataTransferObject);
             return "course/createCourseInformation";
         } catch (Exception e) {
-            model.addAttribute(ERROR, "An unexpected error occured");
-            return "course/courseErrorPage";
+            model.addAttribute(ERROR, UNEXPECTED_ERROR_MSG);
+            return COURSE_ERROR_PAGE;
         }
     }
 
@@ -130,8 +132,8 @@ public class CourseInformationController {
             model.addAttribute("courseInformationId", courseInformationId);
             return "course/updateCourseInformation";
         } catch (Exception e) {
-            model.addAttribute(ERROR, "An unexpected error occured");
-            return "course/courseErrorPage";
+            model.addAttribute(ERROR, UNEXPECTED_ERROR_MSG);
+            return COURSE_ERROR_PAGE;
         }
     }
 
@@ -169,8 +171,8 @@ public class CourseInformationController {
             model.addAttribute(COURSE_INFORMATION, courseInformationDataTransferObject);
             return "course/updateCourseInformation";
         } catch (Exception e) {
-            model.addAttribute(ERROR, "An unexpected error occured");
-            return "course/courseErrorPage";
+            model.addAttribute(ERROR, UNEXPECTED_ERROR_MSG);
+            return COURSE_ERROR_PAGE;
         }
     }
 
@@ -193,8 +195,8 @@ public class CourseInformationController {
             courseInformationService.deleteCourseInformationById(courseInformationId);
             return REDIRECT_COURSE + courseId;
         } catch (Exception e) {
-            model.addAttribute(ERROR, "An unexpected error occured");
-            return "course/courseErrorPage";
+            model.addAttribute(ERROR, UNEXPECTED_ERROR_MSG);
+            return COURSE_ERROR_PAGE;
         }
     }
 

@@ -30,7 +30,7 @@ public class TeacherDashboardController {
             return "redirect:/login";
         }
 
-        Teacher teacher = teacherService.getTeacherByUser(user);
+        var teacher = teacherService.getTeacherByUser(user);
         model.addAttribute("activeCourse", dashboardService.getActiveCourse(teacher));
         model.addAttribute("archivedCourses", dashboardService.getArchivedCourse(teacher));
         model.addAttribute("username", user.getUsername());

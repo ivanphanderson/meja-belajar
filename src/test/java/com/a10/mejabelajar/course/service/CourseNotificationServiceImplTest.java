@@ -1,8 +1,7 @@
 package com.a10.mejabelajar.course.service;
 
 import static org.junit.jupiter.api.Assertions.*;
-import static org.mockito.Mockito.lenient;
-import static org.mockito.Mockito.when;
+import static org.mockito.Mockito.*;
 
 import com.a10.mejabelajar.auth.model.Student;
 import com.a10.mejabelajar.auth.service.StudentService;
@@ -71,6 +70,7 @@ class CourseNotificationServiceImplTest {
         courseNotificationService.handleCreateInformation(courseInformation);
 
         assertNotNull(courseNotificationRepository.findAll());
+        verify(courseNotificationRepository, atLeast(1)).save(any(CourseNotification.class));
     }
 
     @Test
@@ -83,6 +83,7 @@ class CourseNotificationServiceImplTest {
         courseNotificationService.handleUpdateInformation(courseInformation);
 
         assertNotNull(courseNotificationRepository.findAll());
+        verify(courseNotificationRepository, atLeast(1)).save(any(CourseNotification.class));
     }
 
     @Test
@@ -99,6 +100,9 @@ class CourseNotificationServiceImplTest {
                                 date
                         );
         assertNotEquals(0, courseNotifications1.size());
+        verify(courseNotificationRepository,
+                times(1))
+                .findAllByStudentAndCreatedAtIsGreaterThanEqual(student, date);
 
         var courseNotification1 = courseNotifications1.get(0);
         assertEquals(courseNotification.getId(), courseNotification1.getId());
@@ -123,6 +127,9 @@ class CourseNotificationServiceImplTest {
                 courseNotificationService
                         .getCourseNotificationByStudentAndCreatedAtIsLessThan(student, date);
         assertNotEquals(0, courseNotifications1.size());
+        verify(courseNotificationRepository,
+                times(1))
+                .findAllByStudentAndCreatedAtIsLessThan(student, date);
 
         var courseNotification1 = courseNotifications1.get(0);
         assertEquals(courseNotification.getId(), courseNotification1.getId());

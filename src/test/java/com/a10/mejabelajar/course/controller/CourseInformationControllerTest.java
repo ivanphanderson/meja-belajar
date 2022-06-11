@@ -21,7 +21,6 @@ import com.a10.mejabelajar.course.service.CourseService;
 import java.util.Date;
 import org.junit.jupiter.api.BeforeEach;
 import org.junit.jupiter.api.Test;
-import org.mockito.Mock;
 import org.springframework.beans.factory.annotation.Autowired;
 import org.springframework.boot.test.autoconfigure.web.servlet.WebMvcTest;
 import org.springframework.boot.test.mock.mockito.MockBean;
@@ -60,9 +59,6 @@ class CourseInformationControllerTest {
     @MockBean
     private UserDetailsService userDetailsService;
 
-    @Mock
-    private CourseInformation courseInformation;
-
     @Autowired
     private WebApplicationContext webApplicationContext;
 
@@ -73,6 +69,7 @@ class CourseInformationControllerTest {
     private User user;
     private Course course;
     private Student student;
+    private CourseInformation courseInformation;
 
     /**
      * Run this before run every single test.
@@ -86,6 +83,7 @@ class CourseInformationControllerTest {
         course = new Course();
         course.setId(COURSE_ID);
 
+        courseInformation = new CourseInformation();
         courseInformation.setCreatedAt(new Date());
         courseInformation.setUpdatedAt(new Date());
         courseInformation.setCourse(course);
@@ -130,18 +128,21 @@ class CourseInformationControllerTest {
         when(courseService.getCourseByTeacherAndStatus(teacher, false)).thenReturn(course);
 
         mockMvc.perform(get("/course/information/create/" + COURSE_ID))
-                .andExpect(status().is3xxRedirection());
+                .andExpect(status().is3xxRedirection())
+                .andExpect(redirectedUrl("/course/" + COURSE_ID));
 
 
         course.setArchived((false));
         var teacher1 = new Teacher();
         course.setTeacher(teacher1);
         mockMvc.perform(get("/course/information/create/" + COURSE_ID))
-                .andExpect(status().is3xxRedirection());
+                .andExpect(status().is3xxRedirection())
+                .andExpect(redirectedUrl("/course/" + COURSE_ID));
 
         teacher.setHaveCourse(false);
         mockMvc.perform(get("/course/information/create/" + COURSE_ID))
-                .andExpect(status().is3xxRedirection());
+                .andExpect(status().is3xxRedirection())
+                .andExpect(redirectedUrl("/course/"));
     }
 
     @Test
@@ -166,7 +167,8 @@ class CourseInformationControllerTest {
                 .thenReturn(courseInformation);
 
         mockMvc.perform(post("/course/information/create/" + COURSE_ID))
-                .andExpect(status().is3xxRedirection());
+                .andExpect(status().is3xxRedirection())
+                .andExpect(redirectedUrl("/course/" + COURSE_ID));
     }
 
     @Test
@@ -203,18 +205,21 @@ class CourseInformationControllerTest {
         when(courseService.getCourseByTeacherAndStatus(teacher, false)).thenReturn(course);
 
         mockMvc.perform(post("/course/information/create/" + COURSE_ID))
-                .andExpect(status().is3xxRedirection());
+                .andExpect(status().is3xxRedirection())
+                .andExpect(redirectedUrl("/course/" + COURSE_ID));
 
 
         course.setArchived((false));
         var teacher1 = new Teacher();
         course.setTeacher(teacher1);
         mockMvc.perform(post("/course/information/create/" + COURSE_ID))
-                .andExpect(status().is3xxRedirection());
+                .andExpect(status().is3xxRedirection())
+                .andExpect(redirectedUrl("/course/" + COURSE_ID));
 
         teacher.setHaveCourse(false);
         mockMvc.perform(post("/course/information/create/" + COURSE_ID))
-                .andExpect(status().is3xxRedirection());
+                .andExpect(status().is3xxRedirection())
+                .andExpect(redirectedUrl("/course/"));
     }
 
     @Test
@@ -262,7 +267,8 @@ class CourseInformationControllerTest {
 
         mockMvc.perform(
                 get("/course/information/update/" + COURSE_ID + "/" + COURSE_INFORMATION_ID))
-                .andExpect(status().is3xxRedirection());
+                .andExpect(status().is3xxRedirection())
+                .andExpect(redirectedUrl("/course/" + COURSE_ID));
 
 
         course.setArchived((false));
@@ -270,12 +276,14 @@ class CourseInformationControllerTest {
         course.setTeacher(teacher1);
         mockMvc.perform(
                 get("/course/information/update/" + COURSE_ID + "/" + COURSE_INFORMATION_ID))
-                .andExpect(status().is3xxRedirection());
+                .andExpect(status().is3xxRedirection())
+                .andExpect(redirectedUrl("/course/" + COURSE_ID));
 
         teacher.setHaveCourse(false);
         mockMvc.perform(
                 get("/course/information/update/" + COURSE_ID + "/" + COURSE_INFORMATION_ID))
-                .andExpect(status().is3xxRedirection());
+                .andExpect(status().is3xxRedirection())
+                .andExpect(redirectedUrl("/course/"));
     }
 
     @Test
@@ -303,7 +311,8 @@ class CourseInformationControllerTest {
 
         mockMvc.perform(
                 post("/course/information/update/" + COURSE_ID + "/" + COURSE_INFORMATION_ID))
-                .andExpect(status().is3xxRedirection());
+                .andExpect(status().is3xxRedirection())
+                .andExpect(redirectedUrl("/course/" + COURSE_ID));
     }
 
     @Test
@@ -344,7 +353,8 @@ class CourseInformationControllerTest {
 
         mockMvc.perform(
                 post("/course/information/update/" + COURSE_ID + "/" + COURSE_INFORMATION_ID))
-                .andExpect(status().is3xxRedirection());
+                .andExpect(status().is3xxRedirection())
+                .andExpect(redirectedUrl("/course/" + COURSE_ID));
 
 
         course.setArchived((false));
@@ -352,12 +362,14 @@ class CourseInformationControllerTest {
         course.setTeacher(teacher1);
         mockMvc.perform(
                 post("/course/information/update/" + COURSE_ID + "/" + COURSE_INFORMATION_ID))
-                .andExpect(status().is3xxRedirection());
+                .andExpect(status().is3xxRedirection())
+                .andExpect(redirectedUrl("/course/" + COURSE_ID));
 
         teacher.setHaveCourse(false);
         mockMvc.perform(
                 post("/course/information/update/" + COURSE_ID + "/" + COURSE_INFORMATION_ID))
-                .andExpect(status().is3xxRedirection());
+                .andExpect(status().is3xxRedirection())
+                .andExpect(redirectedUrl("/course/"));
     }
 
     @Test
@@ -403,7 +415,8 @@ class CourseInformationControllerTest {
 
         mockMvc.perform(
                 post("/course/information/delete/" + COURSE_ID + "/" + COURSE_INFORMATION_ID))
-                .andExpect(status().is3xxRedirection());
+                .andExpect(status().is3xxRedirection())
+                .andExpect(redirectedUrl("/course/" + COURSE_ID));
 
 
         course.setArchived((false));
@@ -411,12 +424,14 @@ class CourseInformationControllerTest {
         course.setTeacher(teacher1);
         mockMvc.perform(
                 post("/course/information/delete/" + COURSE_ID + "/" + COURSE_INFORMATION_ID))
-                .andExpect(status().is3xxRedirection());
+                .andExpect(status().is3xxRedirection())
+                .andExpect(redirectedUrl("/course/" + COURSE_ID));
 
         teacher.setHaveCourse(false);
         mockMvc.perform(
                 post("/course/information/delete/" + COURSE_ID + "/" + COURSE_INFORMATION_ID))
-                .andExpect(status().is3xxRedirection());
+                .andExpect(status().is3xxRedirection())
+                .andExpect(redirectedUrl("/course/"));
     }
 
 }

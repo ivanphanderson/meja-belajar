@@ -115,7 +115,8 @@ class CourseControllerTest {
         when(teacherService.getTeacherByUser(user)).thenReturn(teacher);
         when(courseService.getCourseByTeacherAndStatus(teacher, false)).thenReturn(course);
         mockMvc.perform(get("/course/create"))
-                .andExpect(status().is3xxRedirection());
+                .andExpect(status().is3xxRedirection())
+                .andExpect(redirectedUrl("/course/" + COURSE_ID));
     }
 
     @Test
@@ -141,7 +142,8 @@ class CourseControllerTest {
         when(courseService.createCourse(courseDataTransferObject, user)).thenReturn(course);
 
         mockMvc.perform(post("/course/create"))
-                .andExpect(status().is3xxRedirection());
+                .andExpect(status().is3xxRedirection())
+                .andExpect(redirectedUrl(""));
     }
 
     @Test
@@ -177,7 +179,8 @@ class CourseControllerTest {
         when(teacherService.getTeacherByUser(user)).thenReturn(teacher);
         when(courseService.getCourseByTeacherAndStatus(teacher, false)).thenReturn(course);
         mockMvc.perform(post("/course/create"))
-                .andExpect(status().is3xxRedirection());
+                .andExpect(status().is3xxRedirection())
+                .andExpect(redirectedUrl("/course/" + COURSE_ID));
     }
 
     @Test
@@ -221,18 +224,21 @@ class CourseControllerTest {
         when(courseService.getCourseById(COURSE_ID)).thenReturn(course);
 
         mockMvc.perform(get("/course/update/" + COURSE_ID))
-                .andExpect(status().is3xxRedirection());
+                .andExpect(status().is3xxRedirection())
+                .andExpect(redirectedUrl("/course/"));
 
         course.setArchived(true);
         mockMvc.perform(post("/course/update/" + COURSE_ID))
-                .andExpect(status().is3xxRedirection());
+                .andExpect(status().is3xxRedirection())
+                .andExpect(redirectedUrl("/course/"));
     }
 
     @Test
     @WithAnonymousUser
     void notLoggedInCantAccessUpdateCoursePost() throws Exception {
         mockMvc.perform(post("/course/update/" + COURSE_ID))
-                .andExpect(status().is3xxRedirection());
+                .andExpect(status().is3xxRedirection())
+                .andExpect(redirectedUrl("/login"));
     }
 
     @Test
@@ -257,7 +263,8 @@ class CourseControllerTest {
                 .thenReturn(course);
 
         mockMvc.perform(post("/course/update/" + COURSE_ID))
-                .andExpect(status().is3xxRedirection());
+                .andExpect(status().is3xxRedirection())
+                .andExpect(redirectedUrlPattern("/course/**"));
     }
 
     @Test
@@ -301,20 +308,14 @@ class CourseControllerTest {
         when(courseService.getCourseById(COURSE_ID)).thenReturn(course);
 
         mockMvc.perform(post("/course/update/" + COURSE_ID))
-                .andExpect(status().is3xxRedirection());
+                .andExpect(status().is3xxRedirection())
+                .andExpect(redirectedUrl("/course/"));
 
         course.setArchived(true);
         course.setTeacher(teacher);
         mockMvc.perform(post("/course/update/" + COURSE_ID))
-                .andExpect(status().is3xxRedirection());
-    }
-
-    @Test
-    @WithAnonymousUser
-    void notLoggedInCantAccessReadCourseGet() throws Exception {
-        mockMvc.perform(get("/course/"))
                 .andExpect(status().is3xxRedirection())
-                .andExpect(redirectedUrl("/login"));
+                .andExpect(redirectedUrl("/course/" + COURSE_ID));
     }
 
     @Test
@@ -364,7 +365,8 @@ class CourseControllerTest {
         when(courseService.getCourseById(COURSE_ID)).thenReturn(course);
 
         mockMvc.perform(get("/course/" + COURSE_ID))
-                .andExpect(status().is3xxRedirection());
+                .andExpect(status().is3xxRedirection())
+                .andExpect(redirectedUrlPattern("/course/**"));
     }
 
     @Test
@@ -442,7 +444,8 @@ class CourseControllerTest {
         when(courseService.getCourseById(COURSE_ID)).thenReturn(course);
 
         mockMvc.perform(post("/course/archive/" + COURSE_ID))
-                .andExpect(status().is3xxRedirection());
+                .andExpect(status().is3xxRedirection())
+                .andExpect(redirectedUrl("/course/"));
     }
 
     @Test
@@ -459,7 +462,8 @@ class CourseControllerTest {
         when(courseService.getCourseById(COURSE_ID)).thenReturn(course);
 
         mockMvc.perform(post("/course/archive/" + COURSE_ID))
-                .andExpect(status().is3xxRedirection());
+                .andExpect(status().is3xxRedirection())
+                .andExpect(redirectedUrl("/course/"));
     }
 
 }

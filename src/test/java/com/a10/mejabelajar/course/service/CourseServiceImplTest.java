@@ -1,8 +1,7 @@
 package com.a10.mejabelajar.course.service;
 
 import static org.junit.jupiter.api.Assertions.*;
-import static org.mockito.Mockito.lenient;
-import static org.mockito.Mockito.when;
+import static org.mockito.Mockito.*;
 
 import com.a10.mejabelajar.auth.model.Student;
 import com.a10.mejabelajar.auth.model.Teacher;
@@ -66,10 +65,10 @@ class CourseServiceImplTest {
         course.setCourseDescription("Hai hai :D");
 
         courseDataTransferObject = new CourseDataTransferObject();
-        courseDataTransferObject.setCourseName("course");
+        courseDataTransferObject.setCourseName("Hello");
         courseDataTransferObject.setCourseType("IPA");
-        courseDataTransferObject.setCourseDescription("Auto lulus UTBK");
-        courseDataTransferObject.setCourseDuration("100");
+        courseDataTransferObject.setCourseDescription("Hai hai :D");
+        courseDataTransferObject.setCourseDuration("10");
 
     }
 
@@ -81,6 +80,7 @@ class CourseServiceImplTest {
                 .thenReturn(course);
 
         assertNotNull(courseService.createCourse(courseDataTransferObject, user));
+        verify(courseRepository, times(1)).save(any(Course.class));
     }
 
     @Test
@@ -100,13 +100,17 @@ class CourseServiceImplTest {
                 courseService.updateCourse(COURSE_ID, teacher, courseDataTransferObject);
 
         assertNotEquals(pastName, courseResult.getCourseName());
+        verify(courseRepository, times(1)).save(courseResult);
     }
 
     @Test
     void testArchiveCourse() {
         courseService.archiveCourseById(teacher, course);
+
         assertFalse(teacher.isHaveCourse());
         assertTrue(course.isArchived());
+        verify(courseRepository, times(1)).save(course);
+        verify(teacherRepository, times(1)).save(teacher);
     }
 
     @Test
@@ -115,6 +119,7 @@ class CourseServiceImplTest {
 
         courseService.createCourse(courseDataTransferObject, user);
         assertNotNull(courseService.getCourses());
+        verify(courseRepository, times(1)).findAll();
     }
 
     @Test
@@ -122,6 +127,7 @@ class CourseServiceImplTest {
         lenient().when(courseService.getCourseById(COURSE_ID)).thenReturn(course);
         var course1 = courseService.getCourseById(COURSE_ID);
         assertEquals(COURSE_ID, course1.getId());
+        verify(courseRepository, times(1)).findById(COURSE_ID);
     }
 
     @Test
@@ -131,6 +137,7 @@ class CourseServiceImplTest {
         lenient().when(courseService.getCoursesByStudent(student)).thenReturn(courses);
         List<Course> coursesResult = courseService.getCoursesByStudent(student);
         assertNotNull(coursesResult);
+        verify(courseRepository, times(1)).findAllByNewMurid(student);
     }
 
     @Test
@@ -142,6 +149,7 @@ class CourseServiceImplTest {
                 .thenReturn(course);
         var courseResult = courseService.getCourseByTeacherAndStatus(teacher, false);
         assertNotNull(courseResult);
+        verify(courseRepository, times(1)).findByTeacherAndArchived(teacher, false);
     }
 
     @Test
@@ -155,6 +163,8 @@ class CourseServiceImplTest {
         lenient().when(courseService.getCourseByArchived(false)).thenReturn(courses);
         var courseResult = courseService.getCourseByArchived(false);
         assertNotEquals(0, courseResult.size());
+
+        verify(courseRepository, times(1)).findAllByArchived(false);
     }
 
 }

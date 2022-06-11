@@ -54,6 +54,7 @@ class CourseInformationServiceImplTest {
         lenient().when(courseInformationService.createCourseInformation(courseInformation))
                 .thenReturn(courseInformation);
         assertNotNull(courseInformationService.createCourseInformation(courseInformation));
+        verify(courseInformationRepository, times(1)).save(any(CourseInformation.class));
     }
 
     @Test
@@ -85,6 +86,7 @@ class CourseInformationServiceImplTest {
         assertNotEquals(pastTitle, courseInformationResult.getCourseInformationTitle());
         assertNotEquals(oldBody, courseInformationResult.getCourseInformationBody());
         assertNotEquals(oldUpdatedAt, courseInformationResult.getUpdatedAt());
+        verify(courseInformationRepository, times(2)).save(courseInformationResult);
     }
 
     @Test
@@ -96,6 +98,7 @@ class CourseInformationServiceImplTest {
         lenient().when(courseInformationService
                 .getCourseInformationById(COURSE_INFORMATION_ID)).thenReturn(null);
         assertNull(courseInformationService.getCourseInformationById(COURSE_INFORMATION_ID));
+        verify(courseInformationRepository, times(1)).delete(courseInformation);
     }
 
     @Test
@@ -105,5 +108,6 @@ class CourseInformationServiceImplTest {
         CourseInformation calledCourseInformation =
                 courseInformationService.getCourseInformationById(COURSE_INFORMATION_ID);
         assertEquals(courseInformation.getId(), calledCourseInformation.getId());
+        verify(courseInformationRepository, times(1)).findById(COURSE_INFORMATION_ID);
     }
 }

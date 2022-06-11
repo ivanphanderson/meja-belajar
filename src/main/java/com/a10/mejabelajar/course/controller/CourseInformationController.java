@@ -200,10 +200,7 @@ public class CourseInformationController {
         }
     }
 
-    /**
-     * Validate user authentication and authorization.
-     */
-    public String validator(
+    private String validator(
             Object principal,
             int courseId,
             String action,
@@ -224,10 +221,7 @@ public class CourseInformationController {
         return "";
     }
 
-    /**
-     * Validate teacher access to a course information.
-     */
-    public String validateTeacherAccess(
+    private String validateTeacherAccess(
             Teacher teacher,
             Course course,
             String action,

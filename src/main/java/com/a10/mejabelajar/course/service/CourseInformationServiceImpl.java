@@ -53,6 +53,5 @@ public class CourseInformationServiceImpl implements CourseInformationService {
         var courseInformation = getCourseInformationById(id);
         courseInformation.setCourse(null);
         courseInformationRepository.save(courseInformation);
-//        courseInformationRepository.delete(courseInformation);
     }
 }

@@ -3,10 +3,9 @@ package com.a10.mejabelajar.auth.service;
 import com.a10.mejabelajar.auth.model.Teacher;
 import com.a10.mejabelajar.auth.model.User;
 import com.a10.mejabelajar.auth.repository.TeacherRepository;
+import java.util.List;
 import org.springframework.beans.factory.annotation.Autowired;
 import org.springframework.stereotype.Service;
-
-import java.util.List;
 
 @Service
 public class TeacherServiceImpl implements TeacherService {

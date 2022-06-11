@@ -293,6 +293,7 @@ class CourseInformationControllerTest {
                 .andExpect(redirectedUrl("/course/" + COURSE_ID));
 
 
+
         course.setArchived((false));
         var teacher1 = new Teacher();
         course.setTeacher(teacher1);

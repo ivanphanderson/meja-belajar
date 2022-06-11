@@ -321,9 +321,6 @@ public class CourseController {
         }
     }
 
-    /**
-     * Validate teacher access to a course.
-     */
     private String validateTeacherAccess(
             Teacher teacher,
             Course course,

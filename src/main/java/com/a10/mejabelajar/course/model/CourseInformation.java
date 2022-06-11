@@ -31,7 +31,7 @@ public class CourseInformation {
     private Date updatedAt;
 
     @ManyToOne
-    @JoinColumn(name = "course", nullable = false)
+    @JoinColumn(name = "course")
     private Course course;
 
     @OneToMany(mappedBy = "courseInformation", cascade = CascadeType.ALL)

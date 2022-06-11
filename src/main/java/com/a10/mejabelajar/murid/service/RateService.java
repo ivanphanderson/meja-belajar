@@ -1,7 +1,6 @@
 package com.a10.mejabelajar.murid.service;
 
 import com.a10.mejabelajar.murid.model.Rate;
-
 import java.util.List;
 
 public interface RateService {

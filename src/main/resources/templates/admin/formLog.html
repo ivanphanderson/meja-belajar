@@ -11,6 +11,8 @@
 <body>
 <h1> Create New Log</h1>
 
+<div th:replace="navbar/teacherNavbar"::teacher_navbar></div>
+
 <div th:if="${error!=null}" class="alert alert-danger" role="alert">
     <p th:text="${error}"></p>
 </div>

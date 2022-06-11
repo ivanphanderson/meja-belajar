@@ -58,6 +58,10 @@
   </style>
 </head>
 <body>
+<div th:if="${teacher != null}">
+  <div th:replace="navbar/teacherNavbar"::teacher_navbar></div>
+</div>
+
 <div id="body">
   <div th:if="${error!=null}" class="alert alert-danger" role="alert">
     <p th:text="${error}"></p>
@@ -111,7 +115,7 @@
     </div>
   </div>
 
-  <div th:if="${student!=null}">
+  <div th:if="${student != null and studentRate == null}">
     <form th:action="@{/course/rate}" method="POST">
       <label for="rate">Rate 1-5:</label>
       <input type="number" id="rate" name="rate" min="1" max="5">
@@ -138,8 +142,6 @@
     </tbody>
   </table>
 
-
-  <p>Semoga sukses</p>
 </div>
 </body>
 </html>

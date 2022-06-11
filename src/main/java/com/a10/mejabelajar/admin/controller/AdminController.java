@@ -8,13 +8,12 @@ import com.a10.mejabelajar.auth.model.User;
 import com.a10.mejabelajar.auth.service.StudentService;
 import com.a10.mejabelajar.auth.service.TeacherService;
 import com.a10.mejabelajar.auth.service.UserService;
+import java.util.concurrent.CompletableFuture;
 import org.springframework.beans.factory.annotation.Autowired;
 import org.springframework.security.core.annotation.AuthenticationPrincipal;
 import org.springframework.stereotype.Controller;
 import org.springframework.ui.Model;
 import org.springframework.web.bind.annotation.*;
-
-import java.util.concurrent.CompletableFuture;
 
 @Controller
 @RequestMapping(path = "/admin")
@@ -54,7 +53,7 @@ public class AdminController {
         var teacher = CompletableFuture.supplyAsync(() -> teacherService.getTeacherByUser(user));
         var students = CompletableFuture.supplyAsync(() -> studentService.getStudents());
 
-        try{
+        try {
             String duration = logService.countDuration(start, end);
             logService.createLog(start, end, duration, desc, student.join(), teacher.join());
         } catch (LogInvalidException e) {
@@ -72,7 +71,7 @@ public class AdminController {
     @GetMapping(value = "/logs")
     public String getLogs(@AuthenticationPrincipal User user,
                             Model model) {
-        try{
+        try {
             var logs = logService.getLogs(user);
             model.addAttribute("role", user.getRole());
             model.addAttribute("logs", logs);

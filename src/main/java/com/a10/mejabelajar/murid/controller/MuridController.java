@@ -7,15 +7,14 @@ import com.a10.mejabelajar.course.model.Course;
 import com.a10.mejabelajar.course.repository.CourseRepository;
 import com.a10.mejabelajar.course.service.CourseService;
 import com.a10.mejabelajar.murid.service.MuridService;
+import java.util.ArrayList;
+import java.util.List;
 import org.springframework.beans.factory.annotation.Autowired;
 import org.springframework.http.ResponseEntity;
 import org.springframework.security.core.annotation.AuthenticationPrincipal;
 import org.springframework.stereotype.Controller;
 import org.springframework.ui.Model;
 import org.springframework.web.bind.annotation.*;
-
-import java.util.ArrayList;
-import java.util.List;
 
 @Controller
 @RequestMapping(path = "/murid")

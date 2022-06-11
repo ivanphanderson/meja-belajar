@@ -12,6 +12,10 @@
   </style>
 </head>
 <body>
+<div th:replace="navbar/teacherNavbar"::teacher_navbar></div>
+
+<h1>Create New Course Information</h1>
+
 <div th:if="${error!=null}" class="alert alert-danger" role="alert">
 <p th:text="${error}"></p>
 </div>

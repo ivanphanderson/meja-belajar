@@ -37,11 +37,12 @@ public class AdminDashboardController {
 
     @PostMapping(value = "/generate-token", produces = {"application/json"})
     @ResponseBody
-    public String generateToken(@AuthenticationPrincipal User user, AdminRegistrationTokenDTO tokenDto, Model model) {
+    public String generateToken(
+            @AuthenticationPrincipal User user, AdminRegistrationTokenDTO tokenDto, Model model) {
         try {
             dashboardService.generateToken(tokenDto);
             return "{\"success\": \"New token have successfully generated\"}";
-        }catch (Exception e){
+        } catch (Exception e) {
             return String.format("{\"error\": \"%s\"}", e.getMessage());
         }
     }

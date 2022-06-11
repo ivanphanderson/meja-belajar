@@ -3,6 +3,7 @@ package com.a10.mejabelajar.murid.controller;
 import com.a10.mejabelajar.auth.model.Student;
 import com.a10.mejabelajar.auth.model.User;
 import com.a10.mejabelajar.auth.service.StudentService;
+import com.a10.mejabelajar.auth.service.UserService;
 import com.a10.mejabelajar.course.model.Course;
 import com.a10.mejabelajar.course.repository.CourseRepository;
 import com.a10.mejabelajar.course.service.CourseService;
@@ -12,6 +13,8 @@ import java.util.List;
 import org.springframework.beans.factory.annotation.Autowired;
 import org.springframework.http.ResponseEntity;
 import org.springframework.security.core.annotation.AuthenticationPrincipal;
+import org.springframework.security.core.context.SecurityContextHolder;
+import org.springframework.security.core.userdetails.UserDetails;
 import org.springframework.stereotype.Controller;
 import org.springframework.ui.Model;
 import org.springframework.web.bind.annotation.*;
@@ -32,6 +35,11 @@ public class MuridController {
     @Autowired
     CourseRepository courseRepository;
 
+    @Autowired
+    UserService userService;
+
+    private static final String REDIRECT_LOGIN = "redirect:/login";
+
     @PostMapping(produces = {"application/json"})
     @ResponseBody
     public ResponseEntity<Student> registrationMurid(@RequestBody Student student, @AuthenticationPrincipal User user) {
@@ -50,7 +58,13 @@ public class MuridController {
      * Show all course.
      */
     @GetMapping(value = "")
-    public String readCourse(@AuthenticationPrincipal User user, Model model) {
+    public String readCourse(Model model) {
+        var principal = SecurityContextHolder.getContext().getAuthentication().getPrincipal();
+        if (principal instanceof String) {
+            return REDIRECT_LOGIN;
+        }
+        var userDetails = (UserDetails) principal;
+        var user = userService.getUserByUsername(userDetails.getUsername());
         List<Course> courses = courseService.getCourseByArchived(false);
 
         var newStudent = studentService.getStudentByUser(user);

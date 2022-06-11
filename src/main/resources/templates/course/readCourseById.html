@@ -117,7 +117,6 @@
 
   <div th:if="${student != null and studentRate == null}">
     <form th:action="@{/course/rate}" method="POST">
-      <h6 th:text="|Your Rate: ${currentRate.getNilaiRating()}|"></h6>
       <label for="rate">Rate 1-5:</label>
       <input type="number" id="rate" name="rate" min="1" max="5">
       <input type="hidden" name="idCourse" th:value="${idCourse}">

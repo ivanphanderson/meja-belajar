@@ -1,6 +1,5 @@
 package com.a10.mejabelajar.dashboard.teacher.controller;
 
-import com.a10.mejabelajar.auth.model.Teacher;
 import com.a10.mejabelajar.auth.model.User;
 import com.a10.mejabelajar.auth.service.TeacherService;
 import com.a10.mejabelajar.dashboard.teacher.service.TeacherDashboardService;

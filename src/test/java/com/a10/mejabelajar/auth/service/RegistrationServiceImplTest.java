@@ -2,10 +2,7 @@ package com.a10.mejabelajar.auth.service;
 
 import static org.mockito.Mockito.*;
 
-import com.a10.mejabelajar.auth.exception.InvalidRoleException;
-import com.a10.mejabelajar.auth.exception.InvalidTokenException;
-import com.a10.mejabelajar.auth.exception.RegistrationFieldEmptyException;
-import com.a10.mejabelajar.auth.exception.UsernameOrEmailAlreadyUsedException;
+import com.a10.mejabelajar.auth.exception.*;
 import com.a10.mejabelajar.auth.model.*;
 import com.a10.mejabelajar.auth.repository.*;
 import org.junit.jupiter.api.BeforeEach;
@@ -124,6 +121,18 @@ class RegistrationServiceImplTest {
         when(userRepository.findByEmail(MOCK_EMAIL)).thenReturn(mockUserStudent);
         assertThrows(UsernameOrEmailAlreadyUsedException.class, ()-> registrationService.validateTeacherAndStudentRegistration(studentDTO));
         assertThrows(UsernameOrEmailAlreadyUsedException.class, ()-> registrationService.validateAdminRegistration(adminDTO));
+    }
+
+    @Test
+    void testEmailPatternValidation(){
+        String email1 = "abc";
+        String email2 = "abc@mail";
+
+        studentDTO.setEmail(email1);
+        assertThrows(InvalidEmailException.class, ()-> registrationService.validateTeacherAndStudentRegistration(studentDTO));
+
+        studentDTO.setEmail(email2);
+        assertThrows(InvalidEmailException.class, ()-> registrationService.validateTeacherAndStudentRegistration(studentDTO));
     }
 
     @Test

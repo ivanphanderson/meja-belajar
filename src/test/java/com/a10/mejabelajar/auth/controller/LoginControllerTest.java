@@ -30,18 +30,32 @@ class LoginControllerTest {
     @MockBean
     private UserRepository userRepository;
 
-    private static final String MOCK_USERNAME = "user";
-    private static final String MOCK_EMAIL = "user@mail.com";
     private static final String MOCK_PASSWORD = "abc123";
-    private static final Role MOCK_ROLE = Role.STUDENT;
 
-    private User mockUser;
+    private static final String MOCK_USERNAME_1 = "user1";
+    private static final String MOCK_EMAIL_1 = "user1@mail.com";
+    private static final Role MOCK_STUDENT_ROLE = Role.STUDENT;
+
+    private static final String MOCK_USERNAME_2 = "user2";
+    private static final String MOCK_EMAIL_2 = "user2@mail.com";
+    private static final Role MOCK_TEACHER_ROLE = Role.TEACHER;
+
+    private static final String MOCK_USERNAME_3 = "user3";
+    private static final String MOCK_EMAIL_3 = "user3@mail.com";
+    private static final Role MOCK_ADMIN_ROLE = Role.ADMIN;
+
+    private User mockUser1;
+    private User mockUser2;
+    private User mockUser3;
 
     @BeforeEach
     void setUp(){
         BCryptPasswordEncoder passwordEncoder = new BCryptPasswordEncoder();
         String encodedPassword = passwordEncoder.encode(MOCK_PASSWORD);
-        mockUser = new User(MOCK_USERNAME, MOCK_EMAIL, encodedPassword, MOCK_ROLE);
+
+        mockUser1 = new User(MOCK_USERNAME_1, MOCK_EMAIL_1, encodedPassword, MOCK_STUDENT_ROLE);
+        mockUser2 = new User(MOCK_USERNAME_2, MOCK_EMAIL_2, encodedPassword, MOCK_TEACHER_ROLE);
+        mockUser3 = new User(MOCK_USERNAME_3, MOCK_EMAIL_3, encodedPassword, MOCK_ADMIN_ROLE);
     }
 
     @Test
@@ -53,20 +67,40 @@ class LoginControllerTest {
     }
 
     @Test
-    void testLogin() throws Exception{
-        when(userDetailsService.loadUserByUsername(MOCK_USERNAME)).thenReturn(mockUser);
+    void testLoginForStudent() throws Exception{
+        when(userDetailsService.loadUserByUsername(MOCK_USERNAME_1)).thenReturn(mockUser1);
         mockMvc.perform(post("/login")
-                        .param("username", MOCK_USERNAME)
+                        .param("username", MOCK_USERNAME_1)
                         .param("password", MOCK_PASSWORD))
                 .andExpect(status().is3xxRedirection())
-                .andExpect(redirectedUrl("/dashboard/student"));
+                .andExpect(redirectedUrl("/dashboard/student/"));
+    }
+
+    @Test
+    void testLoginForTeacher() throws Exception{
+        when(userDetailsService.loadUserByUsername(MOCK_USERNAME_2)).thenReturn(mockUser2);
+        mockMvc.perform(post("/login")
+                        .param("username", MOCK_USERNAME_2)
+                        .param("password", MOCK_PASSWORD))
+                .andExpect(status().is3xxRedirection())
+                .andExpect(redirectedUrl("/dashboard/teacher/"));
+    }
+
+    @Test
+    void testLoginForAdmin() throws Exception{
+        when(userDetailsService.loadUserByUsername(MOCK_USERNAME_3)).thenReturn(mockUser3);
+        mockMvc.perform(post("/login")
+                        .param("username", MOCK_USERNAME_3)
+                        .param("password", MOCK_PASSWORD))
+                .andExpect(status().is3xxRedirection())
+                .andExpect(redirectedUrl("/dashboard/admin/"));
     }
 
     @Test
     void testFailedLogin() throws Exception{
-        when(userDetailsService.loadUserByUsername(MOCK_USERNAME)).thenReturn(mockUser);
+        when(userDetailsService.loadUserByUsername(MOCK_USERNAME_1)).thenReturn(mockUser1);
         mockMvc.perform(post("/login")
-                        .param("username", MOCK_USERNAME)
+                        .param("username", MOCK_USERNAME_1)
                         .param("password", "abc"))
                 .andExpect(status().is3xxRedirection())
                 .andExpect(redirectedUrl("/login?error=true"));

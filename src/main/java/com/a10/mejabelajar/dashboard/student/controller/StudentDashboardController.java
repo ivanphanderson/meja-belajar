@@ -22,6 +22,9 @@ public class StudentDashboardController {
 
     @GetMapping(value = "/")
     public String studentDashboard(@AuthenticationPrincipal User user, Model model) {
+        if(user == null){
+            return "redirect:/login";
+        }
         Student student = studentService.getStudentByUser(user);
         model.addAttribute("takenCourses", dashboardService.getTakenCourse(student));
         model.addAttribute("username", user.getUsername());

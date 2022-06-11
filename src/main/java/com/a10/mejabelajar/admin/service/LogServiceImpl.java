@@ -13,16 +13,16 @@ import com.a10.mejabelajar.auth.model.Teacher;
 import com.a10.mejabelajar.auth.model.User;
 import com.a10.mejabelajar.auth.service.StudentService;
 import com.a10.mejabelajar.auth.service.TeacherService;
-import org.springframework.beans.factory.annotation.Autowired;
-import org.springframework.stereotype.Service;
-
 import java.time.Duration;
 import java.time.LocalDateTime;
 import java.time.format.DateTimeFormatter;
 import java.util.List;
+import org.springframework.beans.factory.annotation.Autowired;
+import org.springframework.stereotype.Service;
+
 
 @Service
-public class LogServiceImpl implements LogService{
+public class LogServiceImpl implements LogService {
     @Autowired
     LogRepository logRepository;
 
@@ -84,7 +84,9 @@ public class LogServiceImpl implements LogService{
         validateLogTime(durationInMinutes);
         long hour = durationInMinutes / 60;
         long minute = durationInMinutes % 60;
-        if(minute == 0) return hour + " jam";
+        if (minute == 0) {
+            return hour + " jam";
+        }
         return hour + " jam " + minute + " menit";
     }
 
@@ -113,16 +115,16 @@ public class LogServiceImpl implements LogService{
     }
 
     private void validateLogTime(long duration) {
-        if(tooLong(duration)) {
+        if (tooLong(duration)) {
             throw new LogInvalidException("Durasi tidak bisa lebih dari 8 jam");
         }
-        if(endBeforeStart(duration)) {
+        if (endBeforeStart(duration)) {
             throw new LogInvalidException("Waktu selesai harus setelah waktu mulai");
         }
     }
 
     private boolean tooLong(long duration) {
-        return duration > 8*60;
+        return duration > 8 * 60;
     }
 
     private boolean endBeforeStart(long duration) {

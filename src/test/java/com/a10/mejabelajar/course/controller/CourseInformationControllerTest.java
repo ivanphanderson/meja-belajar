@@ -1,7 +1,6 @@
 package com.a10.mejabelajar.course.controller;
 
-import static org.mockito.ArgumentMatchers.any;
-import static org.mockito.ArgumentMatchers.anyInt;
+import static org.mockito.ArgumentMatchers.*;
 import static org.mockito.Mockito.when;
 import static org.springframework.test.web.servlet.request.MockMvcRequestBuilders.*;
 import static org.springframework.test.web.servlet.result.MockMvcResultMatchers.*;
@@ -21,7 +20,6 @@ import com.a10.mejabelajar.course.service.CourseService;
 import java.util.Date;
 import org.junit.jupiter.api.BeforeEach;
 import org.junit.jupiter.api.Test;
-import org.mockito.Mock;
 import org.springframework.beans.factory.annotation.Autowired;
 import org.springframework.boot.test.autoconfigure.web.servlet.WebMvcTest;
 import org.springframework.boot.test.mock.mockito.MockBean;
@@ -60,19 +58,18 @@ class CourseInformationControllerTest {
     @MockBean
     private UserDetailsService userDetailsService;
 
-    @Mock
-    private CourseInformation courseInformation;
-
     @Autowired
     private WebApplicationContext webApplicationContext;
 
     private static final String TEACHER_UNAME = "teacher";
     private static final int COURSE_ID = 100;
     private static final int COURSE_INFORMATION_ID = 101;
+    private static final String ERROR = "error";
     private Teacher teacher;
     private User user;
     private Course course;
     private Student student;
+    private CourseInformation courseInformation;
 
     /**
      * Run this before run every single test.
@@ -86,6 +83,7 @@ class CourseInformationControllerTest {
         course = new Course();
         course.setId(COURSE_ID);
 
+        courseInformation = new CourseInformation();
         courseInformation.setCreatedAt(new Date());
         courseInformation.setUpdatedAt(new Date());
         courseInformation.setCourse(course);
@@ -130,18 +128,32 @@ class CourseInformationControllerTest {
         when(courseService.getCourseByTeacherAndStatus(teacher, false)).thenReturn(course);
 
         mockMvc.perform(get("/course/information/create/" + COURSE_ID))
-                .andExpect(status().is3xxRedirection());
+                .andExpect(status().is3xxRedirection())
+                .andExpect(redirectedUrl("/course/" + COURSE_ID));
 
 
         course.setArchived((false));
         var teacher1 = new Teacher();
         course.setTeacher(teacher1);
         mockMvc.perform(get("/course/information/create/" + COURSE_ID))
-                .andExpect(status().is3xxRedirection());
+                .andExpect(status().is3xxRedirection())
+                .andExpect(redirectedUrl("/course/" + COURSE_ID));
 
         teacher.setHaveCourse(false);
         mockMvc.perform(get("/course/information/create/" + COURSE_ID))
-                .andExpect(status().is3xxRedirection());
+                .andExpect(status().is3xxRedirection())
+                .andExpect(redirectedUrl("/dashboard/teacher/"));
+    }
+
+    @Test
+    @WithMockUser(username = TEACHER_UNAME, authorities = {"USER", "TEACHER"})
+    void showErrorPageIfUnexpectedErrorOccurWhenAccessingCreateCourseInformationGet()
+            throws Exception {
+        when(userService.getUserByUsername(anyString())).thenThrow(IllegalArgumentException.class);
+        mockMvc.perform(get("/course/information/create/" + COURSE_ID))
+                .andExpect(status().isOk())
+                .andExpect(model().attributeExists(ERROR))
+                .andExpect(view().name("course/courseErrorPage"));
     }
 
     @Test
@@ -166,7 +178,8 @@ class CourseInformationControllerTest {
                 .thenReturn(courseInformation);
 
         mockMvc.perform(post("/course/information/create/" + COURSE_ID))
-                .andExpect(status().is3xxRedirection());
+                .andExpect(status().is3xxRedirection())
+                .andExpect(redirectedUrl("/course/" + COURSE_ID));
     }
 
     @Test
@@ -203,18 +216,32 @@ class CourseInformationControllerTest {
         when(courseService.getCourseByTeacherAndStatus(teacher, false)).thenReturn(course);
 
         mockMvc.perform(post("/course/information/create/" + COURSE_ID))
-                .andExpect(status().is3xxRedirection());
+                .andExpect(status().is3xxRedirection())
+                .andExpect(redirectedUrl("/course/" + COURSE_ID));
 
 
         course.setArchived((false));
         var teacher1 = new Teacher();
         course.setTeacher(teacher1);
         mockMvc.perform(post("/course/information/create/" + COURSE_ID))
-                .andExpect(status().is3xxRedirection());
+                .andExpect(status().is3xxRedirection())
+                .andExpect(redirectedUrl("/course/" + COURSE_ID));
 
         teacher.setHaveCourse(false);
         mockMvc.perform(post("/course/information/create/" + COURSE_ID))
-                .andExpect(status().is3xxRedirection());
+                .andExpect(status().is3xxRedirection())
+                .andExpect(redirectedUrl("/dashboard/teacher/"));
+    }
+
+    @Test
+    @WithMockUser(username = TEACHER_UNAME, authorities = {"USER", "TEACHER"})
+    void showErrorPageIfUnexpectedErrorOccurWhenAccessingCreateCourseInformationPost()
+            throws Exception {
+        when(userService.getUserByUsername(anyString())).thenThrow(IllegalArgumentException.class);
+        mockMvc.perform(post("/course/information/create/" + COURSE_ID))
+                .andExpect(status().isOk())
+                .andExpect(model().attributeExists(ERROR))
+                .andExpect(view().name("course/courseErrorPage"));
     }
 
     @Test
@@ -262,7 +289,9 @@ class CourseInformationControllerTest {
 
         mockMvc.perform(
                 get("/course/information/update/" + COURSE_ID + "/" + COURSE_INFORMATION_ID))
-                .andExpect(status().is3xxRedirection());
+                .andExpect(status().is3xxRedirection())
+                .andExpect(redirectedUrl("/course/" + COURSE_ID));
+
 
 
         course.setArchived((false));
@@ -270,12 +299,26 @@ class CourseInformationControllerTest {
         course.setTeacher(teacher1);
         mockMvc.perform(
                 get("/course/information/update/" + COURSE_ID + "/" + COURSE_INFORMATION_ID))
-                .andExpect(status().is3xxRedirection());
+                .andExpect(status().is3xxRedirection())
+                .andExpect(redirectedUrl("/course/" + COURSE_ID));
 
         teacher.setHaveCourse(false);
         mockMvc.perform(
                 get("/course/information/update/" + COURSE_ID + "/" + COURSE_INFORMATION_ID))
-                .andExpect(status().is3xxRedirection());
+                .andExpect(status().is3xxRedirection())
+                .andExpect(redirectedUrl("/dashboard/teacher/"));
+    }
+
+    @Test
+    @WithMockUser(username = TEACHER_UNAME, authorities = {"USER", "TEACHER"})
+    void showErrorPageIfUnexpectedErrorOccurWhenAccessingUpdateCourseInformationGet()
+            throws Exception {
+        when(userService.getUserByUsername(anyString())).thenThrow(IllegalArgumentException.class);
+        mockMvc.perform(
+                get("/course/information/update/" + COURSE_ID + "/" + COURSE_INFORMATION_ID))
+                .andExpect(status().isOk())
+                .andExpect(model().attributeExists(ERROR))
+                .andExpect(view().name("course/courseErrorPage"));
     }
 
     @Test
@@ -303,7 +346,8 @@ class CourseInformationControllerTest {
 
         mockMvc.perform(
                 post("/course/information/update/" + COURSE_ID + "/" + COURSE_INFORMATION_ID))
-                .andExpect(status().is3xxRedirection());
+                .andExpect(status().is3xxRedirection())
+                .andExpect(redirectedUrl("/course/" + COURSE_ID));
     }
 
     @Test
@@ -344,7 +388,8 @@ class CourseInformationControllerTest {
 
         mockMvc.perform(
                 post("/course/information/update/" + COURSE_ID + "/" + COURSE_INFORMATION_ID))
-                .andExpect(status().is3xxRedirection());
+                .andExpect(status().is3xxRedirection())
+                .andExpect(redirectedUrl("/course/" + COURSE_ID));
 
 
         course.setArchived((false));
@@ -352,12 +397,26 @@ class CourseInformationControllerTest {
         course.setTeacher(teacher1);
         mockMvc.perform(
                 post("/course/information/update/" + COURSE_ID + "/" + COURSE_INFORMATION_ID))
-                .andExpect(status().is3xxRedirection());
+                .andExpect(status().is3xxRedirection())
+                .andExpect(redirectedUrl("/course/" + COURSE_ID));
 
         teacher.setHaveCourse(false);
         mockMvc.perform(
                 post("/course/information/update/" + COURSE_ID + "/" + COURSE_INFORMATION_ID))
-                .andExpect(status().is3xxRedirection());
+                .andExpect(status().is3xxRedirection())
+                .andExpect(redirectedUrl("/dashboard/teacher/"));
+    }
+
+    @Test
+    @WithMockUser(username = TEACHER_UNAME, authorities = {"USER", "TEACHER"})
+    void showErrorPageIfUnexpectedErrorOccurWhenAccessingUpdateCourseInformationPost()
+            throws Exception {
+        when(userService.getUserByUsername(anyString())).thenThrow(IllegalArgumentException.class);
+        mockMvc.perform(
+                post("/course/information/update/" + COURSE_ID + "/" + COURSE_INFORMATION_ID))
+                .andExpect(status().isOk())
+                .andExpect(model().attributeExists(ERROR))
+                .andExpect(view().name("course/courseErrorPage"));
     }
 
     @Test
@@ -403,7 +462,8 @@ class CourseInformationControllerTest {
 
         mockMvc.perform(
                 post("/course/information/delete/" + COURSE_ID + "/" + COURSE_INFORMATION_ID))
-                .andExpect(status().is3xxRedirection());
+                .andExpect(status().is3xxRedirection())
+                .andExpect(redirectedUrl("/course/" + COURSE_ID));
 
 
         course.setArchived((false));
@@ -411,12 +471,26 @@ class CourseInformationControllerTest {
         course.setTeacher(teacher1);
         mockMvc.perform(
                 post("/course/information/delete/" + COURSE_ID + "/" + COURSE_INFORMATION_ID))
-                .andExpect(status().is3xxRedirection());
+                .andExpect(status().is3xxRedirection())
+                .andExpect(redirectedUrl("/course/" + COURSE_ID));
 
         teacher.setHaveCourse(false);
         mockMvc.perform(
                 post("/course/information/delete/" + COURSE_ID + "/" + COURSE_INFORMATION_ID))
-                .andExpect(status().is3xxRedirection());
+                .andExpect(status().is3xxRedirection())
+                .andExpect(redirectedUrl("/dashboard/teacher/"));
+    }
+
+    @Test
+    @WithMockUser(username = TEACHER_UNAME, authorities = {"USER", "TEACHER"})
+    void showErrorPageIfUnexpectedErrorOccurWhenAccessingDeleteCourseInformationPost()
+            throws Exception {
+        when(userService.getUserByUsername(anyString())).thenThrow(IllegalArgumentException.class);
+        mockMvc.perform(
+                post("/course/information/delete/" + COURSE_ID + "/" + COURSE_INFORMATION_ID))
+                .andExpect(status().isOk())
+                .andExpect(model().attributeExists(ERROR))
+                .andExpect(view().name("course/courseErrorPage"));
     }
 
 }

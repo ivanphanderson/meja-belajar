@@ -51,6 +51,7 @@ public class CourseInformationServiceImpl implements CourseInformationService {
     @Override
     public void deleteCourseInformationById(int id) {
         var courseInformation = getCourseInformationById(id);
-        courseInformationRepository.delete(courseInformation);
+        courseInformation.setCourse(null);
+        courseInformationRepository.save(courseInformation);
     }
 }

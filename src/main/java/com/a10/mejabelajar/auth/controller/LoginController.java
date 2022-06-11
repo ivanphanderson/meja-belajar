@@ -10,8 +10,9 @@ import org.springframework.web.bind.annotation.RequestParam;
 @RequestMapping("/login")
 public class LoginController {
     @GetMapping({""})
-    public String getLoginPage(@RequestParam(value = "error", defaultValue = "false") boolean error, Model model) {
-        if(error){
+    public String getLoginPage(
+            @RequestParam(value = "error", defaultValue = "false") boolean error, Model model) {
+        if (error) {
             model.addAttribute("error", "Invalid username or password");
         }
         return "auth/login";

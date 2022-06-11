@@ -31,13 +31,12 @@ public class RegistrationController {
 
     @PostMapping(path = "/admin")
     public String registerAdmin(CreateAdminDTO dto, Model model) {
-        try{
+        try {
             registrationService.createUser(dto);
             model.addAttribute("success", "You have successfully created an account");
             model.addAttribute("dto", new CreateAdminDTO());
             return ADMIN_REGISTRATION_VIEW;
-        }
-        catch (Exception e){
+        } catch (Exception e) {
             model.addAttribute("error", e.getMessage());
             model.addAttribute("dto", dto);
             return ADMIN_REGISTRATION_VIEW;
@@ -46,13 +45,12 @@ public class RegistrationController {
 
     @PostMapping(path = "")
     public String registerUser(CreateStudentAndTeacherDTO dto, Model model) {
-        try{
+        try {
             registrationService.createUser(dto);
             model.addAttribute("success", "You have successfully created an account");
             model.addAttribute("dto", new CreateStudentAndTeacherDTO());
             return REGISTRATION_VIEW;
-        }
-        catch (Exception e){
+        } catch (Exception e) {
             model.addAttribute("error", e.getMessage());
             model.addAttribute("dto", dto);
             return REGISTRATION_VIEW;

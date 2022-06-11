@@ -98,7 +98,7 @@ class CourseInformationServiceImplTest {
         lenient().when(courseInformationService
                 .getCourseInformationById(COURSE_INFORMATION_ID)).thenReturn(null);
         assertNull(courseInformationService.getCourseInformationById(COURSE_INFORMATION_ID));
-        verify(courseInformationRepository, times(1)).delete(courseInformation);
+        verify(courseInformationRepository, times(2)).save(any(CourseInformation.class));
     }
 
     @Test

@@ -4,9 +4,6 @@ import com.a10.mejabelajar.admin.model.Log;
 import com.a10.mejabelajar.auth.model.Student;
 import com.a10.mejabelajar.auth.model.Teacher;
 import com.a10.mejabelajar.auth.model.User;
-import org.springframework.format.annotation.DateTimeFormat;
-
-import java.time.LocalDateTime;
 import java.util.List;
 
 public interface LogService {

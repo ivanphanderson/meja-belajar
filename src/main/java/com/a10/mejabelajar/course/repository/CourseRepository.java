@@ -16,4 +16,6 @@ public interface CourseRepository extends JpaRepository<Course, String> {
     List<Course> findAllByNewMurid(Student student);
 
     List<Course> findAllByArchived(boolean archived);
+
+    List<Course> findAllByTeacherAndArchived(Teacher teacher, boolean archived);
 }

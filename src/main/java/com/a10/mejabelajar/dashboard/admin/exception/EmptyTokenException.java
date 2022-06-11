@@ -1,4 +1,4 @@
-package com.a10.mejabelajar.dashboard.exception;
+package com.a10.mejabelajar.dashboard.admin.exception;
 
 public class EmptyTokenException extends RuntimeException{
     public EmptyTokenException(String e){

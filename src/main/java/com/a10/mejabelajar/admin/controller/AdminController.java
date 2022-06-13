@@ -21,8 +21,8 @@ import java.util.concurrent.CompletableFuture;
 @RequestMapping(path = "/admin")
 public class AdminController {
 
-    private final String ERROR = "error";
-    private final String REDIRECT_LOGS = "redirect:/admin/logs";
+    private static final String ERROR = "error";
+    private static final String REDIRECT_LOGS = "redirect:/admin/logs";
 
     @Autowired
     private LogService logService;
@@ -142,7 +142,6 @@ public class AdminController {
     private User getPrincipalUser() {
         var principal = SecurityContextHolder.getContext().getAuthentication().getPrincipal();
         var userDetails = (UserDetails) principal;
-        var user = userService.getUserByUsername(userDetails.getUsername());
-        return user;
+        return userService.getUserByUsername(userDetails.getUsername());
     }
 }

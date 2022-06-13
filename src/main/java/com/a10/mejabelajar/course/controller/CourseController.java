@@ -13,7 +13,6 @@ import com.a10.mejabelajar.course.service.CourseService;
 import com.a10.mejabelajar.murid.model.Rate;
 import com.a10.mejabelajar.murid.service.RateService;
 import java.util.List;
-import java.util.concurrent.CompletableFuture;
 import org.springframework.beans.factory.annotation.Autowired;
 import org.springframework.security.core.context.SecurityContextHolder;
 import org.springframework.security.core.userdetails.UserDetails;
@@ -104,8 +103,8 @@ public class CourseController {
                 return isValid;
             }
 
-            courseService.createCourse(courseDataTransferObject, user);
-            return "redirect:";
+            var course = courseService.createCourse(courseDataTransferObject, user);
+            return REDIRECT_COURSE + course.getId();
         } catch (CourseInvalidException e) {
             model.addAttribute(ERROR, e.getMessage());
             model.addAttribute(COURSE_TYPES, CourseType.values());
@@ -250,6 +249,7 @@ public class CourseController {
             return "course/readCourseById";
         } catch (Exception e) {
             model.addAttribute(ERROR, UNEXPECTED_ERROR_MSG);
+            Thread.currentThread().interrupt();
             return COURSE_ERROR_PAGE;
         }
     }
@@ -270,13 +270,8 @@ public class CourseController {
             var userDetails = (UserDetails) principal;
             var user = userService.getUserByUsername(userDetails.getUsername());
 
-            CompletableFuture<Course> courseFuture =
-                    CompletableFuture.supplyAsync(() -> courseService.getCourseById(courseId));
-            CompletableFuture<Teacher> teacherFuture =
-                    CompletableFuture.supplyAsync(() -> teacherService.getTeacherByUser(user));
-
-            var course = courseFuture.get();
-            var teacher = teacherFuture.get();
+            var course = courseService.getCourseById(courseId);
+            var teacher = teacherService.getTeacherByUser(user);
             String isValid =
                     validateTeacherAccess(teacher, course, "Archive the Course", redirectAttrs);
             if (!isValid.equals("")) {

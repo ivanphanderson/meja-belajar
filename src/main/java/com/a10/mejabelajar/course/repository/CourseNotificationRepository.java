@@ -6,6 +6,7 @@ import com.a10.mejabelajar.course.model.CourseNotification;
 import java.util.Date;
 import java.util.List;
 import org.springframework.data.jpa.repository.JpaRepository;
+import org.springframework.data.jpa.repository.Modifying;
 import org.springframework.data.jpa.repository.Query;
 
 public interface CourseNotificationRepository extends JpaRepository<CourseNotification, String> {
@@ -18,6 +19,7 @@ public interface CourseNotificationRepository extends JpaRepository<CourseNotifi
 
     List<CourseNotification> findAllByCourseInformation(CourseInformation courseInformation);
 
+    @Modifying
     @Query(value = "DELETE FROM CourseNotification C where C.id = ?1")
     void deleteCourseNotificationById(int id);
 }

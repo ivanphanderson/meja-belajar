@@ -10,6 +10,7 @@ import java.util.Date;
 import java.util.List;
 import org.springframework.beans.factory.annotation.Autowired;
 import org.springframework.stereotype.Service;
+import org.springframework.transaction.annotation.Transactional;
 
 
 @Service
@@ -55,6 +56,7 @@ public class CourseInformationServiceImpl implements CourseInformationService {
     }
 
     @Override
+    @Transactional
     public void deleteCourseInformationById(int id) {
         var courseInformation = getCourseInformationById(id);
 

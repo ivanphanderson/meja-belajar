@@ -104,11 +104,11 @@ class CourseInformationServiceImplTest {
 
         lenient().when(courseInformationRepository
                 .findById(COURSE_INFORMATION_ID)).thenReturn(courseInformation);
+        lenient().when(courseNotificationRepository.findAllByCourseInformation(courseInformation))
+                .thenReturn(courseNotifications);
         courseInformationService.deleteCourseInformationById(COURSE_INFORMATION_ID);
         lenient().when(courseInformationService
                 .getCourseInformationById(COURSE_INFORMATION_ID)).thenReturn(null);
-        lenient().when(courseNotificationRepository.findAllByCourseInformation(courseInformation))
-                        .thenReturn(courseNotifications);
 
         assertNull(courseInformationService.getCourseInformationById(COURSE_INFORMATION_ID));
         verify(courseInformationRepository, times(1)).delete(courseInformation);

@@ -30,8 +30,8 @@ class ActivationServiceImplTest {
 
     private User user;
 
-    @InjectMocks
-    UserServiceImpl userService;
+    @Mock
+    UserService userService;
 
     @InjectMocks
     ActivationServiceImpl activationService;

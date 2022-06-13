@@ -10,6 +10,7 @@ import com.a10.mejabelajar.auth.service.TeacherService;
 import com.a10.mejabelajar.auth.service.UserService;
 import org.springframework.beans.factory.annotation.Autowired;
 import org.springframework.security.core.context.SecurityContextHolder;
+import org.springframework.security.core.userdetails.UserDetails;
 import org.springframework.stereotype.Controller;
 import org.springframework.ui.Model;
 import org.springframework.web.bind.annotation.*;
@@ -140,6 +141,8 @@ public class AdminController {
 
     private User getPrincipalUser() {
         var principal = SecurityContextHolder.getContext().getAuthentication().getPrincipal();
-        return (User) principal;
+        var userDetails = (UserDetails) principal;
+        var user = userService.getUserByUsername(userDetails.getUsername());
+        return user;
     }
 }

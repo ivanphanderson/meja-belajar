@@ -1,7 +1,9 @@
 package com.a10.mejabelajar.murid.controller;
 
 import com.a10.mejabelajar.auth.model.User;
+import com.a10.mejabelajar.murid.core.PrincipalFactory;
 import com.a10.mejabelajar.murid.service.RateService;
+import lombok.Setter;
 import org.springframework.beans.factory.annotation.Autowired;
 import org.springframework.security.core.context.SecurityContextHolder;
 import org.springframework.stereotype.Controller;
@@ -17,6 +19,9 @@ public class RateController {
     @Autowired
     RateService rateService;
 
+    @Setter
+    PrincipalFactory principalFactory = new PrincipalFactory();
+
     /**
      * Rate a course.
      */
@@ -26,7 +31,7 @@ public class RateController {
             @RequestParam Integer idCourse,
             RedirectAttributes redirectAttrs
     ) {
-        Object principal = SecurityContextHolder.getContext().getAuthentication().getPrincipal();
+        Object principal = principalFactory.getPrincipal();
         String studentId = ((User)principal).getId();
 
         var newRate = rateService.getByIdStudentAndIdCourse(studentId, idCourse);

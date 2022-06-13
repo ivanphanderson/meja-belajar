@@ -10,6 +10,7 @@ import com.a10.mejabelajar.auth.service.TeacherService;
 import com.a10.mejabelajar.auth.service.UserService;
 import org.springframework.beans.factory.annotation.Autowired;
 import org.springframework.security.core.context.SecurityContextHolder;
+import org.springframework.security.core.userdetails.UserDetails;
 import org.springframework.stereotype.Controller;
 import org.springframework.ui.Model;
 import org.springframework.web.bind.annotation.*;
@@ -20,8 +21,8 @@ import java.util.concurrent.CompletableFuture;
 @RequestMapping(path = "/admin")
 public class AdminController {
 
-    private final String ERROR = "error";
-    private final String REDIRECT_LOGS = "redirect:/admin/logs";
+    private static final String ERROR = "error";
+    private static final String REDIRECT_LOGS = "redirect:/admin/logs";
 
     @Autowired
     private LogService logService;
@@ -38,6 +39,9 @@ public class AdminController {
     @Autowired
     private UserService userService;
 
+    /**
+     * Show form log.
+     */
     @GetMapping(value = "/form-log")
     public String formLog(Model model) {
         model.addAttribute("students", studentService.getStudents());
@@ -45,6 +49,9 @@ public class AdminController {
         return "admin/formLog";
     }
 
+    /**
+     * Post form log.
+     */
     @PostMapping(value = "/form-log")
     public String formLog(@RequestParam String start,
                           @RequestParam String end,
@@ -71,6 +78,9 @@ public class AdminController {
         return REDIRECT_LOGS;
     }
 
+    /**
+     * Get user log.
+     */
     @GetMapping(value = "/logs")
     public String getLogs(Model model) {
         var user = getPrincipalUser();
@@ -99,6 +109,9 @@ public class AdminController {
         return "admin/userActivation";
     }
 
+    /**
+     * Update user activation.
+     */
     @GetMapping(value = "/{userId}/user-activation")
     public String updateActivation(@PathVariable String userId) {
         var user = userService.getUserById(userId);
@@ -106,6 +119,9 @@ public class AdminController {
         return "redirect:/admin/user-activation";
     }
 
+    /**
+     * Do log payment.
+     */
     @GetMapping(value = "/log/{logId}/bayar")
     public String bayarLog(@PathVariable String logId) {
         var log = logService.getLogById(logId);
@@ -113,6 +129,9 @@ public class AdminController {
         return REDIRECT_LOGS;
     }
 
+    /**
+     * Verify log.
+     */
     @GetMapping(value = "/log/{logId}/verifikasi")
     public String verifikasiLog(@PathVariable String logId) {
         var log = logService.getLogById(logId);
@@ -122,6 +141,7 @@ public class AdminController {
 
     private User getPrincipalUser() {
         var principal = SecurityContextHolder.getContext().getAuthentication().getPrincipal();
-        return (User) principal;
+        var userDetails = (UserDetails) principal;
+        return userService.getUserByUsername(userDetails.getUsername());
     }
 }

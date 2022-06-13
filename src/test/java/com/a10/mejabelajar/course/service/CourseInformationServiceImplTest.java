@@ -8,6 +8,8 @@ import com.a10.mejabelajar.course.model.Course;
 import com.a10.mejabelajar.course.model.CourseInformation;
 import com.a10.mejabelajar.course.model.CourseNotification;
 import com.a10.mejabelajar.course.repository.CourseInformationRepository;
+import com.a10.mejabelajar.course.repository.CourseNotificationRepository;
+import java.util.ArrayList;
 import java.util.Date;
 import java.util.List;
 import org.junit.jupiter.api.BeforeEach;
@@ -25,12 +27,16 @@ class CourseInformationServiceImplTest {
     @Mock
     CourseInformationRepository courseInformationRepository;
 
+    @Mock
+    CourseNotificationRepository courseNotificationRepository;
+
     @InjectMocks
     @Spy
     CourseInformationServiceImpl courseInformationService;
 
     private CourseInformation courseInformation;
     private Course course;
+    private CourseNotification courseNotification;
 
     private static final int COURSE_INFORMATION_ID = 109;
 
@@ -40,6 +46,7 @@ class CourseInformationServiceImplTest {
     @BeforeEach
     void setUp() {
         course = new Course();
+        courseNotification = new CourseNotification();
         courseInformation = new CourseInformation();
         courseInformation.setCourse(course);
         courseInformation.setCourseInformationTitle("TITLE");
@@ -92,13 +99,19 @@ class CourseInformationServiceImplTest {
     @Test
     void testDeleteCourseInformationById() {
         courseInformationService.createCourseInformation(courseInformation);
+        List<CourseNotification> courseNotifications = new ArrayList<>();
+        courseNotifications.add(courseNotification);
+
         lenient().when(courseInformationRepository
                 .findById(COURSE_INFORMATION_ID)).thenReturn(courseInformation);
+        lenient().when(courseNotificationRepository.findAllByCourseInformation(courseInformation))
+                .thenReturn(courseNotifications);
         courseInformationService.deleteCourseInformationById(COURSE_INFORMATION_ID);
         lenient().when(courseInformationService
                 .getCourseInformationById(COURSE_INFORMATION_ID)).thenReturn(null);
+
         assertNull(courseInformationService.getCourseInformationById(COURSE_INFORMATION_ID));
-        verify(courseInformationRepository, times(2)).save(any(CourseInformation.class));
+        verify(courseInformationRepository, times(1)).delete(courseInformation);
     }
 
     @Test

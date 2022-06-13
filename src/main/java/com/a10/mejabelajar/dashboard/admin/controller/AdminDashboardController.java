@@ -2,7 +2,7 @@ package com.a10.mejabelajar.dashboard.admin.controller;
 
 import com.a10.mejabelajar.admin.service.ActivationService;
 import com.a10.mejabelajar.admin.service.LogService;
-import com.a10.mejabelajar.auth.model.AdminRegistrationTokenDTO;
+import com.a10.mejabelajar.auth.model.AdminRegistrationTokenDto;
 import com.a10.mejabelajar.auth.model.User;
 import com.a10.mejabelajar.dashboard.admin.service.AdminDashboardService;
 import org.springframework.beans.factory.annotation.Autowired;
@@ -24,9 +24,12 @@ public class AdminDashboardController {
     private AdminDashboardService dashboardService;
 
 
+    /**
+     * Show admin dashboarde.
+     */
     @GetMapping(value = "/")
     public String dashboardAdmin(@AuthenticationPrincipal User user,  Model model) {
-        if (user == null){
+        if (user == null) {
             return "redirect:/login";
         }
         model.addAttribute("users", activationService.notActiveUsers());
@@ -34,14 +37,17 @@ public class AdminDashboardController {
         model.addAttribute("username", user.getUsername());
         model.addAttribute("email", user.getEmail());
         model.addAttribute("logs", logService.getLogs(user));
-        model.addAttribute("dto", new AdminRegistrationTokenDTO());
+        model.addAttribute("dto", new AdminRegistrationTokenDto());
         return "dashboard/adminDashboard";
     }
 
+    /**
+     * Generate token for admin.
+     */
     @PostMapping(value = "/generate-token", produces = {"application/json"})
     @ResponseBody
     public String generateToken(
-            @AuthenticationPrincipal User user, AdminRegistrationTokenDTO tokenDto, Model model) {
+            @AuthenticationPrincipal User user, AdminRegistrationTokenDto tokenDto, Model model) {
         try {
             dashboardService.generateToken(tokenDto);
             return "{\"success\": \"New token have successfully generated\"}";

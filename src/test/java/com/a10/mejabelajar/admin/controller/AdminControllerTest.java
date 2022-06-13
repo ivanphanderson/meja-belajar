@@ -25,13 +25,15 @@ import org.springframework.web.context.WebApplicationContext;
 
 import java.util.List;
 
+import static org.mockito.ArgumentMatchers.any;
+import static org.mockito.ArgumentMatchers.anyString;
 import static org.mockito.Mockito.when;
 import static org.springframework.test.web.servlet.request.MockMvcRequestBuilders.get;
 import static org.springframework.test.web.servlet.request.MockMvcRequestBuilders.post;
 import static org.springframework.test.web.servlet.result.MockMvcResultMatchers.*;
 
 @WebMvcTest(controllers = AdminController.class)
-public class AdminControllerTest {
+class AdminControllerTest {
 
     @Autowired
     private MockMvc mockMvc;
@@ -97,14 +99,14 @@ public class AdminControllerTest {
     @WithMockUser(username = TEACHER_UNAME, authorities = {"USER", "TEACHER"})
     void teacherCanAccessFormLogPostSuccess() throws Exception {
         List<Student> students = List.of(student);
-        when(studentService.getStudentById(ID)).thenReturn(student);
-        when(teacherService.getTeacherByUser(user)).thenReturn(teacher);
+        when(studentService.getStudentById(anyString())).thenReturn(student);
+        when(teacherService.getTeacherByUser(any(User.class))).thenReturn(teacher);
         when(studentService.getStudents()).thenReturn(students);
-        when(logService.countDuration(TIME, TIME)).thenReturn("3 jam");
+        when(logService.countDuration(anyString(), anyString())).thenReturn("3 jam");
         when(logService.createLog(TIME, TIME, "3 jam", "deskripsi", student, teacher)).thenReturn(log);
-        mockMvc.perform(post("/admin/form-log"))
+        mockMvc.perform(post("/admin/form-log?start=xx&end=yy&desc=1&studentId=asd"))
                 .andExpect(status().is3xxRedirection())
-                .andExpect(redirectedUrl("/logs"));
+                .andExpect(redirectedUrl("/admin/logs"));
     }
 
 

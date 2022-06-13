@@ -30,8 +30,8 @@ class ActivationServiceImplTest {
 
     private User user;
 
-    @InjectMocks
-    UserServiceImpl userService;
+    @Mock
+    UserService userService;
 
     @InjectMocks
     ActivationServiceImpl activationService;
@@ -50,7 +50,7 @@ class ActivationServiceImplTest {
         List<User> users = List.of(user);
         lenient().when(userService.getUsers()).thenReturn(users);
         List<User> userNotActive = activationService.notActiveUsers();
-        assertEquals(userNotActive.size(), 0);
+        assertEquals(0, userNotActive.size());
     }
 
     @Test

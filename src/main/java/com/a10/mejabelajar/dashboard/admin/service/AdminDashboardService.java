@@ -1,8 +1,8 @@
 package com.a10.mejabelajar.dashboard.admin.service;
 
 import com.a10.mejabelajar.auth.model.AdminRegistrationToken;
-import com.a10.mejabelajar.auth.model.AdminRegistrationTokenDTO;
+import com.a10.mejabelajar.auth.model.AdminRegistrationTokenDto;
 
 public interface AdminDashboardService {
-    AdminRegistrationToken generateToken(AdminRegistrationTokenDTO tokenDTO);
+    AdminRegistrationToken generateToken(AdminRegistrationTokenDto tokenDto);
 }

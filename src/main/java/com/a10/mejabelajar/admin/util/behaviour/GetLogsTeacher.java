@@ -1,4 +1,4 @@
-package com.a10.mejabelajar.admin.util.Behaviour;
+package com.a10.mejabelajar.admin.util.behaviour;
 
 import com.a10.mejabelajar.admin.model.Log;
 import com.a10.mejabelajar.auth.model.Teacher;

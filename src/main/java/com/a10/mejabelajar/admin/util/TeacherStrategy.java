@@ -1,6 +1,6 @@
 package com.a10.mejabelajar.admin.util;
 
-import com.a10.mejabelajar.admin.util.Behaviour.GetLogsTeacher;
+import com.a10.mejabelajar.admin.util.behaviour.GetLogsTeacher;
 import com.a10.mejabelajar.auth.model.Teacher;
 
 

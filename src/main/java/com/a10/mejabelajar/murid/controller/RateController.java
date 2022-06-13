@@ -32,10 +32,10 @@ public class RateController {
         var newRate = rateService.getByIdStudentAndIdCourse(studentId, idCourse);
         if (newRate == null) {
             rateService.createRate(studentId, idCourse, rate);
-            return "redirect:/murid";
+            return "redirect:/course/"+idCourse;
         } else {
             redirectAttrs.addFlashAttribute("error", "Anda sudah memberikan rate");
-            return "redirect:/course" + idCourse;
+            return "redirect:/course/" + idCourse;
         }
 
     }

@@ -82,8 +82,8 @@
 
   <h6 th:text="|Type: ${course.getCourseType()}|"></h6>
   <h6 th:text="|Duration: ${course.getCourseDuration()} month(s)|"></h6>
+  <h6 th:text="|Overall Rating: ${finalRate}|"></h6>
   <p th:text="|${course.getCourseDescription()}|"><p>
-  <h6 th:text="|Rating: ${finalRate}|"></h6>
 
   <br>
   <div th:if="${course.isArchived() == false} and ${teacher != null}">
@@ -119,25 +119,6 @@
       <input type="submit" value="Rate">
     </form>
   </div>
-
-  <table class="table table-striped my-2">
-    <thead>
-    <tr>
-      <th>Rate Id</th>
-      <th>Course Id</th>
-      <th>Student Id</th>
-      <th>Rate score</th>
-    </tr>
-    </thead>
-    <tbody> <tr th:each="post: ${currentRate}">
-      <td th:text="${post.getId()}"></td>
-      <td th:text="${post.getIdCourse()}"></td>
-      <td th:text="${post.getIdStudent()}"></td>
-      <td th:text="${post.getNilaiRating()}"></td>
-    </tr>
-    </tbody>
-  </table>
-
 </div>
 </body>
 </html>

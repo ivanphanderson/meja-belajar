@@ -3,6 +3,6 @@ package com.a10.mejabelajar.auth.model;
 import lombok.Data;
 
 @Data
-public class AdminRegistrationTokenDTO {
+public class AdminRegistrationTokenDto {
     String token;
 }

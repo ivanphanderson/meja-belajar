@@ -3,7 +3,7 @@ package com.a10.mejabelajar.auth.model;
 import lombok.Data;
 
 @Data
-public class CreateStudentAndTeacherDTO {
+public class CreateStudentAndTeacherDto {
     String username;
     String email;
     String password;

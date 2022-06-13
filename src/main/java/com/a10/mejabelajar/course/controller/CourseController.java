@@ -103,8 +103,8 @@ public class CourseController {
                 return isValid;
             }
 
-            courseService.createCourse(courseDataTransferObject, user);
-            return "redirect:";
+            var course = courseService.createCourse(courseDataTransferObject, user);
+            return REDIRECT_COURSE + course.getId();
         } catch (CourseInvalidException e) {
             model.addAttribute(ERROR, e.getMessage());
             model.addAttribute(COURSE_TYPES, CourseType.values());
@@ -166,6 +166,7 @@ public class CourseController {
 
             var teacher = teacherService.getTeacherByUser(user);
             var course = courseService.getCourseById(id);
+
             String isValid =
                     validateTeacherAccess(teacher, course, "Update the Course", redirectAttrs);
             if (!isValid.equals("")) {
@@ -248,6 +249,7 @@ public class CourseController {
             return "course/readCourseById";
         } catch (Exception e) {
             model.addAttribute(ERROR, UNEXPECTED_ERROR_MSG);
+            Thread.currentThread().interrupt();
             return COURSE_ERROR_PAGE;
         }
     }

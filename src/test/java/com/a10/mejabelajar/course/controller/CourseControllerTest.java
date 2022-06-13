@@ -149,11 +149,11 @@ class CourseControllerTest {
         teacher.setHaveCourse(false);
         when(userService.getUserByUsername(TEACHER_UNAME)).thenReturn(user);
         when(teacherService.getTeacherByUser(user)).thenReturn(teacher);
-        when(courseService.createCourse(courseDataTransferObject, user)).thenReturn(course);
+        when(courseService.createCourse(any(CourseDataTransferObject.class), any(User.class))).thenReturn(course);
 
         mockMvc.perform(post("/course/create"))
                 .andExpect(status().is3xxRedirection())
-                .andExpect(redirectedUrl(""));
+                .andExpect(redirectedUrl("/course/" + COURSE_ID));
     }
 
     @Test

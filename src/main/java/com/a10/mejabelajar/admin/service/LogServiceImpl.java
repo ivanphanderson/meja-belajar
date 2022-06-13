@@ -13,9 +13,7 @@ import com.a10.mejabelajar.auth.model.Teacher;
 import com.a10.mejabelajar.auth.model.User;
 import com.a10.mejabelajar.auth.service.StudentService;
 import com.a10.mejabelajar.auth.service.TeacherService;
-import org.apache.tomcat.util.net.SendfileDataBase;
 import org.springframework.beans.factory.annotation.Autowired;
-import org.springframework.format.annotation.DateTimeFormat;
 import org.springframework.stereotype.Service;
 
 import java.time.Duration;
@@ -45,11 +43,11 @@ public class LogServiceImpl implements LogService{
                 strategy = new AdminStrategy();
                 break;
             case TEACHER:
-                Teacher teacher = teacherService.getTeacherByUser(user);
+                var teacher = teacherService.getTeacherByUser(user);
                 strategy = new TeacherStrategy(teacher);
                 break;
             case STUDENT:
-                Student student = studentService.getStudentByUser(user);
+                var student = studentService.getStudentByUser(user);
                 strategy = new StudentStrategy(student);
                 break;
             default:
@@ -135,7 +133,7 @@ public class LogServiceImpl implements LogService{
     }
 
     private LocalDateTime convertStringtoLocalDatiTime(String times) {
-        DateTimeFormatter formatter = DateTimeFormatter.ofPattern("yyyy-MM-dd'T'HH:mm");
+        var formatter = DateTimeFormatter.ofPattern("yyyy-MM-dd'T'HH:mm");
         return LocalDateTime.parse(times, formatter);
     }
 

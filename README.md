@@ -115,3 +115,11 @@ Page yang paling lama response timenya adalah course karena:
    - mengambil list informasi dari suatu course
    - menghitung rata-rata dari rating
    - mengecek usernya sudah memberi rate ke course atau belum
+3. Admin
+![](admin.jpg)
+Page yang paling lama response timenya adalah dashboard admin karena:
+   - mengecek user sudah logged in atau belum
+   - memeriksa akses pengguna
+   - mengambil list pengguna yang belum aktif
+   - mengambil seluruh log admin
+   - memuat object AdminRegistrationToken

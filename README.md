@@ -1,4 +1,4 @@
-# [Meja Belajar (A10)](https://mejabelajar.herokuapp.com/)
+# [Meja Belajar (A10)](https://mejabelajar.herokuapp.com/login)
 
 ## Branch Master
 [![pipeline status](https://gitlab.cs.ui.ac.id/AdvProg/reguler-2022/student/kelas-a/2006463004-Ivan-Phanderson/meja-belajar/meja-belajar/badges/master/pipeline.svg)](https://gitlab.cs.ui.ac.id/AdvProg/reguler-2022/student/kelas-a/2006463004-Ivan-Phanderson/meja-belajar/meja-belajar/-/commits/master)

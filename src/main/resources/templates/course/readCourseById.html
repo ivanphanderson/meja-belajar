@@ -97,6 +97,12 @@
   <h6 th:text="|Duration: ${course.getCourseDuration()} month(s)|"></h6>
   <h6 th:text="|Overall Rating: ${finalRate}|"></h6>
   <p th:text="|${course.getCourseDescription()}|"><p>
+  <div th:if="${course.isArchived()}">
+    <p>Status: Archived</p>
+  </div>
+  <div th:if="${!course.isArchived()}">
+    <p>Status: Active</p>
+  </div>
 
   <br>
   <div th:if="${course.isArchived() == false} and ${teacher != null}">

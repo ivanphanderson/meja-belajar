@@ -99,14 +99,19 @@ Aplikasi ini dirancang untuk kegiatan belajar dan mengajar secara online serta d
 ## Profiling Meja Belajar
 1. Guru
 ![](guru.jpg)
-Page yang paling lama response timenya adalah admin logs karena:
+Page yang paling lama response timenya adalah delete information course karena:
+   - mengecek user sudah logged in atau belum
+   - memeriksa akses pengguna
+   - mencari object course information berdasarkan idnya
+   - mencari seluruh notifikasi pengguna yang terhubung dengan informasi tersebut
+   - menghapus seluruh notifikasi pengguna
 2. Murid
 ![](murid.jpeg)
 Page yang paling lama response timenya adalah course karena:
-- mengecek user sudah logged in atau belum
-- validasi user memiliki akses atau tidak
-- mengecek role user (student atau teacher)
-- mengambil data suatu course
-- mengambil list informasi dari suatu course
-- menghitung rata-rata dari rating
-- mengecek usernya sudah memberi rate ke course atau belum
+   - mengecek user sudah logged in atau belum
+   - validasi user memiliki akses atau tidak
+   - mengecek role user (student atau teacher)
+   - mengambil data suatu course
+   - mengambil list informasi dari suatu course
+   - menghitung rata-rata dari rating
+   - mengecek usernya sudah memberi rate ke course atau belum

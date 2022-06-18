@@ -19,6 +19,12 @@ public class MuridServiceImpl implements MuridService {
     @Autowired
     RateRepository rateRepository;
 
+    @Override
+    public Student regisMurid(Student student) {
+        studentRepository.save(student);
+        return student;
+    }
+
     /**
      * Tambahin murid ke course.
      */

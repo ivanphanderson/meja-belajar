@@ -58,13 +58,26 @@
   </style>
 </head>
 <body>
+<div th:if="${teacher != null}">
+  <div th:replace="navbar/teacherNavbar"::teacher_navbar></div>
+</div>
+<div th:if="${student != null}">
+  <nav class="navbar navbar-expand-lg navbar-light bg-light mb-5">
+    <div class="container-fluid">
+      <ul class="navbar-nav me-auto mb-2 mb-lg-0">
+        <a class="nav-link active" href="/dashboard/student/">Dashboard</a>
+        <a class="nav-link active" href="/murid">All Course</a>
+        <a class="nav-link active" href="/admin/logs">Logs</a>
+        <a class="nav-link active" href="/course/notification">Notification</a>
+        <a class="nav-link active" href="/logout">Logout</a>
+      </ul>
+    </div>
+  </nav>
+</div>
+
 <div id="body">
   <div th:if="${error!=null}" class="alert alert-danger" role="alert">
     <p th:text="${error}"></p>
-  </div>
-
-  <div th:if="${student!=null}" id="notifBtn">
-    <a href="/course/notification" class="btn">Notification</a>
   </div>
 
   <div id="courseTitle">
@@ -82,7 +95,14 @@
 
   <h6 th:text="|Type: ${course.getCourseType()}|"></h6>
   <h6 th:text="|Duration: ${course.getCourseDuration()} month(s)|"></h6>
+  <h6 th:text="|Overall Rating: ${finalRate}|"></h6>
   <p th:text="|${course.getCourseDescription()}|"><p>
+  <div th:if="${course.isArchived()}">
+    <p>Status: Archived</p>
+  </div>
+  <div th:if="${!course.isArchived()}">
+    <p>Status: Active</p>
+  </div>
 
   <br>
   <div th:if="${course.isArchived() == false} and ${teacher != null}">
@@ -110,7 +130,7 @@
     </div>
   </div>
 
-  <div>
+  <div th:if="${student != null and studentRate == null}">
     <form th:action="@{/course/rate}" method="POST">
       <label for="rate">Rate 1-5:</label>
       <input type="number" id="rate" name="rate" min="1" max="5">
@@ -118,27 +138,6 @@
       <input type="submit" value="Rate">
     </form>
   </div>
-
-  <table class="table table-striped my-2">
-    <thead>
-    <tr>
-      <th>Rate Id</th>
-      <th>Course Id</th>
-      <th>Student Id</th>
-      <th>Rate score</th>
-    </tr>
-    </thead>
-    <tbody> <tr th:each="post: ${currentRate}">
-      <td th:text="${post.getId()}"></td>
-      <td th:text="${post.getIdCourse()}"></td>
-      <td th:text="${post.getIdStudent()}"></td>
-      <td th:text="${post.getNilaiRating()}"></td>
-    </tr>
-    </tbody>
-  </table>
-
-
-  <p>Semoga sukses</p>
 </div>
 </body>
 </html>

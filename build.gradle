@@ -9,6 +9,7 @@ plugins {
     id 'java'
     id 'jacoco'
     id "org.sonarqube" version "3.3"
+    id 'org.barfuin.gradle.jacocolog' version '2.0.0'
 }
 
 apply plugin: 'checkstyle'

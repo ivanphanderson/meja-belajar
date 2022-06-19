@@ -1,4 +1,4 @@
-# [Meja Belajar (A10)](https://mejabelajar.herokuapp.com/)
+# [Meja Belajar (A10)](https://mejabelajar.herokuapp.com/login)
 
 ## Branch Master
 [![pipeline status](https://gitlab.cs.ui.ac.id/AdvProg/reguler-2022/student/kelas-a/2006463004-Ivan-Phanderson/meja-belajar/meja-belajar/badges/master/pipeline.svg)](https://gitlab.cs.ui.ac.id/AdvProg/reguler-2022/student/kelas-a/2006463004-Ivan-Phanderson/meja-belajar/meja-belajar/-/commits/master)
@@ -72,3 +72,54 @@ Aplikasi ini dirancang untuk kegiatan belajar dan mengajar secara online serta d
       - terdapat tampilan untuk menampilkan daftar log yang dimiliki guru dan murid. Untuk admin dapat melihat semua log. guru dan admin dapat melakukan delete, admin dan murid dapat melakukan update (berupa status).
       - memperbaiki tampilan tabel daftar log untuk masing-masing role.
 
+## Sprint 3
+1. Registration and Login
+   - Sedikit modifikasi tampilan pada halaman registrasi dan login
+2. Dashboard
+   - Mengimplementasi dashboard untuk guru dan murid
+   - Mengimplementasi test untuk dashboard admin, guru, dan murid
+3. CRU Course
+   - Mengimplementasi test untuk fitur CRU course dan melakukan bug fixing terkait masalah menghapus suatu informasi dalam course. Menambahkan navbar pada setiap fitur menggunakan navbar yang telah dibuat oleh adillah
+4. Archive Course
+   - Mengimplementasi test untuk fitur archive course.
+5. Course Notification
+   - Mengimplementasi test untuk fitur course notification.
+6. Course Registration
+   - Mengimplementasi test untuk fitur course registration.
+7. Rate a course
+   - Rate yang ditampilkan adalah rata-rata rate yang diberikan murid.
+   - Mengimplementasi test untuk fitur rate course.
+8. Validate new user accounts (teachers, students)
+   - Mengimplementasi test untuk fitur validasi user
+9. Make a form that can be filled out by the teacher (teacher's log)
+   - Menambahkan navbar pada front-end
+10. RUD Log
+    - Menambahkan navbar pada front-end
+
+## Profiling Meja Belajar
+1. Guru
+![](guru.jpg)
+Page yang paling lama response timenya adalah delete information course karena:
+   - mengecek user sudah logged in atau belum
+   - memeriksa akses pengguna
+   - mencari object course information berdasarkan idnya
+   - mencari seluruh notifikasi pengguna yang terhubung dengan informasi tersebut
+   - menghapus seluruh notifikasi pengguna
+2. Murid
+![](murid.jpeg)
+Page yang paling lama response timenya adalah course karena:
+   - mengecek user sudah logged in atau belum
+   - validasi user memiliki akses atau tidak
+   - mengecek role user (student atau teacher)
+   - mengambil data suatu course
+   - mengambil list informasi dari suatu course
+   - menghitung rata-rata dari rating
+   - mengecek usernya sudah memberi rate ke course atau belum
+3. Admin
+![](admin.jpg)
+Page yang paling lama response timenya adalah dashboard admin karena:
+   - mengecek user sudah logged in atau belum
+   - memeriksa akses pengguna
+   - mengambil list pengguna yang belum aktif
+   - mengambil seluruh log admin
+   - memuat object AdminRegistrationToken

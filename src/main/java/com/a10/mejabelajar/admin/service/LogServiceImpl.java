@@ -13,15 +13,14 @@ import com.a10.mejabelajar.auth.model.Teacher;
 import com.a10.mejabelajar.auth.model.User;
 import com.a10.mejabelajar.auth.service.StudentService;
 import com.a10.mejabelajar.auth.service.TeacherService;
-import org.apache.tomcat.util.net.SendfileDataBase;
 import org.springframework.beans.factory.annotation.Autowired;
-import org.springframework.format.annotation.DateTimeFormat;
 import org.springframework.stereotype.Service;
 
 import java.time.Duration;
 import java.time.LocalDateTime;
 import java.time.format.DateTimeFormatter;
 import java.util.List;
+import java.util.Optional;
 
 @Service
 public class LogServiceImpl implements LogService{
@@ -44,11 +43,11 @@ public class LogServiceImpl implements LogService{
                 strategy = new AdminStrategy();
                 break;
             case TEACHER:
-                Teacher teacher = teacherService.getTeacherByUser(user);
+                var teacher = teacherService.getTeacherByUser(user);
                 strategy = new TeacherStrategy(teacher);
                 break;
             case STUDENT:
-                Student student = studentService.getStudentByUser(user);
+                var student = studentService.getStudentByUser(user);
                 strategy = new StudentStrategy(student);
                 break;
             default:
@@ -87,6 +86,7 @@ public class LogServiceImpl implements LogService{
         long hour = durationInMinutes / 60;
         long minute = durationInMinutes % 60;
         if(minute == 0) return hour + " jam";
+        if(hour == 0) return minute + "menit";
         return hour + " jam " + minute + " menit";
     }
 
@@ -97,7 +97,8 @@ public class LogServiceImpl implements LogService{
 
     @Override
     public Log getLogById(String logId) {
-        return logRepository.findById(logId).get();
+        Optional<Log> log = logRepository.findById(logId);
+        return log.orElse(null);
     }
 
     @Override
@@ -132,9 +133,8 @@ public class LogServiceImpl implements LogService{
     }
 
     private LocalDateTime convertStringtoLocalDatiTime(String times) {
-        DateTimeFormatter formatter = DateTimeFormatter.ofPattern("yyyy-MM-dd'T'HH:mm");
-        LocalDateTime time = LocalDateTime.parse(times, formatter);
-        return time;
+        var formatter = DateTimeFormatter.ofPattern("yyyy-MM-dd'T'HH:mm");
+        return LocalDateTime.parse(times, formatter);
     }
 
 }

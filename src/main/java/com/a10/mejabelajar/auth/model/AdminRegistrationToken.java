@@ -1,9 +1,8 @@
 package com.a10.mejabelajar.auth.model;
 
+import javax.persistence.*;
 import lombok.Data;
 import lombok.NoArgsConstructor;
-
-import javax.persistence.*;
 
 @Data
 @NoArgsConstructor
@@ -21,7 +20,7 @@ public class AdminRegistrationToken {
     @Column(name = "isActive")
     private boolean isActive;
 
-    public AdminRegistrationToken(String token){
+    public AdminRegistrationToken(String token) {
         this.token = token;
         this.isActive = true;
     }

@@ -27,6 +27,7 @@ test:
     - export SPRING_PROFILES_ACTIVE=test
     - gradle check --stacktrace
     - cat build/reports/jacoco/test/html/index.html | grep -o '<tfoot>.*</tfoot>'
+  coverage: '/    - Line Coverage: ([0-9.]+)%/'
   artifacts:
     paths:
       - build/reports/jacoco/*
@@ -43,14 +44,6 @@ sonarqube-check:
       - .sonar/cache
   script: gradle sonarqube -D "sonar.qualitygate.wait=true" -D "sonar.host.url=$SONAR_HOST_URL" -D "sonar.projectKey=$SONAR_PROJECT_KEY" -D "sonar.login=$SONAR_TOKEN"
   allow_failure: true
-
-checkstyle:
-  stage: test
-  script: gradle checkstyleMain checkstyleTest
-  allow_failure: true
-  cache:
-    key: "$CI_COMMIT_REF_NAME"
-    policy: pull
 
 deployment:
   image: ruby:latest

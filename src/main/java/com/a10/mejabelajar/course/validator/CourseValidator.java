@@ -3,10 +3,12 @@ package com.a10.mejabelajar.course.validator;
 import com.a10.mejabelajar.course.exception.CourseInvalidException;
 import com.a10.mejabelajar.course.model.CourseType;
 import com.a10.mejabelajar.course.model.dto.CourseDataTransferObject;
-import lombok.NoArgsConstructor;
 
-@NoArgsConstructor
 public class CourseValidator {
+
+    private CourseValidator() {
+        throw new IllegalStateException("Utility class");
+    }
 
     /**
      * Validate all important course attributes.

@@ -1,8 +1,14 @@
 package com.a10.mejabelajar.auth.controller;
 
+import static org.mockito.Mockito.doThrow;
+import static org.mockito.Mockito.when;
+import static org.springframework.test.web.servlet.request.MockMvcRequestBuilders.get;
+import static org.springframework.test.web.servlet.request.MockMvcRequestBuilders.post;
+import static org.springframework.test.web.servlet.result.MockMvcResultMatchers.*;
+
 import com.a10.mejabelajar.auth.exception.UsernameOrEmailAlreadyUsedException;
-import com.a10.mejabelajar.auth.model.CreateAdminDTO;
-import com.a10.mejabelajar.auth.model.CreateStudentAndTeacherDTO;
+import com.a10.mejabelajar.auth.model.CreateAdminDto;
+import com.a10.mejabelajar.auth.model.CreateStudentAndTeacherDto;
 import com.a10.mejabelajar.auth.model.Role;
 import com.a10.mejabelajar.auth.model.User;
 import com.a10.mejabelajar.auth.repository.UserRepository;
@@ -16,11 +22,6 @@ import org.springframework.security.core.userdetails.UserDetailsService;
 import org.springframework.security.crypto.bcrypt.BCryptPasswordEncoder;
 import org.springframework.test.web.servlet.MockMvc;
 
-import static org.mockito.Mockito.doThrow;
-import static org.mockito.Mockito.when;
-import static org.springframework.test.web.servlet.request.MockMvcRequestBuilders.get;
-import static org.springframework.test.web.servlet.request.MockMvcRequestBuilders.post;
-import static org.springframework.test.web.servlet.result.MockMvcResultMatchers.*;
 
 
 @WebMvcTest(controllers = RegistrationController.class)
@@ -45,31 +46,31 @@ class RegistrationControllerTest {
 
     private User mockStudent;
     private User mockAdmin;
-    private CreateStudentAndTeacherDTO studentDTO;
-    private CreateAdminDTO adminDTO;
+    private CreateStudentAndTeacherDto studentDto;
+    private CreateAdminDto adminDto;
 
     @BeforeEach
-    void setUp(){
+    void setUp() {
         BCryptPasswordEncoder passwordEncoder = new BCryptPasswordEncoder();
         String encodedPassword = passwordEncoder.encode(MOCK_PASSWORD);
         mockStudent = new User(MOCK_USERNAME, MOCK_EMAIL, encodedPassword, MOCK_ROLE);
         mockAdmin = new User(MOCK_USERNAME, MOCK_EMAIL, encodedPassword, Role.ADMIN);
 
-        studentDTO = new CreateStudentAndTeacherDTO();
-        studentDTO.setUsername(MOCK_USERNAME);
-        studentDTO.setEmail(MOCK_EMAIL);
-        studentDTO.setPassword(MOCK_PASSWORD);
-        studentDTO.setRole(MOCK_ROLE.name());
+        studentDto = new CreateStudentAndTeacherDto();
+        studentDto.setUsername(MOCK_USERNAME);
+        studentDto.setEmail(MOCK_EMAIL);
+        studentDto.setPassword(MOCK_PASSWORD);
+        studentDto.setRole(MOCK_ROLE.name());
 
-        adminDTO = new CreateAdminDTO();
-        adminDTO.setUsername(MOCK_USERNAME);
-        adminDTO.setEmail(MOCK_EMAIL);
-        adminDTO.setPassword(MOCK_PASSWORD);
-        adminDTO.setToken(MOCK_TOKEN);
+        adminDto = new CreateAdminDto();
+        adminDto.setUsername(MOCK_USERNAME);
+        adminDto.setEmail(MOCK_EMAIL);
+        adminDto.setPassword(MOCK_PASSWORD);
+        adminDto.setToken(MOCK_TOKEN);
     }
 
     @Test
-    void testGetRegistrationPage() throws Exception{
+    void testGetRegistrationPage() throws Exception {
         mockMvc.perform(get("/signup"))
                 .andExpect(status().isOk())
                 .andExpect(model().attributeExists("dto"))
@@ -78,8 +79,8 @@ class RegistrationControllerTest {
     }
 
     @Test
-    void testRegisterStudent() throws Exception{
-        when(registrationService.createUser(studentDTO)).thenReturn(mockStudent);
+    void testRegisterStudent() throws Exception {
+        when(registrationService.createUser(studentDto)).thenReturn(mockStudent);
         mockMvc.perform(post("/signup")
                         .param("username", MOCK_USERNAME)
                         .param("email", MOCK_EMAIL)
@@ -91,7 +92,7 @@ class RegistrationControllerTest {
     }
 
     @Test
-    void testGetAdminRegistrationPage() throws Exception{
+    void testGetAdminRegistrationPage() throws Exception {
         mockMvc.perform(get("/signup/admin"))
                 .andExpect(status().isOk())
                 .andExpect(model().attributeExists("dto"))
@@ -100,8 +101,8 @@ class RegistrationControllerTest {
     }
 
     @Test
-    void testRegisterAdmin() throws Exception{
-        when(registrationService.createUser(adminDTO)).thenReturn(mockAdmin);
+    void testRegisterAdmin() throws Exception {
+        when(registrationService.createUser(adminDto)).thenReturn(mockAdmin);
         mockMvc.perform(post("/signup/admin")
                         .param("username", MOCK_USERNAME)
                         .param("email", MOCK_EMAIL)
@@ -113,8 +114,9 @@ class RegistrationControllerTest {
     }
 
     @Test
-    void testFailedRegistration() throws Exception{
-        doThrow(new UsernameOrEmailAlreadyUsedException("Username already used")).when(registrationService).createUser(studentDTO);
+    void testFailedRegistration() throws Exception {
+        doThrow(new UsernameOrEmailAlreadyUsedException("Username already used"))
+                .when(registrationService).createUser(studentDto);
         mockMvc.perform(post("/signup")
                         .param("username", MOCK_USERNAME)
                         .param("email", MOCK_EMAIL)
@@ -126,8 +128,9 @@ class RegistrationControllerTest {
     }
 
     @Test
-    void testFailedAdminRegistration() throws Exception{
-        doThrow(new UsernameOrEmailAlreadyUsedException("Username already used")).when(registrationService).createUser(adminDTO);
+    void testFailedAdminRegistration() throws Exception {
+        doThrow(new UsernameOrEmailAlreadyUsedException("Username already used"))
+                .when(registrationService).createUser(adminDto);
         mockMvc.perform(post("/signup/admin")
                         .param("username", MOCK_USERNAME)
                         .param("email", MOCK_EMAIL)

@@ -2,18 +2,16 @@ package com.a10.mejabelajar.admin.model;
 
 import com.a10.mejabelajar.auth.model.Student;
 import com.a10.mejabelajar.auth.model.Teacher;
+import java.time.LocalDateTime;
+import java.time.format.DateTimeFormatter;
+import java.util.Locale;
+import javax.persistence.*;
 import lombok.AllArgsConstructor;
 import lombok.Builder;
 import lombok.Data;
 import lombok.NoArgsConstructor;
 import org.hibernate.annotations.GenericGenerator;
 import org.springframework.format.annotation.DateTimeFormat;
-
-import javax.persistence.*;
-import java.time.LocalDateTime;
-import java.time.format.DateTimeFormatter;
-import java.util.Date;
-import java.util.Locale;
 
 @Data
 @Builder
@@ -55,8 +53,8 @@ public class Log {
     private Student student;
 
     public String getJam() {
-        DateTimeFormatter formatterStart = DateTimeFormatter.ofPattern("EEEE, d MMMM yyyy H:mm", new Locale("id"));
-        DateTimeFormatter formatterEnd = DateTimeFormatter.ofPattern("H:mm");
+        var formatterStart = DateTimeFormatter.ofPattern("EEEE, d MMMM yyyy H:mm", new Locale("id"));
+        var formatterEnd = DateTimeFormatter.ofPattern("H:mm");
         return start.format(formatterStart) + " - " + end.format(formatterEnd);
     }
 }
